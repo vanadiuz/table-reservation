@@ -1,0 +1,77 @@
+@font-face {
+  font-family: 'trem-reservation';
+  src: url('../font/trem-reservation.eot?87088665');
+  src: url('../font/trem-reservation.eot?87088665#iefix') format('embedded-opentype'),
+       url('../font/trem-reservation.woff2?87088665') format('woff2'),
+       url('../font/trem-reservation.woff?87088665') format('woff'),
+       url('../font/trem-reservation.ttf?87088665') format('truetype'),
+       url('../font/trem-reservation.svg?87088665#trem-reservation') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'trem-reservation';
+    src: url('../font/trem-reservation.svg?87088665#trem-reservation') format('svg');
+  }
+}
+*/
+ 
+ [class^="tremtr-icon-"]:before, [class*=" tremtr-icon-"]:before {
+  font-family: "trem-reservation";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.tremtr-icon-uniF100:before { content: '\f100'; } /* '' */
+.tremtr-icon-uniF101:before { content: '\f101'; } /* '' */
+.tremtr-icon-uniF102:before { content: '\f102'; } /* '' */
+.tremtr-icon-uniF103:before { content: '\f103'; } /* '' */
+.tremtr-icon-uniF104:before { content: '\f104'; } /* '' */
+.tremtr-icon-uniF105:before { content: '\f105'; } /* '' */
+.tremtr-icon-uniF106:before { content: '\f106'; } /* '' */
+.tremtr-icon-uniF107:before { content: '\f107'; } /* '' */
+.tremtr-icon-uniF108:before { content: '\f108'; } /* '' */
+.tremtr-icon-uniF109:before { content: '\f109'; } /* '' */
+.tremtr-icon-uniF10A:before { content: '\f10a'; } /* '' */
+.tremtr-icon-uniF10B:before { content: '\f10b'; } /* '' */
+.tremtr-icon-uniF10C:before { content: '\f10c'; } /* '' */
+.tremtr-icon-uniF10D:before { content: '\f10d'; } /* '' */
+.tremtr-icon-uniF10E:before { content: '\f10e'; } /* '' */
+.tremtr-icon-uniF10F:before { content: '\f10f'; } /* '' */
+.tremtr-icon-uniF110:before { content: '\f110'; } /* '' */
+.tremtr-icon-uniF111:before { content: '\f111'; } /* '' */
+.tremtr-icon-uniF112:before { content: '\f112'; } /* '' */
+.tremtr-icon-uniF113:before { content: '\f113'; } /* '' */
