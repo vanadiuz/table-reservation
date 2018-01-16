@@ -1,0 +1,85 @@
+/* Frontend CSS Stylesheet for Restaurant Reservations */
+
+.rtb-booking-form fieldset {
+	padding-bottom: 1em;
+	margin-bottom: 1em;
+}
+.rtb-booking-form legend {
+	padding: 0 0.5em;
+}
+.rtb-booking-form fieldset>div {
+	margin-top: 1em;
+}
+.rtb-booking-form fieldset>div:first-child {
+	margin-top: 0;
+}
+.rtb-booking-form label {
+	display: block;
+}
+.rtb-booking-form input {
+	width: 100%;
+	max-width: 15em;
+}
+.rtb-booking-form input[type="checkbox"],
+.rtb-booking-form input[type="radio"] {
+	width: auto;
+	margin-right: 0.25em;
+	vertical-align: middle;
+}
+.rtb-booking-form textarea {
+	width: 100%;
+	max-width: 30em;
+}
+.rtb-booking-form .add-message {
+	margin-top: 1em;
+}
+.rtb-booking-form .message {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+}
+.rtb-booking-form .message-open {
+	position: relative;
+	top: auto;
+	left: auto;
+}
+.rtb-booking-form .message textarea {
+	min-height: 6em;
+}
+.rtb-booking-form .rtb-error {
+	font-size: 0.85em;
+	padding: 0.25em;
+	background: #f50;
+	color: #fff;
+}
+.rtb-booking-form .rtb-error:before {
+	content: ' ';
+	border-top: 4px solid;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+	width: 0;
+	height: 0;
+	display: inline-block;
+	margin: 0.25em 0.5em;
+}
+
+/* Compatibility styles for pickadate on common themes */
+.picker {
+	outline: 0;
+}
+#rtb-date_root .picker__button--clear,
+#rtb-date_root .picker__button--today {
+	/* don't adopt the theme's button text color */
+	color: #000;
+}
+#rtb-date_root .picker__nav--next,
+#rtb-date_root .picker__nav--prev {
+	/* next/prev calendar arrows button areas sometimes don't cover the arrows */
+	min-height: 2em;
+}
+#rtb-time_root .picker__list,
+#rtb-time_root .picker__list li {
+	/* override some theme's list styles */
+	list-style: none;
+	margin: 0 0 0 1px;
+}
