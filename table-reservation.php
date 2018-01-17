@@ -321,7 +321,7 @@ if (!class_exists('TREMTableReservation')) :
         public function tremtr_enqueue_scripts() {
 
             wp_enqueue_style('tremtr-icons', TREMTR_PLUGIN_URL . '/assets/css/trem-reservation-icons/css/trem-reservation.css');
-            wp_enqueue_style('tremtr-app', TREMTR_PLUGIN_URL . '/assets/css/app.f7518cc71e770b890a5b23ff8f080eab.css');
+            wp_enqueue_style('tremtr-app', TREMTR_PLUGIN_URL . '/assets/css/tremtr-client.css');
     
             $i8n = $this->settings->get_setting( 'i8n' );
             if ( !empty( $i8n ) ) {
@@ -335,10 +335,10 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.65783057c74fa13ffbee.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.b8ce8d730e0476c47e59.js', array(), '1.0.0', 'screen, all');
-            wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.3b590a8de75304000006.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.70ed0db5777028eb803b.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',

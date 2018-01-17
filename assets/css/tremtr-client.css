@@ -1,0 +1,271 @@
+.trem-reservation{
+  width: 100%;
+  height: auto;
+
+  margin: auto;
+
+  --text-color: #1e1914;
+  --button-color: #c0ffee;
+  --button-active-color: #1e1914;
+
+}
+
+  .trem-reservation .hint{
+    margin: auto;
+
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+
+    text-align: center;
+  }
+
+
+  .trem-reservation .c0ffee-button{
+     width: auto;
+     height: auto;
+
+     margin: auto;
+
+     padding: 0 20px;
+
+     border: 1px solid transparent;
+     border-radius: 3px;
+
+     cursor: pointer;
+     text-decoration: none;
+
+     text-transform: lowercase;
+
+     color: var(--text-color);
+
+     background: var(--button-color);
+
+   }
+       .trem-reservation .c0ffee-button:hover{
+         color: #fff;
+         background: var(--button-active-color);
+       }
+
+  .trem-reservation .reservation1 .envelope, .trem-reservation .reservation2 .envelope{
+    width: 100%;
+    height: auto;
+
+    margin: auto;
+
+    display: flex;
+    flex-flow: column;
+
+    text-align: center;
+  }
+
+     .trem-reservation .reservation1 .envelope .people-form{
+       width: 100%;
+       height: auto;
+
+       margin: auto;
+
+       display: grid;
+       grid-template: auto / 250px;
+       justify-content: center;
+       justify-items: center;
+     }
+
+         .trem-reservation .reservation1 .envelope .people-form .form-element{
+           width: 250px;
+           height: auto;
+
+           position: relative;
+
+           display: flex;
+           align-items: center;
+           justify-content: flex-end;
+         }
+             .trem-reservation .reservation1 .envelope .people-form .form-element input{
+               width: 250px;
+               height: auto;
+
+               position: relative;
+
+               padding: 0 30px 0 5px;
+
+               display: flex;
+               align-items: center;
+               justify-content: flex-end;
+             }
+
+             .trem-reservation .reservation1 .envelope .people-form .form-element span{
+               height: inherit;
+
+               position: absolute;
+               right: 5px;
+
+               margin:auto;
+
+               pointer-events: none;
+             }
+
+         .trem-reservation .reservation1 .envelope .people-form span{
+           height: auto;
+
+           justify-self: start;
+         }
+
+         .trem-reservation .reservation1 .envelope .people-form label{
+           height: auto;
+
+           justify-self: start;
+
+           margin-top: 15px;
+         }
+
+         .trem-reservation .reservation1 .envelope .people-form canvas{
+           width: auto;
+           height: auto;
+
+           display: flex;
+
+           margin: 15px auto;
+         }
+
+         .trem-reservation .reservation1 .envelope .people-form .c0ffee-button{
+           margin: 30px auto auto auto;
+         }
+
+
+    .trem-reservation .reservation2 .envelope .info-form{
+      width: auto;
+      height: auto;
+
+      margin: 20px auto;
+
+      display: grid;
+      grid-template: auto / 250px;
+      justify-content: center;
+      justify-items: center;
+    }
+
+        .trem-reservation .reservation2 .envelope .info-form .form-element{
+          width: auto;
+          height: auto;
+
+          margin: auto;
+
+          display: grid;
+          grid-template: auto / 80px 160px;
+          justify-content: center;
+          justify-items: center;
+          align-items: start;
+        }
+
+            .trem-reservation .reservation2 .envelope .info-form .form-element.guests span {
+              width: 100%;
+              height: auto;
+
+              margin: 0 auto;
+
+              display: flex;
+              justify-content: center;
+              align-items: flex-start;
+            }
+
+            .trem-reservation .reservation2 .envelope .info-form .form-element span input{
+              max-width: 30px;
+
+            }
+
+            .trem-reservation .reservation2 .envelope .info-form .c0ffee-button{
+              background: #eee;
+            }
+
+                .trem-reservation .reservation2 .envelope .info-form .c0ffee-button:hover{
+                  color: #fff;
+                  background: var(--text-color);
+                }
+        
+         .trem-reservation .reservation2 .envelope .input-form{
+           width: auto;
+           height: auto;
+
+           margin: auto;
+           
+           display: grid;
+           grid-template: auto / 250px;
+           grid-gap: 10px;
+           justify-content: center;
+           justify-items: center;
+          
+
+
+         }
+
+             .trem-reservation .reservation2 .envelope .input-form .input-element{
+               width: 250px;
+               height: auto;
+
+               position: relative;
+
+               display: flex;
+               align-items: center;
+               justify-content: center;
+             }
+
+                 .trem-reservation .reservation2 .envelope .input-form .input-element input,
+                 .trem-reservation .reservation2 .envelope .input-form .input-element textarea{
+                   width: 250px;
+                   height: auto;
+
+                   padding: 0 30px 0 5px;
+                 }
+
+                 .trem-reservation .reservation2 .envelope .input-form .input-element span{
+                   height: inherit;
+
+                   position: absolute;
+                   right: 5px;
+
+                   margin:auto;
+
+                   pointer-events: none;
+                 }
+
+                 .trem-reservation .reservation2 .envelope .input-form .input-element.message span{
+                   height: inherit;
+
+                   align-self: start;
+
+                   position: absolute;
+                   right: 5px;
+
+                   margin:auto;
+
+                   pointer-events: none;
+                 }
+
+    .trem-reservation .reservation3{
+      height: 300px;
+      width: auto;
+
+      margin: auto;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .trem-reservation .reservation3 .confirmation{
+      height: auto;
+      width: auto;
+
+      margin: auto;
+
+      position: absolute;
+
+      display: flex;
+      flex-flow: column;
+
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+    }                 

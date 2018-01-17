@@ -4,45 +4,40 @@
         <h2>{{calendarTimeInitData.translation.hintHeader}}</h2>
         <h2>{{calendarTimeInitData.translation.hintText}}<i  class="tremtr-icon-uniF10F"></i></h2>
       </div>
-    <transition name="fade" mode="in-out">
-      <div class="reservation1" ref="reservationOne" v-show="(rotationHint === false) && (view === 0) && (canvasLoaded === true)">
-        <div class="envelope"  :style="[canvasLoaded ? {height: envelopeHeight} : ''] ">
-          <div class="exit">
-            <icon name="times" scale="2"></icon>
-          </div>
-          <h2>{{calendarTimeInitData.translation.header}}</h2>
+      <transition name="fade" mode="in-out">
+        <div class="reservation1" ref="reservationOne" v-show="(rotationHint === false) && (view === 0) && (canvasLoaded === true)">
+          <div class="envelope"  :style="[canvasLoaded ? {height: envelopeHeight} : ''] ">
+            <div class="exit">
+              <icon name="times" scale="2"></icon>
+            </div>
+            <h2>{{calendarTimeInitData.translation.header}}</h2>
 
-          <div class="people-form" >
-              <div class="form-element">
-                <flat-pickr :config="dateConfig" :placeholder="date" v-model="date" ></flat-pickr>
-                <span class="book-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
-              </div>
-              <span class="opening-hours" :style="[isDissableDate ? {opacity: 0} : '']">{{calendarTimeInitData.translation.workingHoursOpen}} {{openHoursStart}} - {{openHoursEnd}}</span>
-              <label :style="[isDissableDate ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.startTime}}</label>
-              <div class="form-element" :style="[isDissableDate ? {opacity: 0.5} : '']" >  
-                <flat-pickr :config="startTimeConfig" v-model="timeStart" ></flat-pickr>
-                <span class="book-icon tremtr-icon-uniF10E" aria-hidden="true"></span>
-              </div>
-              <label :style="[isDissableStartTime ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.endTime}}</label>
-              <div class="form-element" :style="[isDissableStartTime ? {opacity: 0.5} : '']" >  
-                <flat-pickr :config="finishTimeConfig" v-model="timeEnd" ></flat-pickr>
-                <span class="book-icon tremtr-icon-uniF10C" aria-hidden="true"></span>
-              </div>
-              <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
-              <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
+            <div class="people-form" >
+                <div class="form-element">
+                  <flat-pickr :config="dateConfig" :placeholder="date" v-model="date" input-class="input"></flat-pickr>
+                  <span class="book-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
+                </div>
+                <span class="opening-hours" :style="[isDissableDate ? {opacity: 0} : '']">{{calendarTimeInitData.translation.workingHoursOpen}} {{openHoursStart}} - {{openHoursEnd}}</span>
+                <label :style="[isDissableDate ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.startTime}}</label>
+                <div class="form-element" :style="[isDissableDate ? {opacity: 0.5} : '']" >  
+                  <flat-pickr :config="startTimeConfig" v-model="timeStart" input-class="input"></flat-pickr>
+                  <span class="book-icon tremtr-icon-uniF10E" aria-hidden="true"></span>
+                </div>
+                <label :style="[isDissableStartTime ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.endTime}}</label>
+                <div class="form-element" :style="[isDissableStartTime ? {opacity: 0.5} : '']" >  
+                  <flat-pickr :config="finishTimeConfig" v-model="timeEnd" input-class="input"></flat-pickr>
+                  <span class="book-icon tremtr-icon-uniF10C" aria-hidden="true"></span>
+                </div>
+                <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
+                <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
-    <transition name="fade" mode="in-out">
-      <div class="reservation2" ref="reservationTwo" v-if="view === 1">
-          <div class="envelope">
-              <div class="header-center">
-                  <h2>{{calendarTimeInitData.translation.header}}</h2>
-              </div>
-
-              <div class="grid-container">
-
+      </transition>
+      <transition name="fade" mode="in-out">
+        <div class="reservation2" ref="reservationTwo" v-if="view === 1">
+            <div class="envelope">
+                <h2>{{calendarTimeInitData.translation.header}}</h2>
                 <div class="info-form">
                   <div class="form-element table">
                     <p>{{calendarTimeInitData.translation.table}}</p>
@@ -67,7 +62,7 @@
                     <p>{{calendarTimeInitData.translation.from}}</p>
                     <h4>{{timeStart}}</h4>
                   </div>
-                   <div class="form-element till">
+                  <div class="form-element till">
                     <p>{{calendarTimeInitData.translation.to}}</p>
                     <h4>{{timeEnd}}</h4>
                   </div>
@@ -75,10 +70,7 @@
                     <p>{{calendarTimeInitData.translation.in}}</p>
                     <h4>{{calendarTimeInitData.translation.cafe}}</h4>
                   </div>
-
-                  <div class="c0ffee-button" id="change">
-                      <a @click="change"><h4>{{calendarTimeInitData.translation.changeButton}}</h4> </a>
-                  </div>
+                  <a class="c0ffee-button" id="change" @click="change">{{calendarTimeInitData.translation.changeButton}}</a>
                 </div>
 
                 <div class="input-form">
@@ -89,18 +81,16 @@
                       v-model="name"
                       type="text"
                     />
-                    <span class="icon">
-                      <i 
-                        v-show="(this.name === '')" 
-                        class="tremtr-icon-uniF101" 
-                        style="color: #1e1914;">
-                      </i>
-                      <i 
-                        v-show="(this.name != '')" 
-                        class="tremtr-icon-uniF101" 
-                        style="color: green;"
-                      ></i>
-                    </span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF101"
+                      v-show="(this.name === '')"
+                      style="color: #1e1914;"
+                    ></span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF101"
+                      v-show="(this.name != '')"
+                      style="color: green;"
+                    ></span>
                   </div>
 
                   <div class="input-element email">
@@ -112,23 +102,21 @@
                       type="email" 
                       :placeholder="calendarTimeInitData.translation.email"
                     >
-                    <span class="icon">
-                      <i 
-                        v-show="errors.has('email')" 
-                        class="tremtr-icon-uniF10B" 
-                        style="color: red;">
-                      </i>
-                      <i 
-                        v-show="!errors.has('email') && (this.email != '')" 
-                        class="tremtr-icon-uniF10B" 
-                        style="color: green;"
-                      ></i>
-                      <i 
-                        v-show="!errors.has('email') && (this.email === '')" 
-                        class="tremtr-icon-uniF10B" 
-                        style="color: #1e1914;"
-                      ></i>
-                    </span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF10B"
+                      v-show="errors.has('email')" 
+                      style="color: red;"
+                    ></span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF10B"
+                      v-show="!errors.has('email') && (this.email != '')" 
+                      style="color: green;"
+                    ></span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF10B"
+                      v-show="!errors.has('email') && (this.email === '')" 
+                      style="color: #1e1914;"
+                    ></span>
                   </div>
 
                   <div class="input-element phone">
@@ -140,23 +128,22 @@
                       type="text" 
                       :placeholder="calendarTimeInitData.translation.phone"
                     >
-                    <span class="icon">
-                      <i 
-                        v-show="errors.has('phone')" 
-                        class=" tremtr-icon-uniF105" 
-                        style="color: red;"
-                      ></i>
-                      <i 
-                        v-show="!errors.has('phone') && (this.phone != '')" 
-                        class=" tremtr-icon-uniF105" 
-                        style="color: green;"
-                      ></i>
-                      <i 
-                        v-show="!errors.has('phone') && (this.phone === '')" 
-                        class=" tremtr-icon-uniF105" 
-                        style="color: #1e1914;"
-                      ></i>
-                    </span>
+
+                    <span 
+                      class="trem-icon tremtr-icon-uniF105"
+                      v-show="errors.has('phone')" 
+                      style="color: red;"
+                    ></span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF105"
+                      v-show="!errors.has('phone') && (this.phone != '')" 
+                      style="color: green;"
+                    ></span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF105"
+                      v-show="!errors.has('phone') && (this.phone === '')" 
+                      style="color: #1e1914;"
+                    ></span>
                   </div>
                   
                   <div class="input-element message">
@@ -168,40 +155,34 @@
                       type="text"
                       wrap="hard"
                     ></textarea>
-                    <span class="icon">
-                      <i 
-                        v-show="this.message === ''" 
-                        class="tremtr-icon-uniF109" 
-                        style="color: #1e1914;"
-                      ></i>
-                      <i 
-                        v-show="this.message !== ''" 
-                        class="tremtr-icon-uniF109" 
-                        style="color: green;"
-                      ></i>
-                    </span>
-                  </div>
-              
-                  <div class="c0ffee-button" id="confirm">
-                      <a @click="confirm"><h4>{{calendarTimeInitData.translation.confirmButton}}</h4></a>
-                  </div> 
-                </div>
 
-              </div>
-            
-          </div>
-      </div>
-    </transition>
-     <transition name="fade" mode="in-out">
-      <div class="reservation3" v-if="view === 2">
-        <div class="confirmation">
-          <img src="./assets/227109-coffee-shop.png">
-          <h2>{{firstName}}</h2>
-          <hr>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF109"
+                      v-show="this.message !== ''" 
+                      style="color: green;"
+                    ></span>
+                    <span 
+                      class="trem-icon tremtr-icon-uniF109"
+                      v-show="this.message === ''" 
+                      style="color: #1e1914;"
+                    ></span>
+                  </div>
+                  <a class="c0ffee-button" id="confirm" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+      <transition name="fade" mode="in-out">
+        <div class="reservation3" v-if="view === 2">
+          <div class="confirmation">
+            <img src="./assets/227109-coffee-shop.png">
+            <h2>{{firstName}}</h2>
+            <hr>
+          </div>
+        </div>
+      </transition>
     </div>
+    
 </template>
 
 <script>
@@ -1215,8 +1196,6 @@ export default {
 </script>
 
 <style lang="scss"> 
-  @import url(https://fonts.googleapis.com/css?family=Work+Sans:300,400,600);
-  $second-font: 'Work Sans', sans-serif;
 
   .toast-container
   {
@@ -1236,7 +1215,6 @@ export default {
         content: "\f10d";
       }
     }
-
   }
 
 </style>
