@@ -335,10 +335,10 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.3b590a8de75304000006.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.7e88da8c9ba2bf4d9ab4.js', array(), '1.0.0', 'screen, all');
             wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.70ed0db5777028eb803b.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.ebbebc6246752d858c49.js', array(), '1.0.0', 'screen, all');
+            //wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',

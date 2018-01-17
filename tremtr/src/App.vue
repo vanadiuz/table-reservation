@@ -1,8 +1,8 @@
 <template>
     <div id="reservation" class="trem-reservation" v-if="view !== 4" >
       <div class="hint"  v-if="(rotationHint === true) && (view === 0)" >
-        <h2>{{calendarTimeInitData.translation.hintHeader}}</h2>
-        <h2>{{calendarTimeInitData.translation.hintText}}<i  class="tremtr-icon-uniF10F"></i></h2>
+        <h3>{{calendarTimeInitData.translation.hintHeader}}</h3>
+        <h3>{{calendarTimeInitData.translation.hintText}}<i  class="tremtr-icon-uniF10F"></i></h3>
       </div>
       <transition name="fade" mode="in-out">
         <div class="reservation1" ref="reservationOne" v-show="(rotationHint === false) && (view === 0) && (canvasLoaded === true)">
@@ -10,7 +10,7 @@
             <div class="exit">
               <icon name="times" scale="2"></icon>
             </div>
-            <h2>{{calendarTimeInitData.translation.header}}</h2>
+            <h3>{{calendarTimeInitData.translation.header}}</h3>
 
             <div class="people-form" >
                 <div class="form-element">
@@ -37,14 +37,14 @@
       <transition name="fade" mode="in-out">
         <div class="reservation2" ref="reservationTwo" v-if="view === 1">
             <div class="envelope">
-                <h2>{{calendarTimeInitData.translation.header}}</h2>
+                <h3>{{calendarTimeInitData.translation.header}}</h3>
                 <div class="info-form">
                   <div class="form-element table">
-                    <p>{{calendarTimeInitData.translation.table}}</p>
+                    <h4>{{calendarTimeInitData.translation.table}}</h4>
                     <h4>№ {{table}} </h4>
                   </div>
                   <div class="form-element guests" >
-                    <p>{{calendarTimeInitData.translation.for}}</p>
+                    <h4>{{calendarTimeInitData.translation.for}}</h4>
                     <span> <input 
                       type="number"
                       v-model="persons" 
@@ -55,19 +55,19 @@
                     </span>
                   </div>
                   <div class="form-element date">
-                    <p>{{calendarTimeInitData.translation.on}}</p>
+                    <h4>{{calendarTimeInitData.translation.on}}</h4>
                     <h4>{{date}}</h4>
                   </div>
                   <div class="form-element from">
-                    <p>{{calendarTimeInitData.translation.from}}</p>
+                    <h4>{{calendarTimeInitData.translation.from}}</h4>
                     <h4>{{timeStart}}</h4>
                   </div>
                   <div class="form-element till">
-                    <p>{{calendarTimeInitData.translation.to}}</p>
+                    <h4>{{calendarTimeInitData.translation.to}}</h4>
                     <h4>{{timeEnd}}</h4>
                   </div>
                   <div class="form-element cafe">
-                    <p>{{calendarTimeInitData.translation.in}}</p>
+                    <h4>{{calendarTimeInitData.translation.in}}</h4>
                     <h4>{{calendarTimeInitData.translation.cafe}}</h4>
                   </div>
                   <a class="c0ffee-button" id="change" @click="change">{{calendarTimeInitData.translation.changeButton}}</a>
@@ -176,7 +176,7 @@
         <div class="reservation3" v-if="view === 2">
           <div class="confirmation">
             <img src="./assets/227109-coffee-shop.png">
-            <h2>{{firstName}}</h2>
+            <h3>{{firstName}}</h3>
             <hr>
           </div>
         </div>
