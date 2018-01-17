@@ -1,16 +1,10 @@
 @import url(http://fonts.googleapis.com/css?family=Fjalla+One);@import url(https://fonts.googleapis.com/css?family=Work+Sans:300,400,600);.toast-container
 {
-    font-family: Work Sans,sans-serif;
-  
+    font-family: Work Sans,sans-serif;;
   
     position: fixed!important;
     top: 30%!important;
-    asdfasdfa
-    sdfa
-    sdf
-    asdf
-  sdfg
-  sdfgsdgf
+
 }.toast-container .toast
 {
     font-size: 24px;;
