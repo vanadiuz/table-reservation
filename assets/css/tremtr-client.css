@@ -1,17 +1,34 @@
 .trem-reservation{
     width: 100%;
     height: auto;
-  
     margin: auto;
-  
-    --text-color: #1e1914;
+    display: grid;
+    grid-template: minmax(100px, 1000px) / auto;
+    justify-content: center;
     --button-color: #c0ffee;
-    --button-active-color: #1e1914;
-  
+    --button-active-and-icons-color: #1e1914;
   }
-  
-    .trem-reservation input{
+
+    @media all and (max-width: 1000px) {
+      .trem-reservation{
+        grid-template: minmax(100px, 800px) / auto;
+      }
+    }
+
+    .trem-reservation input, .trem-reservation .input{
       height: unset;
+      margin: 0 auto !important;
+    }
+
+    .trem-reservation .trem-icon{
+        /* color: var(--button-active-and-icons-color); */
+    }
+
+    .trem-reservation input, 
+    .trem-reservation select, 
+    .trem-reservation textarea, 
+    .trem-reservation a{
+        font-family:inherit;
     }
   
   
@@ -32,7 +49,7 @@
   
        margin: auto;
   
-       padding: 0 20px;
+       padding: 3px 25px;
   
        border: 1px solid transparent;
        border-radius: 3px;
@@ -42,16 +59,21 @@
   
        text-transform: lowercase;
   
-       color: var(--text-color);
+       color: var(--button-active-and-icons-color);
   
        background: var(--button-color);
-  
+
+       box-shadow: none;
      }
          .trem-reservation .c0ffee-button:hover{
            color: #fff;
-           background: var(--button-active-color);
+           background: var(--button-active-and-icons-color);
          }
-  
+    
+    .trem-reservation .reservation1{
+      height: fit-content;
+      display: flex;
+    }
     .trem-reservation .reservation1 .envelope, .trem-reservation .reservation2 .envelope{
       width: 100%;
       height: auto;
@@ -88,7 +110,7 @@
              align-items: center;
              justify-content: flex-end;
            }
-               .trem-reservation .reservation1 .envelope .people-form .form-element input{
+               .trem-reservation .reservation1 .envelope .people-form  input{
                  width: 250px;
                  height: 30px;
   
@@ -146,7 +168,7 @@
         margin: 20px auto;
         display: grid;
         grid-template: auto / 250px;
-        grid-gap: 10px;
+        grid-gap: 25px;
         justify-content: center;
         justify-items: center;
       }
@@ -164,6 +186,9 @@
               .trem-reservation .reservation2 .envelope .info-form .form-element h4,
               .trem-reservation .reservation2 .envelope .info-form .form-element p{
                 margin-top: 0;
+                padding-top: 0;
+                margin-bottom: 0;
+                padding-bottom: 0;
               }
 
               .trem-reservation .reservation2 .envelope .info-form .cafe{
@@ -183,7 +208,9 @@
   
               .trem-reservation .reservation2 .envelope .info-form .form-element span input{
                 max-width: 30px;
-                height: unset;
+                height: unset !important;
+                padding: 0 !important;
+                margin: 0 !important;
               }
   
               .trem-reservation .reservation2 .envelope .info-form .c0ffee-button{
@@ -192,7 +219,7 @@
   
                   .trem-reservation .reservation2 .envelope .info-form .c0ffee-button:hover{
                     color: #fff;
-                    background: var(--text-color);
+                    background: var(--button-active-and-icons-color);
                   }
           
            .trem-reservation .reservation2 .envelope .input-form{
@@ -222,16 +249,17 @@
                  justify-content: center;
                }
   
-                   .trem-reservation .reservation2 .envelope .input-form .input-element input,
                    .trem-reservation .reservation2 .envelope .input-form .input-element textarea{
                      width: 250px;
-                     min-height: 30px;
+                     min-height: 80px;
   
                      padding: 0 30px 0 5px;
                    }
 
                    .trem-reservation .reservation2 .envelope .input-form .input-element input{
+                     width: 250px;
                      height: 30px;
+                     padding: 0 30px 0 5px;
                    }
 
 
@@ -262,7 +290,7 @@
   
       .trem-reservation .reservation3{
         height: 300px;
-        width: auto;
+        width: 100%;
   
         margin: auto;
   
@@ -271,25 +299,54 @@
         align-items: center;
       }
   
-      .trem-reservation .reservation3 .confirmation{
-        height: auto;
-        width: auto;
+          .trem-reservation .reservation3 .confirmation{
+            height: auto;
+            width: 100%;
+
+            margin: auto;
+
+            position: absolute;
+
+            display: flex;
+            flex-flow: column;
+
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+          }  
+
+              .trem-reservation .reservation3 .confirmation span{
+                font-size: 30px;
+              }                   
   
-        margin: auto;
-  
-        position: absolute;
-  
-        display: flex;
-        flex-flow: column;
-  
-        justify-content: center;
-        align-items: center;
-  
+
+    .trem-reservation .fade-enter-active,
+    .trem-reservation .fade-leave-active
+    {
+        transition: opacity .5s;
+    }.trem-reservation .fade-enter,
+    .trem-reservation .fade-leave-to
+    {
+        opacity: 0;
+    }
+
+    .toast-container{
+        position:fixed !important;
+        top: 50% !important;
+        font-family: inherit;
+    }
+        .toast-container .toast{
         text-align: center;
-      }                 
-  
-  
-  
+        border-radius: 5px;
+        background-color: rgba(30,25,20,0.7) !important; 
+        font-size: 24px;
+        }
+            .toast-container .toast::before{
+                margin:auto 0.5em;
+                font-family: 'trem-reservation';
+                content: "\F10D";
+            }
   
   
   

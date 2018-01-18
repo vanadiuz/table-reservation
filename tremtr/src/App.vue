@@ -7,26 +7,23 @@
       <transition name="fade" mode="in-out">
         <div class="reservation1" ref="reservationOne" v-show="(rotationHint === false) && (view === 0) && (canvasLoaded === true)">
           <div class="envelope"  :style="[canvasLoaded ? {height: envelopeHeight} : ''] ">
-            <div class="exit">
-              <icon name="times" scale="2"></icon>
-            </div>
             <h3>{{calendarTimeInitData.translation.header}}</h3>
 
             <div class="people-form" >
                 <div class="form-element">
                   <flat-pickr :config="dateConfig" :placeholder="date" v-model="date" input-class="input"></flat-pickr>
-                  <span class="book-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
+                  <span class="trem-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
                 </div>
                 <span class="opening-hours" :style="[isDissableDate ? {opacity: 0} : '']">{{calendarTimeInitData.translation.workingHoursOpen}} {{openHoursStart}} - {{openHoursEnd}}</span>
                 <label :style="[isDissableDate ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.startTime}}</label>
                 <div class="form-element" :style="[isDissableDate ? {opacity: 0.5} : '']" >  
                   <flat-pickr :config="startTimeConfig" v-model="timeStart" input-class="input"></flat-pickr>
-                  <span class="book-icon tremtr-icon-uniF10E" aria-hidden="true"></span>
+                  <span class="trem-icon tremtr-icon-uniF10E" aria-hidden="true"></span>
                 </div>
                 <label :style="[isDissableStartTime ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.endTime}}</label>
                 <div class="form-element" :style="[isDissableStartTime ? {opacity: 0.5} : '']" >  
                   <flat-pickr :config="finishTimeConfig" v-model="timeEnd" input-class="input"></flat-pickr>
-                  <span class="book-icon tremtr-icon-uniF10C" aria-hidden="true"></span>
+                  <span class="trem-icon tremtr-icon-uniF10C" aria-hidden="true"></span>
                 </div>
                 <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
                 <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
@@ -84,7 +81,7 @@
                     <span 
                       class="trem-icon tremtr-icon-uniF101"
                       v-show="(this.name === '')"
-                      style="color: #1e1914;"
+
                     ></span>
                     <span 
                       class="trem-icon tremtr-icon-uniF101"
@@ -115,7 +112,7 @@
                     <span 
                       class="trem-icon tremtr-icon-uniF10B"
                       v-show="!errors.has('email') && (this.email === '')" 
-                      style="color: #1e1914;"
+                      
                     ></span>
                   </div>
 
@@ -142,7 +139,7 @@
                     <span 
                       class="trem-icon tremtr-icon-uniF105"
                       v-show="!errors.has('phone') && (this.phone === '')" 
-                      style="color: #1e1914;"
+                      
                     ></span>
                   </div>
                   
@@ -164,7 +161,7 @@
                     <span 
                       class="trem-icon tremtr-icon-uniF109"
                       v-show="this.message === ''" 
-                      style="color: #1e1914;"
+                      
                     ></span>
                   </div>
                   <a class="c0ffee-button" id="confirm" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
@@ -175,7 +172,7 @@
       <transition name="fade" mode="in-out">
         <div class="reservation3" v-if="view === 2">
           <div class="confirmation">
-            <img src="./assets/227109-coffee-shop.png">
+            <span class="trem-icon tremtr-icon-uniF104"></span>
             <h3>{{firstName}}</h3>
             <hr>
           </div>
@@ -194,13 +191,6 @@ import 'flatpickr/dist/flatpickr.css'
 import './assets/font/trem-reservation/css/trem-reservation.css'
 
 import FlatpickrI18n from 'flatpickr/dist/l10n'
-
-// Flatpickr.localize(FlatpickrI18n.ru);
-
-
-// import 'fabric';
-
-
 
 export default {
   name: 'reservation',
@@ -276,7 +266,7 @@ export default {
 
     this.trueDateFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.date_format)
 
-    document.getElementById('reservation').style.setProperty('--trem-main-color', this.calendarTimeInitData.mainColor)
+    document.getElementById('reservation').style.setProperty('--button-color', this.calendarTimeInitData.mainColor)
   }, 
 
   computed: {
@@ -1106,7 +1096,7 @@ export default {
 
           if (this.canvas.item(i).name[0] === this.table) {
             this.canvas.item(i).set({
-              fill: this.fillActive,
+              fill: this.fillBooked,
               evented: false
             });
             this.canvas.item(i+1).set({
@@ -1116,16 +1106,16 @@ export default {
           }
         }
 
-
-
         if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) {
           if (this.canvas.item(i).fill === this.fillBooked) {
             this.canvas.item(i).set({
               fill: this.fillActive,
-              evented: false
+              evented: true
             });
           }
         }
+
+        
       }
       this.canvas.renderAll()
     },
@@ -1197,25 +1187,7 @@ export default {
 
 <style lang="scss"> 
 
-  .toast-container
-  {
-    position:fixed !important;
-    top: 30% !important;
-    font-family: inherit;
-    .toast
-    {
-      text-align: center;
-      border-radius: 5px;
-      background-color: rgba(30,25,20,0.7) !important; 
-      font-size: 24px;
-      &:before
-      {
-        margin:auto 0.5em;
-        font-family: 'trem-reservation';
-        content: "\f10d";
-      }
-    }
-  }
+  
 
 </style>
 
