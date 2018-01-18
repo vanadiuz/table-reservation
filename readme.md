@@ -10,8 +10,12 @@
 </p>
 
 <p align="center">
+  <a href="http://true-emotions.studio/">
+    <img alt="True Emotions Studio" title="True Emotions Studio" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo-1-e1516319243770.jpg" width="85">
+  </a>
+  
   <a href="https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI">
-    <img alt="Chat" title="Chat" src="http://true-emotions.studio/wp-content/uploads/2018/01/slack.png" width="150">
+    <img alt="Chat" title="Chat" src="http://true-emotions.studio/wp-content/uploads/2018/01/slack-e1516318903115.png" width="150">
   </a>
 
   <a href="https://trello.com/b/BdGT06ts">
