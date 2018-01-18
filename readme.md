@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://itunes.apple.com/us/app/gitpoint/id1251245162?mt=8">
-    <img alt="Download on the App Store" title="App Store" src="http://i.imgur.com/0n2zqHD.png" width="140">
+  <a href="https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI">
+    <img alt="Chat" title="Chat" src="http://true-emotions.studio/wp-content/uploads/2018/01/slack.png" width="150">
   </a>
 
   <a href="https://trello.com/b/BdGT06ts">
