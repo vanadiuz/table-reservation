@@ -1,12 +1,12 @@
 <h1 align="center"> Table Reservation - Wordpress Plugin </h1> <br>
 <p align="center">
-  <a href="https://gitpoint.co/">
+  <a href="http://true-emotions.studio/">
     <img alt="Table Reservation" title="Table Reservation" src="http://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
   </a>
 </p>
 
 <p align="center">
-  GitHub in your pocket. Built with React Native.
+  The Revolution in Table Reservation.
 </p>
 
 <p align="center">
@@ -14,8 +14,8 @@
     <img alt="Download on the App Store" title="App Store" src="http://i.imgur.com/0n2zqHD.png" width="140">
   </a>
 
-  <a href="https://play.google.com/store/apps/details?id=com.gitpoint">
-    <img alt="Get it on Google Play" title="Google Play" src="http://i.imgur.com/mtGRPuM.png" width="140">
+  <a href="https://trello.com/b/BdGT06ts">
+    <img alt="Road map" title="Road map" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo-blue-lg-300x95.png" width="150">
   </a>
 </p>
 
