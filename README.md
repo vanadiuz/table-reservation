@@ -39,7 +39,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Introduction
+## Introduction :wave:
 
 This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Undoubtedly, its simplicity and beauty will increase the attendance of your place. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
 
