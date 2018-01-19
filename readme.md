@@ -44,7 +44,7 @@
 [![Road Map](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](https://trello.com/b/BdGT06ts)
 [![Slack chat](https://img.shields.io/badge/chat-on_gitter-008080.svg?style=flat-square)](https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI)
 
-View repository and user information, control your notifications and even manage your issues and pull requests. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
+This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Undoubtedly, its simplicity and beauty will increase the attendance of your place. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
 
 <p align="center">
   <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
@@ -54,15 +54,14 @@ View repository and user information, control your notifications and even manage
 
 A few of the things you can do with GitPoint:
 
-* View user activity feed
-* Communicate on your issue and pull request conversations
-* Close or lock issues
-* Apply labels and assignees
-* Review and merge pull requests
-* Create new issues
-* Star, watch and fork repositories
-* Control your unread and participating notifications
-* Easily search for any user or repository
+* Selectable tables for reservations
+* THERE ARE NO COLLISIONS, i.e. one table can't be reserved by different people simultaneously.
+* Comfortably add, edit, delete or reject reservations from Wordpress dashboard
+* Email notifications about reservation (both for admin and guest)
+* Customisable colors, date/time format and all notification mails about reservation
+* Each field of reservation form is easily translatable into the required language
+* Well-thought-out mobile usability in the field
+* WPBakery(Visual Composer) compatible
 
 <p align="center">
   <img src = "http://i.imgur.com/IkSnFRL.png" width=700>
