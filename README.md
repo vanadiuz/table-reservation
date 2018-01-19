@@ -29,13 +29,13 @@
 
 
 - [Demo](http://true-emotions.studio/sample-page/)
-- [Introduction](#introduction)
-- [Features](#features)
-- [Feedback](#feedback)
-- [Contributors](#contributors)
-- [Build Process](#build-process)
-- [Sponsors](#sponsors)
-- [License](#license)
+- [Introduction](#introduction-wave)
+- [Features](#features-eyeglasses)
+- [Feedback](#feedback-raising_hand)
+- [Contributors](#contributors-muscle)
+- [Build Process](#build-process-hammer)
+- [Sponsors](#sponsors-moneybag)
+- [License](#license-page_facing_up)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -47,7 +47,7 @@ This plugin allows users quickly book a table in your cafe or make a restaurant 
   <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
 </p>
 
-## Features
+## Features :eyeglasses:
 
 A few of the things you can do with Table Reservation:
 
@@ -64,17 +64,17 @@ A few of the things you can do with Table Reservation:
   <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/banner-1544x500.gif" width=1000>
 </p>
 
-## Feedback
+## Feedback :raising_hand:
 
 Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issues/new). Feature requests are always welcome.
 
 If there's anything you'd like to chat about, please feel free to join our [Slack chat](https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI)!
 
-## Contributors
+## Contributors :muscle:
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md).
 
-## Build Process
+## Build Process :hammer:
 
 - Clone or download the repo
 - Put it in wp-content/plugins/ (preferably on a locally deployed server with wordpress)
@@ -98,10 +98,10 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
             // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.5ba64ddd460771627e94.js', array(), '1.0.0', 'screen, all');
 ```
 
-## Sponsors
+## Sponsors :moneybag:
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](http://true-emotions.studio/contact-us/)
 
-## License
+## License :page_facing_up:
 
 GPLv2 or later
