@@ -27,6 +27,8 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
 
+
+- [Demo](http://true-emotions.studio/sample-page/)
 - [Introduction](#introduction)
 - [Features](#features)
 - [Feedback](#feedback)
@@ -81,7 +83,7 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 - Activate plugin inside WordPress and [create a new table](http://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
 - Now you can modify the Vue Js code and immediately watch how it will work in Wordpress
 
-**Build Working Version of Plugin**
+**Build Production Version of Plugin**
 - `npm run build` to build front-end part of plugin
 - Copy JS files from ./tremtr/dist/static/js to ./assets/js
 - Open table-reservation.php in plagin's root and commit 
