@@ -34,7 +34,8 @@
 - [Feedback](#feedback)
 - [Contributors](#contributors)
 - [Build Process](#build-process)
-- [Sponsors](#sponsors-)
+- [Sponsors](#sponsors)
+- [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
