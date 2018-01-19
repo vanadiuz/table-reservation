@@ -52,7 +52,7 @@ This plugin allows users quickly book a table in your cafe or make a restaurant 
 
 ## Features
 
-A few of the things you can do with GitPoint:
+A few of the things you can do with Table Reservation:
 
 * Selectable tables for reservations
 * THERE ARE NO COLLISIONS, i.e. one table can't be reserved by different people simultaneously.
@@ -64,11 +64,7 @@ A few of the things you can do with GitPoint:
 * WPBakery(Visual Composer) compatible
 
 <p align="center">
-  <img src = "http://i.imgur.com/IkSnFRL.png" width=700>
-</p>
-
-<p align="center">
-  <img src = "http://i.imgur.com/0iorG20.png" width=700>
+  <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/banner-1544x500.gif" width=1000>
 </p>
 
 ## Feedback
