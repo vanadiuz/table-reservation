@@ -32,9 +32,7 @@
 - [Feedback](#feedback)
 - [Contributors](#contributors)
 - [Build Process](#build-process)
-- [Backers](#backers-)
 - [Sponsors](#sponsors-)
-- [Acknowledgments](#acknowledgments)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -75,7 +73,6 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 
 ## Build Process
 
-- Follow the [React Native Guide](https://facebook.github.io/react-native/docs/getting-started.html) for getting started building a project with native code. **A Mac is required if you wish to develop for iOS.**
 - Clone or download the repo
 - Put it in wp-content/plugins/ (preferably on a locally deployed server with wordpress)
 - Go to table-reservation/tremtr (here is front-end web app on Vue js)
@@ -91,7 +88,7 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 ```php
   wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
 ```
--In the same place uncommit and rename next lines 
+- In the same place uncommit and rename next lines 
 ```php
             // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.6a98d09897ee4023cfac.js', array(), '1.0.0', 'screen, all');
             // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
@@ -100,4 +97,4 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 
 ## Sponsors
 
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](http://true-emotions.studio/contact-us/)]
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](http://true-emotions.studio/contact-us/)
