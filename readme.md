@@ -40,19 +40,14 @@
 
 ## Introduction
 
-[![Build Status](https://img.shields.io/travis/gitpoint/git-point.svg?style=flat-square)](https://travis-ci.org/gitpoint/git-point)
-[![Coveralls](https://img.shields.io/coveralls/github/gitpoint/git-point.svg?style=flat-square)](https://coveralls.io/github/gitpoint/git-point)
 [![All Contributors](https://img.shields.io/badge/all_contributors-73-orange.svg?style=flat-square)](./CONTRIBUTORS.md)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](http://commitizen.github.io/cz-cli/)
-[![Gitter chat](https://img.shields.io/badge/chat-on_gitter-008080.svg?style=flat-square)](https://gitter.im/git-point)
+[![Road Map](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square)](https://trello.com/b/BdGT06ts)
+[![Slack chat](https://img.shields.io/badge/chat-on_gitter-008080.svg?style=flat-square)](https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI)
 
-View repository and user information, control your notifications and even manage your issues and pull requests. Built with React Native, GitPoint is the most feature-rich unofficial GitHub client that is 100% free.
-
-**Available for both iOS and Android.**
+View repository and user information, control your notifications and even manage your issues and pull requests. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
 
 <p align="center">
-  <img src = "http://i.imgur.com/HowF6aM.png" width=350>
+  <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
 </p>
 
 ## Features
