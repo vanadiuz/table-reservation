@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="http://true-emotions.studio/">
-    <img alt="True Emotions Studio" title="True Emotions Studio" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo.jpg" width="150">
+    <img alt="True Emotions Studio" title="http://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="150">
   </a>
   
   <a href="https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI">
