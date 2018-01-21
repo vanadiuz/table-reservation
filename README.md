@@ -87,11 +87,11 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 **Build Production Version of Plugin**
 - `npm run build` to build front-end part of plugin
 - Copy JS files from ./tremtr/dist/static/js to ./assets/js
-- Open table-reservation.php in plagin's root and commit 
+- Open table-reservation.php in plagin's root and comment 
 ```php
   wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
 ```
-- In the same place uncommit and rename next lines 
+- In the same place uncomment and rename next lines 
 ```php
             // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.6a98d09897ee4023cfac.js', array(), '1.0.0', 'screen, all');
             // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
