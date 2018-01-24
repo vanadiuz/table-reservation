@@ -87,8 +87,8 @@
       text-align: center;
     }
 
-       .trem-reservation .reservation1 .envelope h3{
-         margin-bottom: minmax(0, 20px);
+       .trem-reservation .reservation1 .envelope h3, .trem-reservation .reservation2 .envelope h3 ,.trem-reservation .reservation3 .envelope h3{
+         margin: 0 !important;
        }
   
        .trem-reservation .reservation1 .envelope .people-form{
@@ -110,6 +110,9 @@
              display: flex;
              align-items: center;
              justify-content: flex-end;
+
+             padding: 0 !important;
+             margin: 0 !important;
            }
                .trem-reservation .reservation1 .envelope .people-form  input{
                  width: 250px;
