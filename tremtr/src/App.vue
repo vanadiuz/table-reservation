@@ -1,5 +1,5 @@
 <template>
-    <div id="reservation" class="trem-reservation" v-if="view !== 4" >
+    <div id="reservation" class="trem-reservation" ref="tremReservation" v-if="view !== 4" :style="[canvasLoaded ? {height: envelopeHeight} : {height: hintHeight}] ">
       <div class="hint"  v-if="(rotationHint === true) && (view === 0)" >
         <h3>{{calendarTimeInitData.translation.hintHeader}}</h3>
         <h3>{{calendarTimeInitData.translation.hintText}}<i  class="tremtr-icon-uniF10F"></i></h3>
@@ -33,7 +33,7 @@
       </transition>
       <transition name="fade" mode="in-out">
         <div class="reservation2" ref="reservationTwo" v-if="view === 1">
-            <div class="envelope">
+            <div class="envelope" ref="reservation2envelope">
                 <h3>{{calendarTimeInitData.translation.header}}</h3>
                 <div class="info-form">
                   <div class="form-element table">
@@ -297,7 +297,7 @@ export default {
           return (this.canvas.height + this.peopleFormHeight).toString() + 'px'
         } else {
           return (this.hintHeight).toString() + 'px'
-        }
+        } 
       }
     },
 
@@ -719,6 +719,10 @@ export default {
         this.$refs.reservationOne.style.display = 'none';
         this.view = 1
 
+        setTimeout(function () {
+          this.$refs.tremReservation.style.height = this.$refs.reservation2envelope.clientHeight.toString() + 'px'
+        }.bind(this), 500)
+
 
         if (this.windowHeight*1.5 < offsetHeight) {
           //var e = document.getElementsByClassName("cap")  + e[0].offsetHeight
@@ -735,9 +739,7 @@ export default {
         });
       }
     },
-    test () {
-      
-    },
+
     confirm () {
       if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone'))) {
         this.$http.post(this.calendarTimeInitData.url, {
@@ -811,6 +813,10 @@ export default {
 
       this.$refs.reservationTwo.style.display = 'none';
       this.view = 0
+
+      setTimeout(function () {
+        this.$refs.tremReservation.style.height = this.envelopeHeight
+      }.bind(this), 500)
 
     },
     changeDate () {

@@ -3,10 +3,11 @@
     height: auto;
     margin: auto;
     display: grid;
-    grid-template: minmax(100px, 1000px) / auto;
+    grid-template: auto / auto;
     justify-content: center;
     --button-color: #c0ffee;
     --button-active-and-icons-color: #1e1914;
+    transition: height 0.5s;
   }
 
     @media all and (max-width: 1000px) {
