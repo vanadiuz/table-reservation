@@ -763,6 +763,11 @@ export default {
           if (JSON.parse(response.bodyText).success === true) {
 
             this.view = 2
+
+            setTimeout(function () {
+              this.$refs.tremReservation.style.height =  '300px'
+            }.bind(this), 500)
+
             setTimeout(function () {
               this.hideReservation()
             }.bind(this), 3000)

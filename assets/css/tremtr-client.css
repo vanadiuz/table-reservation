@@ -238,6 +238,10 @@
   
   
            }
+
+				.trem-reservation .reservation2 .envelope{
+					display: block;
+				}
   
                .trem-reservation .reservation2 .envelope .input-form .input-element{
                  width: 250px;
@@ -296,20 +300,24 @@
         margin: auto;
   
         display: flex;
+		display:-webkit-flex;
+		flex-wrap: nowrap;
         justify-content: center;
         align-items: center;
       }
   
           .trem-reservation .reservation3 .confirmation{
             height: auto;
-            width: 100%;
+            width: auto;
 
             margin: auto;
 
             position: absolute;
 
             display: flex;
-            flex-flow: column;
+			  display:-webkit-flex;
+            flex-direction: column;
+			  flex-wrap: nowrap;
 
             justify-content: center;
             align-items: center;
