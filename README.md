@@ -32,8 +32,8 @@
 - [Introduction](#introduction-wave)
 - [Features](#features-eyeglasses)
 - [Feedback](#feedback-raising_hand)
-- [Contributors](#contributors-muscle)
 - [Build Process](#build-process-hammer)
+- [Contributors](#contributors-muscle)
 - [Sponsors](#sponsors-moneybag)
 - [License](#license-page_facing_up)
 
@@ -70,10 +70,6 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
 
 If there's anything you'd like to chat about, please feel free to join our [Slack chat](https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI)!
 
-## Contributors :muscle:
-
-This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md).
-
 ## Build Process :hammer:
 
 - Clone or download the repo
@@ -97,6 +93,10 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
             // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
             // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.5ba64ddd460771627e94.js', array(), '1.0.0', 'screen, all');
 ```
+
+## Contributors :muscle:
+
+This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md).
 
 ## Sponsors :moneybag:
 
