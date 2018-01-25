@@ -98,6 +98,12 @@ If there's anything you'd like to chat about, please feel free to join our [Slac
 
 This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md).
 
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+| [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](http://true-emotions.studio)<br />💻💬🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](http://true-emotions.studio)<br />🎨🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](http://true-emotions.studio)<br />💻🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](http://alecrolla.com/)<br />💵 |
+| :---: | :---: | :---: | :---: | 
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
 ## Sponsors :moneybag:
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](http://true-emotions.studio/contact-us/)
