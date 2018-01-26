@@ -193,7 +193,7 @@ Table N{table} for {persons} Persons
 	/**
 	 * Load the admin settings page
 	 * @since 0.0.1
-	 * @sa https://github.com/NateWr/simple-admin-pages
+	 * @sa 
 	 */
 	public function load_settings_panel() {
 
@@ -262,7 +262,7 @@ Table N{table} for {persons} Persons
 			array(
 				'id'            => 'date-format',
 				'title'         => __( 'Date Format', 'tremtr' ),
-				'description'   => sprintf( __( 'Define how the date is formatted on the reservation form. %sFormatting rules%s. This only changes the format on the reservation form. To change the date format in notification messages, modify your general %sWordPress Settings%s.', 'tremtr' ), '<a href="http://amsul.ca/pickadate.js/date/#formats">', '</a>', '<a href="' . admin_url( 'options-general.php' ) . '">', '</a>' ),
+				'description'   => sprintf( __( 'Define how the date is formatted on the reservation form. %sFormatting rules%s. Be very careful, incorrectly set formats can break the plugin! This only changes the format on the reservation form. To change the date format in notification messages, modify your general %sWordPress Settings%s.', 'tremtr' ), '<a href="http://amsul.ca/pickadate.js/date/#formats">', '</a>', '<a href="' . admin_url( 'options-general.php' ) . '">', '</a>' ),
 				'placeholder'	=> $this->defaults['date-format'],
 			)
 		);
@@ -274,7 +274,7 @@ Table N{table} for {persons} Persons
 			array(
 				'id'            => 'time-format',
 				'title'         => __( 'Time Format', 'tremtr' ),
-				'description'   => sprintf( __( 'Define how the time is formatted on the reservation form. %sFormatting rules%s. This only changes the format on the reservation form. To change the time format in notification messages, modify your general %sWordPress Settings%s.', 'tremtr' ), '<a href="http://amsul.ca/pickadate.js/time/#formats">', '</a>', '<a href="' . admin_url( 'options-general.php' ) . '">', '</a>' ),
+				'description'   => sprintf( __( 'Define how the time is formatted on the reservation form. %sFormatting rules%s. Be very careful, incorrectly set formats can break the plugin! This only changes the format on the reservation form. To change the time format in notification messages, modify your general %sWordPress Settings%s.', 'tremtr' ), '<a href="http://amsul.ca/pickadate.js/time/#formats">', '</a>', '<a href="' . admin_url( 'options-general.php' ) . '">', '</a>' ),
 				'placeholder'	=> $this->defaults['time-format'],
 			)
 		);
@@ -635,17 +635,17 @@ Table N{table} for {persons} Persons
 			)
 		);
 
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-notifications-templates',
-			'text',
-			array(
-				'id'			=> 'subject-admin-notice',
-				'title'			=> __( 'Admin Update Subject', 'tremtr' ),
-				'description'	=> sprintf( __( 'The email subject a user should receive when an admin sends them a custom email message from the %sreservations panel%s.', 'tremtr' ), '<a href="' . admin_url( '?page=tremtr-reservations' ) . '">', '</a>' ),
-				'placeholder'	=> $this->defaults['subject-admin-notice'],
-			)
-		);
+		// $sap->add_setting(
+		// 	'tremtr-settings',
+		// 	'tremtr-notifications-templates',
+		// 	'text',
+		// 	array(
+		// 		'id'			=> 'subject-admin-notice',
+		// 		'title'			=> __( 'Admin Update Subject', 'tremtr' ),
+		// 		'description'	=> sprintf( __( 'The email subject a user should receive when an admin sends them a custom email message from the %sreservations panel%s.', 'tremtr' ), '<a href="' . admin_url( '?page=tremtr-reservations' ) . '">', '</a>' ),
+		// 		'placeholder'	=> $this->defaults['subject-admin-notice'],
+		// 	)
+		// );
 
 		$sap = apply_filters( 'tremtr_settings_page', $sap );
 

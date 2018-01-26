@@ -4,7 +4,7 @@
  * Plugin Name:  Table Reservations
  * Plugin URI:   http://test.true-emotions.studio/1/sample-page/
  * Description:  Selectable tables for reservations. NO COLLISIONS. Сonfirm/reject bookings, email notifications, set booking times and more. Mobile UX.
- * Version:      1.4.1
+ * Version:      1.4.4
  * Author:       True-Emotions.Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
@@ -335,10 +335,10 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.e89e1754470681e9b2a6.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.d146ddfedc0d2736f9ae.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.e89e1754470681e9b2a6.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.d146ddfedc0d2736f9ae.js', array(), '1.0.0', 'screen, all');
+            wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',

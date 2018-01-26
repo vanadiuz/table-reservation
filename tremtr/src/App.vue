@@ -326,10 +326,12 @@ export default {
     },
 
     dayOfWeek: function () {
-      return moment(this.date, this.momentDateFormat).format('dddd').toLowerCase()
+      moment.locale(this.calendarTimeInitData.translation.calendar)
+      return moment(this.date, this.momentDateFormat).locale('en').format('dddd').toLowerCase()
     },
 
     dateConfig: function () {
+
       let disabledDates = []
       let disabledDatesFormatted = []
       let disabledDaysOfWeek = []
@@ -422,7 +424,8 @@ export default {
         }
 
         for (let open of this.calendarTimeInitData.schedule_closed){
-          if (open.date === moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment)) { 
+          moment.locale(this.calendarTimeInitData.translation.calendar)
+          if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
             timeStart = open.time.start
             timeFinish = open.time.end 
           }
@@ -431,7 +434,8 @@ export default {
         this.openHoursStart = timeStart;
         this.openHoursEnd = timeFinish;
 
-        if (moment().date() === moment(this.date, this.momentDateFormat).date()) {
+        moment.locale(this.calendarTimeInitData.translation.calendar)
+        if (moment().date() === moment(this.date, this.momentDateFormat).locale('en').date()) {
           let time = moment(timeStart, this.dbTimeFormatForMoment)
 
           if (Number(time.hours()) <= Number(moment().hours())) {
@@ -503,7 +507,8 @@ export default {
       }
 
       for (let open of this.calendarTimeInitData.schedule_closed){
-        if (open.date === moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment)) { 
+        moment.locale(this.calendarTimeInitData.translation.calendar)
+        if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
           timeF = moment(open.time.end, this.dbTimeFormatForMoment).format(this.momentTimeFormat);
         }
       }
@@ -516,10 +521,16 @@ export default {
       if (this.isDissableStartTime) {
         this.timeEnd = ''
       } else {
-        if (this.timeEnd === '') {
+        console.log('(moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) <= 0)')
+        console.log((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) <= 0))
+        console.log('(moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) >= 0)')
+        console.log((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) >= 0))
+        if (this.timeEnd === '' || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.timeStart, this.momentTimeFormat)) < 0) ) {
           this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(60), 'm').format(this.momentTimeFormat)
         } 
-
+        if ((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) < 0) || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) > 0) ) {
+          this.timeEnd = moment(this.openHoursEnd, this.momentTimeFormat).format(this.momentTimeFormat)
+        } 
       }
 
       return {
@@ -742,6 +753,7 @@ export default {
 
     confirm () {
       if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone'))) {
+        moment.locale(this.calendarTimeInitData.translation.calendar)
         this.$http.post(this.calendarTimeInitData.url, {
           'action': 'tremtr_reservation',
           'nonce': this.calendarTimeInitData.nonce,
@@ -1069,7 +1081,7 @@ export default {
 
       if (this.timeStart != '') {
 
-        let todaysReservations = this.reservations.filter(reservation => reservation.tremtr_reservation_date === this.date);
+        let todaysReservations = this.reservations.filter(reservation => reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase());
 
         let selectedTimeStart = moment(this.timeStart, this.momentTimeFormat)
 
