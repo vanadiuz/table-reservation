@@ -521,10 +521,6 @@ export default {
       if (this.isDissableStartTime) {
         this.timeEnd = ''
       } else {
-        console.log('(moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) <= 0)')
-        console.log((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) <= 0))
-        console.log('(moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) >= 0)')
-        console.log((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) >= 0))
         if (this.timeEnd === '' || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.timeStart, this.momentTimeFormat)) < 0) ) {
           this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(60), 'm').format(this.momentTimeFormat)
         } 
