@@ -9,8 +9,6 @@
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
  * Text Domain:  tremtr
- * Domain Path:  /languages/
- * Donate link:  https://www.paypal.me/trueemotions
  ***********************************/
 if (!defined('ABSPATH')) {
     exit; // disable direct access
