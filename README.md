@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  The Revolution in Table Reservation.
+  Pick a place!
 </p>
 
 <p align="center">
