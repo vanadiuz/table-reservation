@@ -727,7 +727,7 @@ export default {
         this.view = 1
 
         setTimeout(function () {
-          this.$refs.tremReservation.style.height = this.$refs.reservation2envelope.clientHeight.toString() + 'px'
+          this.$refs.tremReservation.style.height = (this.$refs.reservation2envelope.clientHeight + 30).toString() + 'px'
         }.bind(this), 500)
 
 

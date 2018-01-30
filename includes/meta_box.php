@@ -313,6 +313,42 @@ function trem_reservation_custom_column($column_name, $post_ID){
     }
 }
 
+add_filter( 'manage_edit-trem-reservation_sortable_columns', 'trem_reservation_sortable_columns' );
+function trem_reservation_sortable_columns( $columns ) {
+    $columns['reservation_date'] = 'reservation_date';
+
+    return $columns;
+}
+
+add_action( 'pre_get_posts', 'trem_custom_orderby' );
+function trem_custom_orderby( $query ) {
+    if ( ! is_admin() )
+        return;
+
+    $orderby = $query->get( 'orderby');
+    $order = $query->get( 'order');
+
+    if ( 'reservation_date' == $orderby ) {
+
+        $query->set( 'meta_query', array(
+            'tremtr_reservation_date' => array(
+                'key' => 'tremtr_reservation_date',
+            ),
+            'tremtr_reservation_time_begin' => array(
+                'key' => 'tremtr_reservation_time_begin',
+            ),
+            'tremtr_reservation_time_end' => array(
+                'key' => 'tremtr_reservation_time_end',
+            )
+        ));
+        $query->set( 'orderby', array(
+            'tremtr_reservation_date' => $order,
+            'tremtr_reservation_time_begin'   => 'ASC',
+            'tremtr_reservation_time_end'   => 'ASC',
+        ) );
+    }
+}
+
 // Add our text to the quick edit box
 add_action('quick_edit_custom_box', 'trem_reservation_quick_edit_custom_box', 10, 2);
 function trem_reservation_quick_edit_custom_box($column_name, $post_type){
