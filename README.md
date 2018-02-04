@@ -1,7 +1,7 @@
 <h1 align="center"> Table Reservation - Wordpress Plugin </h1> <br>
 <p align="center">
-  <a href="http://true-emotions.studio/">
-    <img alt="Table Reservation" title="Table Reservation" src="http://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
+  <a href="https://true-emotions.studio/">
+    <img alt="Table Reservation" title="Table Reservation" src="https://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
   </a>
 </p>
 
@@ -10,16 +10,16 @@
 </p>
 
 <p align="center">
-  <a href="http://true-emotions.studio/">
-    <img alt="True Emotions Studio" title="We are" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
+  <a href="https://true-emotions.studio/">
+    <img alt="True Emotions Studio" title="We are" src="https://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
   </a>
   
   <a href="https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI">
-    <img alt="Chat" title="Chat" src="http://true-emotions.studio/wp-content/uploads/2018/01/slack-e1516318903115.png" width="150">
+    <img alt="Chat" title="Chat" src="https://true-emotions.studio/wp-content/uploads/2018/01/slack-e1516318903115.png" width="150">
   </a>
 
   <a href="https://trello.com/b/BdGT06ts">
-    <img alt="Road map" title="Road map" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo-blue-lg-300x95.png" width="150">
+    <img alt="Road map" title="Road map" src="https://true-emotions.studio/wp-content/uploads/2018/01/logo-blue-lg-300x95.png" width="150">
   </a>
 </p>
 
@@ -28,7 +28,7 @@
 ## Table of Contents
 
 
-- [Demo](http://true-emotions.studio/sample-page/)
+- [Demo](https://true-emotions.studio/sample-page/)
 - [WordPress Plugin Repository](https://wordpress.org/plugins/table-reservation/)
 - [Introduction](#introduction-wave)
 - [Features](#features-eyeglasses)
@@ -45,7 +45,7 @@
 This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Undoubtedly, its simplicity and beauty will increase the attendance of your place. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
 
 <p align="center">
-  <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
+  <img src = "https://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
 </p>
 
 ## Features :eyeglasses:
@@ -62,7 +62,7 @@ A few of the things you can do with Table Reservation:
 * WPBakery(Visual Composer) compatible
 
 <p align="center">
-  <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/banner-1544x500.gif" width=1000>
+  <img src = "https://true-emotions.studio/wp-content/uploads/2018/01/banner-1544x500.gif" width=1000>
 </p>
 
 ## Feedback :raising_hand:
@@ -101,13 +101,13 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](http://true-emotions.studio)<br />💻💬🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](http://true-emotions.studio)<br />🎨🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](http://true-emotions.studio)<br />💻🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](http://alecrolla.com/)<br />💵 |
+| [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](https://true-emotions.studio)<br />💻💬🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](https://true-emotions.studio)<br />🎨🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](https://true-emotions.studio)<br />💻🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](http://alecrolla.com/)<br />💵 |
 | :---: | :---: | :---: | :---: | 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## Sponsors :moneybag:
 
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](http://true-emotions.studio/contact-us/)
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](https://true-emotions.studio/contact-us/)
 
 ## License :page_facing_up:
 
