@@ -1,6 +1,6 @@
 <h1 align="center"> Table Reservation - Wordpress Plugin </h1> <br>
 <p align="center">
-  <a href="http://true-emotions.studio/">
+  <a href="https://true-emotions.studio/">
     <img alt="Table Reservation" title="Table Reservation" src="http://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
   </a>
 </p>
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="http://true-emotions.studio/">
+  <a href="https://true-emotions.studio/">
     <img alt="True Emotions Studio" title="We are" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
   </a>
   
@@ -28,7 +28,7 @@
 ## Table of Contents
 
 
-- [Demo](http://true-emotions.studio/sample-page/)
+- [Demo](https://true-emotions.studio/sample-page/)
 - [WordPress Plugin Repository](https://wordpress.org/plugins/table-reservation/)
 - [Introduction](#introduction-wave)
 - [Features](#features-eyeglasses)
@@ -78,7 +78,7 @@ If there's anything you'd like to chat about, please feel free to join our [Slac
 - Go to table-reservation/tremtr (here is front-end web app on Vue js)
 - `npm install` to install dependencies 
 - `npm run dev` to start develope app
-- Activate plugin inside WordPress and [create a new table](http://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
+- Activate plugin inside WordPress and [create a new table](https://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
 - Now you can modify the Vue Js code and immediately watch how it will work in Wordpress
 
 **Build Production Version of Plugin**
@@ -101,7 +101,7 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](http://true-emotions.studio)<br />💻💬🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](http://true-emotions.studio)<br />🎨🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](http://true-emotions.studio)<br />💻🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](http://alecrolla.com/)<br />💵 |
+| [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](https://true-emotions.studio)<br />💻💬🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](https://true-emotions.studio)<br />🎨🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](https://true-emotions.studio)<br />💻🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](http://alecrolla.com/)<br />💵 |
 | :---: | :---: | :---: | :---: | 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
