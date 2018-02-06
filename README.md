@@ -78,7 +78,7 @@ If there's anything you'd like to chat about, please feel free to join our [Slac
 - Go to table-reservation/tremtr (here is front-end web app on Vue js)
 - `npm install` to install dependencies 
 - `npm run dev` to start develope app
-- Activate plugin inside WordPress and [create a new table](https://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
+- Activate plugin inside WordPress and [create a new table](http://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
 - Now you can modify the Vue Js code and immediately watch how it will work in Wordpress
 
 **Build Production Version of Plugin**
