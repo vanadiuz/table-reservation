@@ -111,4 +111,4 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 
 ## License :page_facing_up:
 
-MIT License
+GPL-3.0 License
