@@ -29,7 +29,7 @@
 
 
 - [Demo](https://true-emotions.studio/sample-page/)
-- [WordPress Plugin Repository](https://wordpress.org/plugins/table-reservation/)
+- [WordPress Plugin Repository](https://wordpress.org/plugins/table-reservations/)
 - [Introduction](#introduction-wave)
 - [Features](#features-eyeglasses)
 - [Feedback](#feedback-raising_hand)
