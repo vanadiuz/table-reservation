@@ -19,6 +19,12 @@ jQuery(document).ready(function ($) {
 
   var mouseOverObject = null;
 
+  var justCreated = null;
+
+  var missedTables = [];
+
+  var sortedTablesAfterLoad = [];
+
   // initial state 
 
   $(document).ready(function () {
@@ -38,12 +44,13 @@ jQuery(document).ready(function ($) {
       canvas.off('mouse:up');
 
       canvas.forEachObject(function (o) {
-        if (o.get('type') === 'circle') {
+        if (o.get('type') === 'rect') {
           o.setCoords();
           o.lockMovementX = false;
           o.lockMovementY = false;
           o.lockScalingX = false;
           o.lockScalingY = false;
+          o.lockUniScaling = false;
           o.lockRotation = false;
           o.hasControls = true;
           o.hoverCursor = 'move';
@@ -54,15 +61,15 @@ jQuery(document).ready(function ($) {
           o.transparentCorners = false;
         } else {
           o.setCoords();
-          o.lockMovementX = false;
-          o.lockMovementY = false;
-          o.lockScalingX = false;
-          o.lockScalingY = false;
-          o.lockUniScaling = false;
-          o.lockRotation = false;
-          o.hasControls = true;
+          o.lockMovementX = true;
+          o.lockMovementY = true;
+          o.lockScalingX = true;
+          o.lockScalingY = true;
+          o.lockUniScaling = true;
+          o.lockRotation = true;
+          o.hasControls = false;
           o.hoverCursor = 'pointer';
-          o.hasBorders = true;
+          o.hasBorders = false;
           o.borderColor = 'red';
           o.cornerColor = 'green';
           o.cornerSize = 10;
@@ -111,7 +118,7 @@ jQuery(document).ready(function ($) {
           $.each(canvas.getObjects(), function (i) {
 
             if (Number(objId) === Number(canvas.item(i).id)) {
-              item = i + 4;
+              item = i;
               return false;
             }
           });
@@ -129,21 +136,19 @@ jQuery(document).ready(function ($) {
         origX = pointer.x;
         origY = pointer.y;
 
+        var circleId = nextTableNumber()
+
         circle = new fabric.Rect({
-          left: pointer.x + 7,
-          top: pointer.y + 7,
-          width: 14,
-          height: 14,
+          left: origX,
+          top: origY,
           rx: 10,
           ry: 10,
           strokeWidth: 1,
           stroke: 'black',
           fill: 'transparent',
           selectable: true,
-          originX: 'center',
-          originY: 'center',
-          name: [canvasObjectId + 1, 1],
-          id: canvasObjectId,
+          name: [circleId, 1],
+          id: circleId,
           lockMovementX: true,
           lockMovementY: true,
           lockScalingX: true,
@@ -155,75 +160,38 @@ jQuery(document).ready(function ($) {
           hasBorders: false
         });
 
-
-
-
-
-        var table = new fabric.Text(circle.name[0].toString(), {
-          fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-          fontSize: 25,
-          id: canvasObjectId,
-          top: circle.top + 10,
-          left: circle.left + 10,
-          selectable: false
-        });
-
-        var icon_table = new fabric.Text("", {
-          fontFamily: "FontAwesome",
-          fontSize: 25,
-          top: circle.top - 15,
-          left: circle.left - circle.width / 2,
-          selectable: false,
-          id: canvasObjectId
-        });
-
-        var people = new fabric.Text(circle.name[1].toString(), {
-          fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-          fontSize: 25,
-          id: canvasObjectId,
-          top: circle.top,
-          left: circle.left + 20,
-          selectable: false,
-          opacity: 0
-        });
-
-        var icon_people = new fabric.Text("", {
-          fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-          fontSize: 15,
-          top: circle.top + circle.height / 2,
-          left: circle.left - 20,
-          selectable: false,
-          id: canvasObjectId
-        });
-
-        canvas.add(table);
-        canvas.add(people);
-        canvas.add(icon_table);
-        canvas.add(icon_people);
         canvas.add(circle);
 
-
         mouseOverObject = circle;
+        justCreated = circle;
+
         canvas.renderAll();
-
-
       });
 
       canvas.observe('mouse:move', function (o) {
+
         if (!(isDown)) return;
         var pointer = canvas.getPointer(o.e);
-        circle.set({
-          width: (Math.abs(pointer.x - origX) > 10) ? Math.abs(pointer.x - origX) : 10,
-          height: (Math.abs(pointer.y - origY) > 10) ? Math.abs(pointer.y - origY) : 10
+
+        if (origX > pointer.x) {
+          justCreated.set({
+            left: Math.abs(pointer.x)
+          });
+        }
+        if (origY > pointer.y) {
+          justCreated.set({
+            top: Math.abs(pointer.y)
+          });
+        }
+
+        justCreated.set({
+          width: Math.abs(origX - pointer.x)
+        });
+        justCreated.set({
+          height: Math.abs(origY - pointer.y)
         });
 
-        let circleWidth = circle.width
-        let circleHeight = circle.height
 
-        circle.set({
-          left: origX + circleWidth / 2,
-          top: origY + circleHeight / 2,
-        });
         canvas.renderAll();
 
       });
@@ -237,71 +205,101 @@ jQuery(document).ready(function ($) {
           $.each(canvas.getObjects(), function (i) {
 
             if (Number(circle.id) === Number(canvas.item(i).id)) {
-              canvas.remove(canvas.item(i + 4));
-              canvas.remove(canvas.item(i + 3));
-              canvas.remove(canvas.item(i + 2));
-              canvas.remove(canvas.item(i + 1));
+
+              addMissedTable(circle.id)
+
               canvas.remove(canvas.item(i));
               canvas.renderAll();
+
               return false;
             }
           });
 
-        } else {
+        } else if (circle === justCreated) {
+
+          var table = new fabric.Text(circle.name[0].toString(), {
+            fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+            fontSize: 25,
+            id: justCreated.id,
+            top: circle.top + 10,
+            left: circle.left + 10,
+            selectable: false,
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockUniScaling: true,
+            lockRotation: true,
+            hasControls: false,
+            evented: false
+          });
+
+          var people = new fabric.Text(circle.name[1].toString(), {
+            fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+            fontSize: 25,
+            id: justCreated.id,
+            top: circle.top,
+            left: circle.left + 20,
+            selectable: false,
+            opacity: 0,
+            lockMovementX: true,
+            lockMovementY: true,
+            lockScalingX: true,
+            lockScalingY: true,
+            lockUniScaling: true,
+            lockRotation: true,
+            hasControls: false,
+            evented: false
+          });
+
+          canvas.add(table);
+          canvas.add(people);
 
           var b = circle.name[1];
-          var html = '<li> <i class="fa fa-circle " style="color: white;"></i> <input type="number" name="table" min="1" step="1" value="' + circle.name[0] + '">  <input type="number" name="people" min="1" step="1" value="' + b + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(circle.width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(circle.height) + '"> <button class="trem-remove" id="' + circle.id + '"><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
-          $("#control-items").append(html);
+          var html = '<li id="' + circle.id + '"> <i class="fa fa-circle " style="color: white;"></i> <span class="table" >' + circle.name[0] + '</span>  <input type="number" name="people" min="1" step="1" value="' + b + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(circle.width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(circle.height) + '"> <button class="trem-remove" ><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
+          
+          if ($("#control-items").children('li').length !== 0) {
+            if (Number(circle.id) < Number($("#control-items").children('li')[0].id)) {
+              $("#control-items").prepend(html)
+            } else {
+              $(html).insertAfter($("#control-items").find('#' + (Number(circle.id) - 1)));
+            }
+          } else {
+            $("#control-items").append(html)
+          }
 
-          canvasObjectId++;
 
           $(".trem-remove").click(function (event) {
             event.preventDefault();
 
-            var objId = this.id;
+            var objId = $(this).closest('li').attr('id');
 
             $(this).parent().remove();
 
             $.each(canvas.getObjects(), function (i) {
 
               if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.remove(canvas.item(i + 4));
-                canvas.remove(canvas.item(i + 3));
                 canvas.remove(canvas.item(i + 2));
                 canvas.remove(canvas.item(i + 1));
                 canvas.remove(canvas.item(i));
                 canvas.renderAll();
+                
+                addMissedTable(objId)
+
                 return false;
               }
             });
           });
-
-          $('input[name="table"]').change(function () {
-            var objId = $(this).siblings("button").attr('id');
-            var newVal = $(this).val();
-
-            $.each(canvas.getObjects(), function (i) {
-
-              if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i).text = newVal;
-                canvas.item(i + 4).name[0] = Number(newVal);
-                canvas.renderAll();
-                return false;
-              }
-            });
-            $('#edit').trigger('click');
-          });
-
 
           $('input[name="people"]').change(function () {
-            var objId = $(this).siblings("button").attr('id');
+            var objId = $(this).parent('li').attr('id');
             var newVal = $(this).val();
 
             $.each(canvas.getObjects(), function (i) {
 
               if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i + 1).text = newVal
-                canvas.item(i + 4).name[1] = Number(newVal);
+                canvas.item(i + 2).text = newVal
+                canvas.item(i).name[1] = Number(newVal);
                 canvas.renderAll();
                 return false;
               }
@@ -311,12 +309,12 @@ jQuery(document).ready(function ($) {
 
 
           $('input[name="width"]').change(function () {
-            var objId = $(this).siblings("button").attr('id');
+            var objId = $(this).parent('li').attr('id');
             var newVal = $(this).val();
             $.each(canvas.getObjects(), function (i) {
 
               if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i + 4).set({
+                canvas.item(i).set({
                   width: Number(newVal)
                 });
                 canvas.renderAll();
@@ -327,12 +325,12 @@ jQuery(document).ready(function ($) {
           });
 
           $('input[name="height"]').change(function () {
-            var objId = $(this).siblings("button").attr('id');
+            var objId = $(this).parent('li').attr('id');
             var newVal = $(this).val();
             $.each(canvas.getObjects(), function (i) {
 
               if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i + 4).set({
+                canvas.item(i).set({
                   height: Number(newVal)
                 });
                 canvas.renderAll();
@@ -341,7 +339,8 @@ jQuery(document).ready(function ($) {
             });
             $('#edit').trigger('click');
           });
-
+          
+          justCreated = null;
         }
 
 
@@ -366,7 +365,80 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  //find next table number
+  function nextTableNumber () {
 
+    if (missedTables.length !== 0) {
+
+      var next = missedTables[0]
+      missedTables.shift()
+
+      console.log(missedTables)
+
+      return next
+
+    } else {
+
+      var max = 0
+
+      for (let i = 1; i < canvas.getObjects().length; i = i + 3) {
+        var tableNumber = Number(canvas.item(i).text)
+        if (max < tableNumber) {
+          max = tableNumber
+        }
+      }
+
+      return max + 1
+    }
+  }
+
+  //create missedTables array after JSON parse (load)
+  function createMissedTable () {
+
+    var tables = [0]
+    for (let i = 1; i < canvas.getObjects().length; i = i + 3) {
+      tables.push(Number(canvas.item(i).text))
+    }
+
+    tables.sort(function (a, b) {
+      return a - b
+    });
+
+    console.log(tables)
+
+    for (let i = 0; i < canvas.getObjects().length; i++) {
+      var diff = Number(tables[i + 1]) - Number(tables[i]) - 1
+      if (diff !== 0) {
+        for (let j = 1; j <= diff; j++) {
+          missedTables.push(tables[i] + j)
+        }
+      }
+
+    }
+  }
+
+  //create sorted array of existed tables after JSON parse (load)
+  function createSortedTables() {
+
+    var tables = []
+    for (let i = 1; i < canvas.getObjects().length; i = i + 3) {
+      tables.push(Number(canvas.item(i).text))
+    }
+
+    tables.sort(function (a, b) {
+      return a - b
+    });
+
+    sortedTablesAfterLoad = tables
+  }
+
+  //add next table number in missedTables array
+  function addMissedTable(id) {
+    var value = Number(id);
+
+    missedTables.splice(_.sortedIndex(missedTables, value), 0, value);
+    console.log(missedTables);
+  }
 
 
   // make correction
@@ -376,7 +448,7 @@ jQuery(document).ready(function ($) {
 
         var objId = canvas.getActiveObject().id;
         var element = '#' + objId;
-        $(element).parent().remove();
+        $(element).remove();
         $.each(canvas.getObjects(), function (i) {
 
           if (Number(objId) === Number(canvas.item(i).id)) {
@@ -384,12 +456,12 @@ jQuery(document).ready(function ($) {
               mouseOverObject = null;
             }
 
-            canvas.remove(canvas.item(i + 4));
-            canvas.remove(canvas.item(i + 3));
             canvas.remove(canvas.item(i + 2));
             canvas.remove(canvas.item(i + 1));
             canvas.remove(canvas.item(i));
             canvas.renderAll();
+
+            addMissedTable(objId)
 
             return false;
           }
@@ -422,17 +494,11 @@ jQuery(document).ready(function ($) {
         if (!(canvas.item(i).id === undefined)) {
           if (Number(id) === Number(canvas.item(i).id)) {
 
-            canvas.item(i + 3).top = canvas.getActiveObject().top + canvas.getActiveObject().height / 2;
-            canvas.item(i + 3).left = canvas.getActiveObject().left - 20;
+            canvas.item(i + 2).top = canvas.getActiveObject().top;
+            canvas.item(i + 2).left = canvas.getActiveObject().left;
 
-            canvas.item(i + 2).top = canvas.getActiveObject().top - 15;
-            canvas.item(i + 2).left = canvas.getActiveObject().left - 20;
-
-            canvas.item(i + 1).top = canvas.getActiveObject().top + canvas.getActiveObject().height / 2;
-            canvas.item(i + 1).left = canvas.getActiveObject().left - 5;
-
-            canvas.item(i).top = canvas.getActiveObject().top - 15;
-            canvas.item(i).left = canvas.getActiveObject().left - 7.5;
+            canvas.item(i + 1).top = canvas.getActiveObject().top + 10;
+            canvas.item(i + 1).left = canvas.getActiveObject().left + 10;
 
             canvas.renderAll();
 
@@ -457,17 +523,11 @@ jQuery(document).ready(function ($) {
         if (!(canvas.item(i).id === undefined)) {
           if (Number(id) === Number(canvas.item(i).id)) {
 
-            canvas.item(i + 3).top = canvas.getActiveObject().top + canvas.getActiveObject().height / 2 * canvas.getActiveObject().scaleY;
-            canvas.item(i + 3).left = canvas.getActiveObject().left - 20;
+            canvas.item(i + 2).top = canvas.getActiveObject().top;
+            canvas.item(i + 2).left = canvas.getActiveObject().left;
 
-            canvas.item(i + 2).top = canvas.getActiveObject().top - 15;
-            canvas.item(i + 2).left = canvas.getActiveObject().left - 20;
-
-            canvas.item(i + 1).top = canvas.getActiveObject().top + canvas.getActiveObject().height / 2 * canvas.getActiveObject().scaleY;
-            canvas.item(i + 1).left = canvas.getActiveObject().left - 5;
-
-            canvas.item(i).top = canvas.getActiveObject().top - 15;
-            canvas.item(i).left = canvas.getActiveObject().left - 7.5;
+            canvas.item(i + 1).top = canvas.getActiveObject().top + 10;
+            canvas.item(i + 1).left = canvas.getActiveObject().left + 10;
 
             canvas.renderAll();
 
@@ -482,6 +542,7 @@ jQuery(document).ready(function ($) {
   canvas.on('object:modified', function (e) {
 
     if (canvas.getActiveObject() != undefined) {
+
 
       canvas.getActiveObject().set({
         height: Math.round(canvas.getActiveObject().scaleY * canvas.getActiveObject().height)
@@ -503,8 +564,8 @@ jQuery(document).ready(function ($) {
       var newValHeight = canvas.getActiveObject().height;
 
       var str = "#" + Number(objId);
-      $(str).siblings('input[name="width"]').val(Number(newValWidth));
-      $(str).siblings('input[name="height"]').val(Number(newValHeight));
+      $(str).children('input[name="width"]').val(Number(newValWidth));
+      $(str).children('input[name="height"]').val(Number(newValHeight));
     }
 
   });
@@ -517,8 +578,8 @@ jQuery(document).ready(function ($) {
       currentElement.css("color", "white");
     }
     var id = canvas.getActiveObject().id;
-    var button = "#" + id.toString();
-    currentElement = $(button).siblings("i");
+    var li = "#" + id.toString();
+    currentElement = $(li).children("i");
     currentElement.css("color", "green");
 
   });
@@ -561,7 +622,7 @@ jQuery(document).ready(function ($) {
               $.each(canvas.getObjects(), function (i) {
 
                 if (Number(objId) === Number(canvas.item(i).id)) {
-                  item = i + 4;
+                  item = i;
                   return false;
                 }
               });
@@ -615,70 +676,60 @@ jQuery(document).ready(function ($) {
       var objCounter = 1;
       var counter = 0;
 
-      $.each(canvas.getObjects(), function (i) {
+      createMissedTable()
+      createSortedTables()
 
-        canvas.item(i).id = canvasObjectId;
-
-        counter++;
-        if (counter % 5 === 0) {
-
-          var tablePeople = [canvas.item(i - 4).text, canvas.item(i - 3).text]
-          canvas.item(i).name = tablePeople;
-
-          canvasObjectId++;
-
-          var html = '<li> <i class="fa fa-circle " style="color: white;"></i> <input type="number" name="table" min="1" step="1" value="' + canvas.item(i).name[0] + '">  <input type="number" name="people" min="1" step="1" value="' + canvas.item(i).name[1] + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(canvas.item(i).width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(canvas.item(i).height) + '"> <button class="trem-remove" id="' + canvas.item(i).id + '"><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
-          $("#control-items").append(html);
-
-          $(".trem-remove").click(function (event) {
-            event.preventDefault();
-
-            var objId = this.id;
-
-            $(this).parent().remove();
-
-            $.each(canvas.getObjects(), function (i) {
-
-              if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.remove(canvas.item(i + 4));
-                canvas.remove(canvas.item(i + 3));
-                canvas.remove(canvas.item(i + 2));
-                canvas.remove(canvas.item(i + 1));
-                canvas.remove(canvas.item(i));
-                canvas.renderAll();
-                return false;
-              }
-            });
-          });
-        }
-      })
-
-      $('input[name="table"]').change(function () {
-        var objId = $(this).siblings("button").attr('id');
-        var newVal = $(this).val();
-
+      for (let k = 0; k < sortedTablesAfterLoad.length; k++) {
         $.each(canvas.getObjects(), function (i) {
+          console.log(i)
+          if (canvas.item(i).get('type') === 'rect' && canvas.item(i + 1).text == sortedTablesAfterLoad[k]) {
 
-          if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i).text = newVal;
-            canvas.item(i + 4).name[0] = Number(newVal);
-            canvas.renderAll();
-            return false;
+            var tablePeople = [canvas.item(i + 1).text, canvas.item(i + 2).text]
+            canvas.item(i).name = tablePeople;
+
+            canvas.item(i).id = canvas.item(i+1).text;
+            canvas.item(i + 1).id = canvas.item(i + 1).text;
+            canvas.item(i + 2).id = canvas.item(i + 1).text;
+
+            var html = '<li id="' + canvas.item(i).id + '"> <i class="fa fa-circle " style="color: white;"></i> <span class="table" >' + canvas.item(i).name[0] + '</span> <input type="number" name="people" min="1" step="1" value="' + canvas.item(i).name[1] + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(canvas.item(i).width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(canvas.item(i).height) + '"> <button class="trem-remove"><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
+            $("#control-items").append(html)
+
+            $(".trem-remove").click(function (event) {
+              event.preventDefault();
+
+              var objId = $(this).parent('li').attr('id');
+
+              $(this).parent().remove();
+
+              $.each(canvas.getObjects(), function (i) {
+
+                if (Number(objId) === Number(canvas.item(i).id)) {
+                  canvas.remove(canvas.item(i + 2));
+                  canvas.remove(canvas.item(i + 1));
+                  canvas.remove(canvas.item(i));
+                  canvas.renderAll();
+
+                  addMissedTable(objId)
+
+                  return false;
+                }
+              });
+            });
           }
-        });
-        $('#edit').trigger('click');
-      });
+        })
+        
+      }
 
 
       $('input[name="people"]').change(function () {
-        var objId = $(this).siblings("button").attr('id');
+        var objId = $(this).parent('li').attr('id');
         var newVal = $(this).val();
 
         $.each(canvas.getObjects(), function (i) {
 
           if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i + 1).text = newVal;
-            canvas.item(i + 4).name[1] = Number(newVal);
+            canvas.item(i + 2).text = newVal;
+            canvas.item(i).name[1] = Number(newVal);
             canvas.renderAll();
             return false;
           }
@@ -688,12 +739,12 @@ jQuery(document).ready(function ($) {
 
 
       $('input[name="width"]').change(function () {
-        var objId = $(this).siblings("button").attr('id');
+        var objId = $(this).parent('li').attr('id');
         var newVal = $(this).val();
         $.each(canvas.getObjects(), function (i) {
 
           if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i + 4).set({
+            canvas.item(i).set({
               width: Number(newVal)
             });
             canvas.renderAll();
@@ -704,12 +755,12 @@ jQuery(document).ready(function ($) {
       });
 
       $('input[name="height"]').change(function () {
-        var objId = $(this).siblings("button").attr('id');
+        var objId = $(this).parent('li').attr('id');
         var newVal = $(this).val();
         $.each(canvas.getObjects(), function (i) {
 
           if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i + 4).set({
+            canvas.item(i).set({
               height: Number(newVal)
             });
             canvas.renderAll();
@@ -718,6 +769,7 @@ jQuery(document).ready(function ($) {
         });
         $('#edit').trigger('click');
       });
+
 
       var newScale = 1;
       if (canvas.backgroundImage !== null) {
@@ -749,26 +801,3 @@ jQuery(document).ready(function ($) {
   });
 
 });
-
-
-
-
-
-// console.log(JSON.stringify(canvas)); json
-
-
-// var canvas = new fabric.Canvas('c', { selection: false });
-
-// canvas.loadFromJSON('{"objects":[{"type":"circle","originX":"center","originY":"center","left":709.59,"top":508.99,"width":119.76,"height":119.76,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":59.88092161211887,"startAngle":0,"endAngle":6.283185307179586},{"type":"circle","originX":"center","originY":"center","left":406.2,"top":645.72,"width":107.79,"height":107.79,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":53.89282945090696,"startAngle":0,"endAngle":6.283185307179586},{"type":"circle","originX":"center","originY":"center","left":273.46,"top":557.89,"width":73.85,"height":73.85,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":36.92656832747332,"startAngle":0,"endAngle":6.283185307179586},{"type":"circle","originX":"center","originY":"center","left":147.71,"top":347.31,"width":9.98,"height":9.98,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":4.990076801009906,"startAngle":0,"endAngle":6.283185307179586},{"type":"circle","originX":"center","originY":"center","left":154.7,"top":313.38,"width":181.64,"height":181.64,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":90.81939777838028,"startAngle":0,"endAngle":6.283185307179586},{"type":"circle","originX":"center","originY":"center","left":289.43,"top":262.48,"width":95.81,"height":95.81,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":47.90473728969505,"startAngle":0,"endAngle":6.283185307179586},{"type":"circle","originX":"center","originY":"center","left":352.3,"top":253.5,"width":31.94,"height":31.94,"fill":"transparent","stroke":"black","strokeWidth":1,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"radius":15.968245763231664,"startAngle":0,"endAngle":6.283185307179586}],"backgroundImage":{"type":"image","originX":"left","originY":"top","left":0,"top":0,"width":1089,"height":782,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeLineJoin":"miter","strokeMiterLimit":10,"scaleX":1,"scaleY":1,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"clipTo":null,"backgroundColor":"","fillRule":"nonzero","globalCompositeOperation":"source-over","transformMatrix":null,"skewX":0,"skewY":0,"crossOrigin":"","cropX":0,"cropY":0,"src":"http://localhost:3000/images/Restaurant-Floor-Plans.png","filters":[]}}', function() {
-//   canvas.renderAll();
-//   $.each(canvas.getObjects(), function (i) {
-//     $( "ul" ).append( '<li> <input type="number" name="table"> <input type="number" name="people"> <button type="button">Remove</button></li>' );
-//   });
-
-//   $("button").click(function(){
-//     $( this ).parent().remove();
-
-//   });
-// });
-
-// var list = document.getElementById('items');
