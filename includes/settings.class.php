@@ -421,8 +421,7 @@ Table N{table} for {persons} Persons
 					'1' 	=> __( 'From 1 day in advance', 'tremtr' ),
 					'7' 	=> __( 'From 1 week in advance', 'tremtr' ),
 					'14' 	=> __( 'From 2 weeks in advance', 'tremtr' ),
-					'30' 	=> __( 'From 30 days in advance', 'tremtr' ),
-					'90' 	=> __( 'From 90 days in advance', 'tremtr' ),
+					'30' 	=> __( 'From 30 days in advance', 'tremtr' )
 				)
 			)
 		);

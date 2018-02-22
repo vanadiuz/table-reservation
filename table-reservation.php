@@ -4,7 +4,7 @@
  * Plugin Name:  ☕️Table Reservation
  * Plugin URI:   https://github.com/vanadiuz/table-reservation
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      1.5
+ * Version:      2.1
  * Author:       True-Emotions.Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
@@ -55,7 +55,12 @@ if (!class_exists('TREMTableReservation')) :
             add_shortcode( 'table-reservation', array($this, 'tremtr_shortcode_output') );
 
         }
-
+        
+        function tremtr_common_styles_and_scripts(){
+        
+            wp_register_script('tremtr-fontawesome', TREMTR_PLUGIN_URL . '/assets/js/fontawesome.js');
+            wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
+        }
        
 
         // Register tremtr post type
@@ -188,15 +193,15 @@ if (!class_exists('TREMTableReservation')) :
                 $table_reservs = $this->reservation->get_table_reservations($this->reservation->reservation_date, $this->reservation->table);
                 if( !empty($table_reservs) ){
                     foreach($table_reservs as $val){
-                        if( $this->reservation->reservation_time_end != '' && $val['time_end'] != '' ) {
+                        if( $this->reservation->reservation_time_end != '' && $val['time_end'] != '' && $this->reservation->reservation_time_begin != '' && $val['time_begin'] != '' ) {
                             if( $val['time_begin'] <= $this->reservation->reservation_time_begin && $val['time_end'] >= $this->reservation->reservation_time_end ){
-                                wp_send_json_error(array('error' => 'not_free'));
+                                wp_send_json_error(array('error' => 'not_free1'));
                             } elseif( $val['time_begin'] >= $this->reservation->reservation_time_begin && $val['time_end'] <= $this->reservation->reservation_time_end ){
-                                wp_send_json_error(array('error' => 'not_free'));
-                            } elseif( $val['time_begin'] < $this->reservation->reservation_time_begin && $val['time_end'] > $this->reservation->reservation_time_begin ){
-                                wp_send_json_error(array('error' => 'not_free'));
-                            } elseif( $val['time_begin'] < $this->reservation->reservation_time_end && $val['time_end'] >= $this->reservation->reservation_time_end ){
-                                wp_send_json_error(array('error' => 'not_free'));
+                                wp_send_json_error(array('error' => 'not_free2'));
+                            } elseif( $val['time_begin'] <= $this->reservation->reservation_time_begin && $val['time_end'] >= $this->reservation->reservation_begin ){
+                                wp_send_json_error(array('error' => 'not_free3'));
+                            } elseif( $val['time_begin'] <= $this->reservation->reservation_time_end && $val['time_end'] >= $this->reservation->reservation_time_end ){
+                                wp_send_json_error(array('error' => 'not_free4'));
                             }
                         }
                     }
@@ -332,9 +337,9 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.e43a4d30adbcaea12272.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.5cb6e111ad30036e60be.js', array(), '1.0.0', 'screen, all');
             // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.c6855e55e8f19a5982d1.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.be2e7daf831da040aaca.js', array(), '1.0.0', 'screen, all');
             wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
@@ -352,7 +357,7 @@ if (!class_exists('TREMTableReservation')) :
                     'allow_past' => is_admin() && current_user_can( 'manage_reservations' ),
                     'url'   => admin_url( 'admin-ajax.php' ),
                     'endpoint_cafe' => site_url() . '/wp-json/wp/v2/trem-cafes',
-                    'endpoint_reservation' => site_url() . '/wp-json/wp/v2/trem-reservation',
+                    'endpoint_reservation' => site_url() . '/wp-json/wp/v2/trem-reservation/?per_page=100',
                     'nonce' => wp_create_nonce('wp_rest'),
                     'mainColor' => $this->settings->get_setting( 'main-color' ),
                     'fillActive' => tremtr_hex2rgb($this->settings->get_setting( 'available-color' )),

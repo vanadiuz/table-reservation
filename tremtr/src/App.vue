@@ -768,6 +768,8 @@ export default {
           emulateJSON: true
         }).then(response => {
 
+          console.log(JSON.parse(response.bodyText))
+
 
           if (JSON.parse(response.bodyText).success === true) {
 

@@ -105,7 +105,7 @@
   
            .trem-reservation .reservation1 .envelope .people-form .form-element{
              width: 250px;
-             height: auto;
+             height: 100%;
   
              position: relative;
   
@@ -134,6 +134,9 @@
   
                  position: absolute;
                  right: 5px;
+
+                 display: flex;
+                 align-items: center;
   
                  margin:auto;
   
@@ -250,7 +253,7 @@
   
                .trem-reservation .reservation2 .envelope .input-form .input-element{
                  width: 250px;
-                 height: auto;
+                 height: 100%;
   
                  position: relative;
   
@@ -283,6 +286,9 @@
                      margin:auto;
   
                      pointer-events: none;
+
+                     display: flex;
+                     align-items: center; 
                    }
   
                    .trem-reservation .reservation2 .envelope .input-form .input-element.message span{
@@ -293,19 +299,21 @@
                      position: absolute;
                      right: 5px;
   
-                     margin:auto;
+                     margin:5px auto auto auto;
   
                      pointer-events: none;
+
+                     display: flex;
+                     align-items: flex-start;
                    }
   
       .trem-reservation .reservation3{
         height: 100%;
-        width: 100%;
+        width: 250px;
   
-        margin: auto;
+        margin: 0;
   
         display: flex;
-		display:-webkit-flex;
 		flex-wrap: nowrap;
         justify-content: center;
         align-items: center;
@@ -317,12 +325,9 @@
 
             margin: auto;
 
-            position: absolute;
-
             display: flex;
-			  display:-webkit-flex;
             flex-direction: column;
-			  flex-wrap: nowrap;
+			flex-wrap: nowrap;
 
             justify-content: center;
             align-items: center;
