@@ -54,105 +54,6 @@ if (!class_exists('TREMTableReservation')) :
 
             add_shortcode( 'table-reservation', array($this, 'tremtr_shortcode_output') );
 
-            require_once( TREMTR_PLUGIN_DIR . '/includes/wprestapi_plugin.php' );
-
-            
-            
-            // ============================
-            // ADD RESERVATIONS SCHEME PAGE
-            // ============================
-
-            
-            add_action( 'admin_menu', array($this, 'tremtr_add_submenu_page') );
-
-            
-            
-        }
-
-        function tremtr_common_styles_and_scripts(){
-        
-            wp_register_script('tremtr-fontawesome', TREMTR_PLUGIN_URL . '/assets/js/fontawesome.js');
-            wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
-        }
-
-        public function tremtr_add_submenu_page() {
-            add_submenu_page( 
-                'edit.php?post_type=trem-reservation', 
-                'Scheme', 
-                'Scheme', 
-                'manage_options', 
-                'reservations_scheme', 
-                array($this, 'reservations_scheme_enqueue_scripts') 
-            );
-        }
-
-        public function reservations_scheme_enqueue_scripts() {
-            wp_enqueue_style('tremtr-icons', TREMTR_PLUGIN_URL . '/assets/css/trem-reservation-icons/css/trem-reservation.css');
-            wp_enqueue_style('tremtr-app', TREMTR_PLUGIN_URL . '/assets/css/tremtr-client.css');
-
-            wp_enqueue_script( 'tremtr-fabric' );
-
-
-            // wp_enqueue_script('tremtr-manifest-scheme', TREMTR_PLUGIN_URL . '/assets/js/manifest.e43a4d30adbcaea12272.js', array(), '1.0.0', 'screen, all');
-            // wp_enqueue_script('tremtr-vendor-scheme', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
-            // wp_enqueue_script('tremtr-app-scheme', TREMTR_PLUGIN_URL . '/assets/js/app.c6855e55e8f19a5982d1.js', array(), '1.0.0', 'screen, all');
-            wp_register_script( 'tremtr-app-scheme', 'http://localhost:8080/app.js' , '', '', true );
-            wp_localize_script(
-                'tremtr-app-scheme',
-                'tremtr_data',
-                array(
-                    'date_format' => $this->settings->get_setting( 'date-format' ),
-                    'time_format'  => $this->settings->get_setting( 'time-format' ),
-                    'schedule_open' => $this->settings->get_setting( 'schedule-open' ) == '' ? '' : tremtr_time_convert($this->settings->get_setting( 'schedule-open' )),
-                    'schedule_closed' => tremtr_time_convert($this->settings->get_setting( 'schedule-closed' )),
-                    'early_reservations' => is_admin() && current_user_can( 'manage_reservations' ) ? '' : $this->settings->get_setting( 'early-reservations' ),
-                    'late_reservations' => is_admin() && current_user_can( 'manage_reservations' ) ? '' : $this->settings->get_setting( 'late-reservations' ),
-                    'date_onload' => $this->settings->get_setting( 'date-onload' ),
-                    'time_interval' => $this->settings->get_setting( 'time-interval' ),
-                    'week_start' => $this->settings->get_setting( 'week-start' ) == '' ? '1' : $this->settings->get_setting( 'week-start' ),
-                    'allow_past' => is_admin() && current_user_can( 'manage_reservations' ),
-                    'url'   => admin_url( 'admin-ajax.php' ),
-                    'endpoint_cafe' => site_url() . '/wp-json/wp/v2/trem-cafes',
-                    'endpoint_reservation' => site_url() . '/wp-json/wp/v2/trem-reservation',
-                    'nonce' => wp_create_nonce('wp_rest'),
-                    'mainColor' => $this->settings->get_setting( 'main-color' ),
-                    'fillActive' => tremtr_hex2rgb($this->settings->get_setting( 'available-color' )),
-                    'fillBooked' => tremtr_hex2rgb($this->settings->get_setting( 'reserved-color' )),
-                    'translation' => array(
-                        'header' => __('Plan your day with us', 'tremtr'),
-                        'hintHeader' => __('Reservation', 'tremtr'),
-                        'hintText' => __('*rotate your device', 'tremtr'),
-                        'calendar' => $this->settings->get_setting('i8n') == '' ? 'en' : $this->settings->get_setting('i8n'),
-                        'workingHoursOpen' => __('open', 'tremtr'),
-                        'workingHoursTo' => __('to', 'tremtr'),
-                        'startTime' => __('I will come at', 'tremtr'),
-                        'endTime' => __('and stay till', 'tremtr'),
-                        'bookTableButton' => __('Book a table', 'tremtr'),
-                        'bookTableButtonWarning' => __('Firslty fill all fields and select a table!', 'tremtr'),
-                        'canvasClickWarning' => __('Firslty fill all fields!', 'tremtr'),
-                        'table' => __('Table', 'tremtr'),
-                        'for' => __('for', 'tremtr'),
-                        'people' => __('People', 'tremtr'),
-                        'on' => __('on', 'tremtr'),
-                        'from' => __('at', 'tremtr'),
-                        'to' => __('till', 'tremtr'),
-                        'in' => __('in', 'tremtr'),
-                        'cafe' => get_bloginfo( 'name' ),
-                        'changeButton' => __('Change', 'tremtr'),
-                        'confirmButton' => __('Confirm', 'tremtr'),
-                        'confirmButtonWarning' => __('Please, fill all fields correctly!', 'tremtr'),
-                        'name' => __('Name', 'tremtr'),
-                        'email' => __('Email', 'tremtr'),
-                        'phone' => __('Phone', 'tremtr'),
-                        'message' => __('Message', 'tremtr'),
-                        'thanksAtTheEnd' => $this->settings->get_setting( 'success-message' ),
-                        'rejected' => __('Someone has already reserved the table. Please, select another one.', 'tremtr'),
-                    ),
-                )
-            );
-             wp_enqueue_script( 'tremtr-app-scheme' );
-
-            echo '<div id="reservation" class="trem-reservation"></div>';
         }
 
        
@@ -431,10 +332,10 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.e43a4d30adbcaea12272.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.c6855e55e8f19a5982d1.js', array(), '1.0.0', 'screen, all');
-            //wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.e43a4d30adbcaea12272.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.c6855e55e8f19a5982d1.js', array(), '1.0.0', 'screen, all');
+            wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',

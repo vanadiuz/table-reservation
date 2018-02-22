@@ -850,6 +850,22 @@ export default {
       }
     },
 
+    initCanvasObject (obj){
+
+      obj.lockMovementX = true; 
+      obj.lockMovementY = true; 
+      obj.lockScalingX = true;
+      obj.lockScalingY = true;
+      obj.lockUniScaling = true;
+      obj.lockRotation = true; 
+      obj.hasControls = false;
+      obj.hoverCursor = 'pointer';
+      obj.hasBorders = false;
+      obj.opacity = 0;
+      obj.selectable = false;
+      obj.evented = false;
+    },
+
     initCanvas () {
 
       let fillActive = this.fillActive
@@ -868,24 +884,41 @@ export default {
 
         let parsedInfo =  JSON.parse(this.canvasInitData);
 
-        let width = this.windowWidth;
-        if (width > parsedInfo.backgroundImage.width) {
-          width = parsedInfo.backgroundImage.width;
+
+        if (parsedInfo.backgroundImage == null ){
+
+          this.canvas.setHeight(300)
+          this.canvas.setWidth(200)
+
+          this.$toasted.show("ADD IMAGE!", { 
+            theme: "bubble", 
+            position: "top-center", 
+            duration : 30000,
+            className: 'toast',
+            containerClass: 'toast-container'
+          });
+
+          this.canvas.renderAll()
+
+        } else {
+
+          let width = this.windowWidth;
+          if (width > parsedInfo.backgroundImage.width) {
+            width = parsedInfo.backgroundImage.width;
+          }
+
+          if (width < this.minMobileWidth) {
+            width = this.windowHeight;
+          }
+
+          let scale = (width*0.85)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
+          this.canvas.setZoom(scale)
+          this.canvas.renderAll()
+
+          this.canvas.setHeight(parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale)
+          this.canvas.setWidth(parsedInfo.backgroundImage.width * parsedInfo.backgroundImage.scaleX * scale)
+          this.canvas.renderAll()
         }
-
-        if (width < this.minMobileWidth) {
-          width = this.windowHeight;
-        }
-
-        let scale = (width*0.85)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
-        this.canvas.setZoom(scale)
-        this.canvas.renderAll()
-
-        this.canvas.setHeight(parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale)
-        this.canvas.setWidth(parsedInfo.backgroundImage.width * parsedInfo.backgroundImage.scaleX * scale)
-        this.canvas.renderAll()
-        
-
 
         //add id to canvas objects and lock objects
         
@@ -893,59 +926,38 @@ export default {
         let counter = 0;
         let canvasObjectId = 0;
 
-        for(let i = 0; i < this.canvas.getObjects().length; i++){
+        for(let i = 0; i < this.canvas.getObjects().length; i+=3){
           
-          this.canvas.item(i).id = canvasObjectId;
-          counter ++;
+          this.canvas.item(i).id = this.canvas.item(i + 1).text;
+          this.canvas.item(i + 1).id = this.canvas.item(i + 1).text
+          this.canvas.item(i + 2).id = this.canvas.item(i + 1).text
 
-          this.canvas.item(i).lockMovementX = true; 
-          this.canvas.item(i).lockMovementY = true; 
-          this.canvas.item(i).lockScalingX = true;
-          this.canvas.item(i).lockScalingY = true;
-          this.canvas.item(i).lockUniScaling = true;
-          this.canvas.item(i).lockRotation = true; 
-          this.canvas.item(i).hasControls = false;
-          this.canvas.item(i).hoverCursor = 'pointer';
-          this.canvas.item(i).hasBorders = false;
-          this.canvas.item(i).opacity = 0;
-          this.canvas.item(i).selectable = false;
-          this.canvas.item(i).evented = false;
+          this.initCanvasObject (this.canvas.item(i))
+          this.initCanvasObject (this.canvas.item(i + 1))
+          this.initCanvasObject (this.canvas.item(i + 2))
+          
+          let tablePeople = [this.canvas.item(i+1).text, this.canvas.item(i+2).text]
+          this.canvas.item(i).name = tablePeople;
 
+          this.canvas.item(i).set({
+            fill: fillActive,
+            strokeWidth : 0,
+            opacity: 1
+          });
 
-          if (counter%5 === 0) {
+          this.canvas.item(i+1).set({
+            opacity: 1,
+            left: this.canvas.item(i).left + 10,
+            top: this.canvas.item(i).top + 10,
+            fontSize: 20,
+            fontWeight: 'bold'
+          });
 
-            let tablePeople = [this.canvas.item(i-4).text, this.canvas.item(i-3).text]
-            this.canvas.item(i).name = tablePeople;
+          this.canvas.item(i+2).set({
+            text: ''
+          });
 
-            this.canvas.item(i).set({
-              fill: fillActive,
-              strokeWidth : 0,
-              opacity: 1
-            });
-
-            this.canvas.item(i-4).set({
-              opacity: 1,
-              left: this.canvas.item(i).left-this.canvas.item(i).width/2 + 8,
-              top: this.canvas.item(i).top-this.canvas.item(i).height/2 + 8,
-              fontSize: 20,
-              fontWeight: 'bold'
-            });
-
-            this.canvas.item(i-2).set({
-              fontFamily:"trem-reservation",
-              text:"",
-              left: this.canvas.item(i).left+this.canvas.item(i).width/2 - 25,
-              top: this.canvas.item(i).top+this.canvas.item(i).height/2 - 25 ,
-              fontSize: 20
-            });
-
-            this.canvas.item(i-2).moveTo(i)
-            this.canvas.item(i-4).moveTo(i)
-            // this.canvas.item(i).moveTo(i-4)
-
-            this.canvas.renderAll()
-            canvasObjectId++;
-          }
+          this.canvas.renderAll()
         }
 
         var _self = this;
@@ -968,7 +980,7 @@ export default {
         this.canvas.on('mouse:out', function(e) {
           if (e.target != null) {
             if ((e.target.fill === fillHover)  && (e.target.type === 'rect')) {
-              if (_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+1).opacity != 1) {
+              if (_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).opacity != 1) {
                 e.target.set({
                   fill: fillActive
                 });
@@ -1004,7 +1016,7 @@ export default {
                 _self.canvas.item(i).set({
                   fill: fillActive
                 });
-                _self.canvas.item(i+1).set({
+                _self.canvas.item(i+2).set({
                   opacity: 0
                 });
               }
@@ -1017,7 +1029,7 @@ export default {
                 fill: fillHover
               });
 
-              _self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+1).set({
+              _self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).set({
                 opacity: 1
               });
               
@@ -1025,17 +1037,12 @@ export default {
               _self.persons = e.target.name[1];
               _self.maxPersons = e.target.name[1];
             }
-
+            
             if (e.target.type === 'text') {
               let index = _self.canvas.getObjects().indexOf(e.target)
 
               _self.canvas.item(index-1).set({
                 fill: fillHover
-              });
-
-              e.target.set({
-                fontFamily:"trem-reservation",
-                text:""
               });
 
               _self.table = _self.canvas.item(index-1).name[0];
@@ -1107,7 +1114,7 @@ export default {
 
     disableTable () {
       
-      for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
+      for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
         if (this.disabledTables.includes(this.canvas.item(i).name[0])) {
           this.canvas.item(i).set({
             fill: this.fillBooked,
@@ -1119,7 +1126,7 @@ export default {
               fill: this.fillBooked,
               evented: false
             });
-            this.canvas.item(i+1).set({
+            this.canvas.item(i+2).set({
               opacity: 0
             });
             this.table = ''
@@ -1142,12 +1149,12 @@ export default {
 
     selectTable () {
       
-      for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
+      for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
         if (this.canvas.item(i).name[0] === this.table) {
           this.canvas.item(i).set({
             fill: this.fillHover
           });
-          this.canvas.item(i+1).set({
+          this.canvas.item(i+2).set({
             opacity: 1
           });
         }
@@ -1159,7 +1166,7 @@ export default {
 
         if (this.canvas !== ''){
             if ((this.date !== '') && (this.timeEnd !== '') && (this.timeStart !== '')) {
-              for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
+              for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
 
                 if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) { 
 
@@ -1171,14 +1178,14 @@ export default {
               }
               this.canvas.renderAll()
             } else {
-              for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
+              for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
 
                 if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) {
 
                   this.canvas.item(i).set({
                     evented: false
                   });
-                  this.canvas.item(i+1).set({
+                  this.canvas.item(i+2).set({
                     opacity: 0
                   });
                 }

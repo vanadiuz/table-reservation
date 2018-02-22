@@ -5,6 +5,7 @@ jQuery(document).ready(function ($) {
   });
   canvas.setHeight(window.innerHeight);
   canvas.setWidth($('#tremtr_main_metabox').width() - 24);
+  canvas.defaultCursor = 'crosshair'
 
   var canvasObjectId = 0;
 
@@ -12,8 +13,6 @@ jQuery(document).ready(function ($) {
   var isDown = '';
   var originX = '';
   var originY = '';
-
-  var state = false;
 
   var currentElement = '';
 
@@ -25,76 +24,44 @@ jQuery(document).ready(function ($) {
 
   var sortedTablesAfterLoad = [];
 
-  // initial state 
 
-  $(document).ready(function () {
-    $('#add').trigger('click');
-  });
+canvas.observe('mouse:down', function (o) {
 
-  // toogle button
+  if (o.target != null) {
 
-  $("#edit").click(function () {
-    if (state) {
+    var objId = o.target.id;
+    var item = '';
 
-      canvas.defaultCursor = 'crosshair';
+    $.each(canvas.getObjects(), function (i) {
 
-      canvas.isDrawingMode = false;
-      canvas.off('mouse:down');
-      canvas.off('mouse:move');
-      canvas.off('mouse:up');
+      if (Number(objId) === Number(canvas.item(i).id)) {
+        item = i;
+        return false;
+      }
+    });
 
-      canvas.forEachObject(function (o) {
-        if (o.get('type') === 'rect') {
-          o.setCoords();
-          o.lockMovementX = false;
-          o.lockMovementY = false;
-          o.lockScalingX = false;
-          o.lockScalingY = false;
-          o.lockUniScaling = false;
-          o.lockRotation = false;
-          o.hasControls = true;
-          o.hoverCursor = 'move';
-          o.hasBorders = true;
-          o.borderColor = 'red';
-          o.cornerColor = 'green';
-          o.cornerSize = 10;
-          o.transparentCorners = false;
-        } else {
-          o.setCoords();
-          o.lockMovementX = true;
-          o.lockMovementY = true;
-          o.lockScalingX = true;
-          o.lockScalingY = true;
-          o.lockUniScaling = true;
-          o.lockRotation = true;
-          o.hasControls = false;
-          o.hoverCursor = 'pointer';
-          o.hasBorders = false;
-          o.borderColor = 'red';
-          o.cornerColor = 'green';
-          o.cornerSize = 10;
-          o.transparentCorners = false;
-        }
-      })
+    canvas.set({
+      _activeObject: canvas.item(item)
+    });
 
-      canvas.observe('mouse:down', function (o) {
-
-        if (mouseOverObject === null) {
-
-          $('#add').trigger('click');
-
-          return false;
-        }
-      })
-    }
-  })
-
-  $("#add").click(function () {
-
-    if (!state) {
-      canvas.defaultCursor = 'crosshair';
-
-      canvas.forEachObject(function (o) {
+    canvas.forEachObject(function (o) {
+      if (o.get('type') === 'rect') {
+        o.setCoords();
+        o.lockMovementX = false;
+        o.lockMovementY = false;
+        o.lockScalingX = false;
+        o.lockScalingY = false;
+        o.lockUniScaling = false;
+        o.lockRotation = false;
+        o.hasControls = true;
+        o.hoverCursor = 'pointer';
+        o.hasBorders = true;
+        o.borderColor = 'red';
+        o.cornerColor = 'green';
+        o.cornerSize = 10;
+        o.transparentCorners = false;
+      } else {
+        o.setCoords();
         o.lockMovementX = true;
         o.lockMovementY = true;
         o.lockScalingX = true;
@@ -104,266 +71,235 @@ jQuery(document).ready(function ($) {
         o.hasControls = false;
         o.hoverCursor = 'pointer';
         o.hasBorders = false;
-      })
+        o.borderColor = 'red';
+        o.cornerColor = 'green';
+        o.cornerSize = 10;
+        o.transparentCorners = false;
+      }
+    })
 
-      canvas.observe('mouse:down', function (o) {
+    canvas.renderAll();
 
-        if ((mouseOverObject != null) && (mouseOverObject.containsPoint(canvas.getPointer(o.e)))) {
+    
+  } else {
 
-          $('#edit').trigger('click');
+    isDown = true;
+    var pointer = canvas.getPointer(o.e);
+    origX = pointer.x;
+    origY = pointer.y;
 
-          var objId = mouseOverObject.id;
-          var item = '';
+    var circleId = nextTableNumber()
 
-          $.each(canvas.getObjects(), function (i) {
+    circle = new fabric.Rect({
+      left: origX,
+      top: origY,
+      rx: 10,
+      ry: 10,
+      strokeWidth: 1,
+      stroke: 'black',
+      fill: 'transparent',
+      selectable: true,
+      name: [circleId, 1],
+      id: circleId,
+      lockMovementX: true,
+      lockMovementY: true,
+      lockScalingX: true,
+      lockScalingY: true,
+      lockUniScaling: true,
+      lockRotation: true,
+      hasControls: false,
+      hoverCursor: 'pointer',
+      hasBorders: false
+    });
 
-            if (Number(objId) === Number(canvas.item(i).id)) {
-              item = i;
-              return false;
-            }
-          });
+    canvas.add(circle);
 
-          canvas.set({
-            _activeObject: canvas.item(item)
-          });
+    mouseOverObject = circle;
+    justCreated = circle;
+
+    canvas.renderAll();
+  }
+});
+
+canvas.observe('mouse:move', function (o) {
+
+  if (!(isDown)) return;
+  var pointer = canvas.getPointer(o.e);
+
+  if (origX > pointer.x) {
+    justCreated.set({
+      left: Math.abs(pointer.x)
+    });
+  }
+  if (origY > pointer.y) {
+    justCreated.set({
+      top: Math.abs(pointer.y)
+    });
+  }
+
+  justCreated.set({
+    width: Math.abs(origX - pointer.x)
+  });
+  justCreated.set({
+    height: Math.abs(origY - pointer.y)
+  });
+
+  justCreated.setCoords()
+
+
+  canvas.renderAll();
+
+});
+
+canvas.on('mouse:up', function (o) {
+
+  isDown = false;
+
+  if ((circle.width < 30 || circle.height < 30) && circle === justCreated) {
+
+    $.each(canvas.getObjects(), function (i) {
+
+      if (Number(circle.id) === Number(canvas.item(i).id)) {
+
+        addMissedTable(circle.id)
+
+        canvas.remove(canvas.item(i));
+        canvas.renderAll();
+
+        return false;
+      }
+    });
+
+  } else if (circle === justCreated) {
+
+    var table = new fabric.Text(circle.name[0].toString(), {
+      fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+      fontSize: 25,
+      id: justCreated.id,
+      top: circle.top + 10,
+      left: circle.left + 10,
+      selectable: false,
+      lockMovementX: true,
+      lockMovementY: true,
+      lockScalingX: true,
+      lockScalingY: true,
+      lockUniScaling: true,
+      lockRotation: true,
+      hasControls: false,
+      evented: false
+    });
+
+    var people = new fabric.Text(circle.name[1].toString(), {
+      fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+      fontSize: 25,
+      id: justCreated.id,
+      top: circle.top,
+      left: circle.left + 20,
+      selectable: false,
+      opacity: 0,
+      lockMovementX: true,
+      lockMovementY: true,
+      lockScalingX: true,
+      lockScalingY: true,
+      lockUniScaling: true,
+      lockRotation: true,
+      hasControls: false,
+      evented: false
+    });
+
+    canvas.add(table);
+    canvas.add(people);
+
+    var b = circle.name[1];
+    var html = '<li id="' + circle.id + '"> <i class="fa fa-circle " style="color: white;"></i> <span class="table" >' + circle.name[0] + '</span>  <input type="number" name="people" min="1" step="1" value="' + b + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(circle.width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(circle.height) + '"> <button class="trem-remove" ><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
+
+    if ($("#control-items").children('li').length !== 0) {
+      if (Number(circle.id) < Number($("#control-items").children('li')[0].id)) {
+        $("#control-items").prepend(html)
+      } else {
+        $(html).insertAfter($("#control-items").find('#' + (Number(circle.id) - 1)));
+      }
+    } else {
+      $("#control-items").append(html)
+    }
+
+
+    $(".trem-remove").click(function (event) {
+      event.preventDefault();
+
+      var objId = $(this).closest('li').attr('id');
+
+      $(this).parent().remove();
+
+      $.each(canvas.getObjects(), function (i) {
+
+        if (Number(objId) === Number(canvas.item(i).id)) {
+          canvas.remove(canvas.item(i + 2));
+          canvas.remove(canvas.item(i + 1));
+          canvas.remove(canvas.item(i));
           canvas.renderAll();
+
+          addMissedTable(objId)
 
           return false;
         }
+      });
+    });
 
-        isDown = true;
-        var pointer = canvas.getPointer(o.e);
-        origX = pointer.x;
-        origY = pointer.y;
+    $('input[name="people"]').change(function () {
+      
+      var objId = $(this).parent('li').attr('id');
+      var newVal = $(this).val();
 
-        var circleId = nextTableNumber()
+      $.each(canvas.getObjects(), function (i) {
 
-        circle = new fabric.Rect({
-          left: origX,
-          top: origY,
-          rx: 10,
-          ry: 10,
-          strokeWidth: 1,
-          stroke: 'black',
-          fill: 'transparent',
-          selectable: true,
-          name: [circleId, 1],
-          id: circleId,
-          lockMovementX: true,
-          lockMovementY: true,
-          lockScalingX: true,
-          lockScalingY: true,
-          lockUniScaling: true,
-          lockRotation: true,
-          hasControls: false,
-          hoverCursor: 'pointer',
-          hasBorders: false
-        });
-
-        canvas.add(circle);
-
-        mouseOverObject = circle;
-        justCreated = circle;
-
-        canvas.renderAll();
+        if (Number(objId) === Number(canvas.item(i).id)) {
+          canvas.item(i + 2).text = newVal
+          canvas.item(i).name[1] = Number(newVal);
+          canvas.renderAll();
+          return false;
+        }
       });
 
-      canvas.observe('mouse:move', function (o) {
+    });
 
-        if (!(isDown)) return;
-        var pointer = canvas.getPointer(o.e);
 
-        if (origX > pointer.x) {
-          justCreated.set({
-            left: Math.abs(pointer.x)
+    $('input[name="width"]').change(function () {
+      var objId = $(this).parent('li').attr('id');
+      var newVal = $(this).val();
+      $.each(canvas.getObjects(), function (i) {
+
+        if (Number(objId) === Number(canvas.item(i).id)) {
+          canvas.item(i).set({
+            width: Number(newVal)
           });
+          canvas.renderAll();
+          return false;
         }
-        if (origY > pointer.y) {
-          justCreated.set({
-            top: Math.abs(pointer.y)
-          });
-        }
-
-        justCreated.set({
-          width: Math.abs(origX - pointer.x)
-        });
-        justCreated.set({
-          height: Math.abs(origY - pointer.y)
-        });
-
-
-        canvas.renderAll();
-
       });
 
-      canvas.on('mouse:up', function (o) {
+    });
 
-        isDown = false;
+    $('input[name="height"]').change(function () {
+      var objId = $(this).parent('li').attr('id');
+      var newVal = $(this).val();
+      $.each(canvas.getObjects(), function (i) {
 
-        if (circle.width < 30 || circle.height < 30) {
-
-          $.each(canvas.getObjects(), function (i) {
-
-            if (Number(circle.id) === Number(canvas.item(i).id)) {
-
-              addMissedTable(circle.id)
-
-              canvas.remove(canvas.item(i));
-              canvas.renderAll();
-
-              return false;
-            }
+        if (Number(objId) === Number(canvas.item(i).id)) {
+          canvas.item(i).set({
+            height: Number(newVal)
           });
-
-        } else if (circle === justCreated) {
-
-          var table = new fabric.Text(circle.name[0].toString(), {
-            fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-            fontSize: 25,
-            id: justCreated.id,
-            top: circle.top + 10,
-            left: circle.left + 10,
-            selectable: false,
-            lockMovementX: true,
-            lockMovementY: true,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockUniScaling: true,
-            lockRotation: true,
-            hasControls: false,
-            evented: false
-          });
-
-          var people = new fabric.Text(circle.name[1].toString(), {
-            fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-            fontSize: 25,
-            id: justCreated.id,
-            top: circle.top,
-            left: circle.left + 20,
-            selectable: false,
-            opacity: 0,
-            lockMovementX: true,
-            lockMovementY: true,
-            lockScalingX: true,
-            lockScalingY: true,
-            lockUniScaling: true,
-            lockRotation: true,
-            hasControls: false,
-            evented: false
-          });
-
-          canvas.add(table);
-          canvas.add(people);
-
-          var b = circle.name[1];
-          var html = '<li id="' + circle.id + '"> <i class="fa fa-circle " style="color: white;"></i> <span class="table" >' + circle.name[0] + '</span>  <input type="number" name="people" min="1" step="1" value="' + b + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(circle.width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(circle.height) + '"> <button class="trem-remove" ><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
-          
-          if ($("#control-items").children('li').length !== 0) {
-            if (Number(circle.id) < Number($("#control-items").children('li')[0].id)) {
-              $("#control-items").prepend(html)
-            } else {
-              $(html).insertAfter($("#control-items").find('#' + (Number(circle.id) - 1)));
-            }
-          } else {
-            $("#control-items").append(html)
-          }
-
-
-          $(".trem-remove").click(function (event) {
-            event.preventDefault();
-
-            var objId = $(this).closest('li').attr('id');
-
-            $(this).parent().remove();
-
-            $.each(canvas.getObjects(), function (i) {
-
-              if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.remove(canvas.item(i + 2));
-                canvas.remove(canvas.item(i + 1));
-                canvas.remove(canvas.item(i));
-                canvas.renderAll();
-                
-                addMissedTable(objId)
-
-                return false;
-              }
-            });
-          });
-
-          $('input[name="people"]').change(function () {
-            var objId = $(this).parent('li').attr('id');
-            var newVal = $(this).val();
-
-            $.each(canvas.getObjects(), function (i) {
-
-              if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i + 2).text = newVal
-                canvas.item(i).name[1] = Number(newVal);
-                canvas.renderAll();
-                return false;
-              }
-            });
-            $('#edit').trigger('click');
-          });
-
-
-          $('input[name="width"]').change(function () {
-            var objId = $(this).parent('li').attr('id');
-            var newVal = $(this).val();
-            $.each(canvas.getObjects(), function (i) {
-
-              if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i).set({
-                  width: Number(newVal)
-                });
-                canvas.renderAll();
-                return false;
-              }
-            });
-            $('#edit').trigger('click');
-          });
-
-          $('input[name="height"]').change(function () {
-            var objId = $(this).parent('li').attr('id');
-            var newVal = $(this).val();
-            $.each(canvas.getObjects(), function (i) {
-
-              if (Number(objId) === Number(canvas.item(i).id)) {
-                canvas.item(i).set({
-                  height: Number(newVal)
-                });
-                canvas.renderAll();
-                return false;
-              }
-            });
-            $('#edit').trigger('click');
-          });
-          
-          justCreated = null;
+          canvas.renderAll();
+          return false;
         }
-
-
-
-
-        $('#edit').trigger('click');
-        $('#add').trigger('click');
       });
 
-    }
-  });
+    });
 
-  $("#edit").click(function () {
-    if (state === true) {
-      state = !state;
-    }
-  });
+    justCreated = null;
+  }
+});
 
-  $("#add").click(function () {
-    if (state === false) {
-      state = !state;
-    }
-  });
 
   //find next table number
   function nextTableNumber () {
@@ -372,8 +308,6 @@ jQuery(document).ready(function ($) {
 
       var next = missedTables[0]
       missedTables.shift()
-
-      console.log(missedTables)
 
       return next
 
@@ -403,8 +337,6 @@ jQuery(document).ready(function ($) {
     tables.sort(function (a, b) {
       return a - b
     });
-
-    console.log(tables)
 
     for (let i = 0; i < canvas.getObjects().length; i++) {
       var diff = Number(tables[i + 1]) - Number(tables[i]) - 1
@@ -437,7 +369,6 @@ jQuery(document).ready(function ($) {
     var value = Number(id);
 
     missedTables.splice(_.sortedIndex(missedTables, value), 0, value);
-    console.log(missedTables);
   }
 
 
@@ -681,7 +612,6 @@ jQuery(document).ready(function ($) {
 
       for (let k = 0; k < sortedTablesAfterLoad.length; k++) {
         $.each(canvas.getObjects(), function (i) {
-          console.log(i)
           if (canvas.item(i).get('type') === 'rect' && canvas.item(i + 1).text == sortedTablesAfterLoad[k]) {
 
             var tablePeople = [canvas.item(i + 1).text, canvas.item(i + 2).text]
@@ -734,7 +664,7 @@ jQuery(document).ready(function ($) {
             return false;
           }
         });
-        $('#edit').trigger('click');
+
       });
 
 
@@ -751,7 +681,7 @@ jQuery(document).ready(function ($) {
             return false;
           }
         });
-        $('#edit').trigger('click');
+
       });
 
       $('input[name="height"]').change(function () {
@@ -767,7 +697,7 @@ jQuery(document).ready(function ($) {
             return false;
           }
         });
-        $('#edit').trigger('click');
+
       });
 
 
@@ -798,6 +728,13 @@ jQuery(document).ready(function ($) {
     $('#tremtr_content').val(JSON.stringify(canvas));
 
 
+  });
+
+  //prevent enter
+  $("#control-items").bind("keypress", function (e) {
+    if (e.keyCode == 13) {
+      return false;
+    }
   });
 
 });

@@ -418,7 +418,6 @@ Table N{table} for {persons} Persons
 				'description'   => __( 'Select how early customers can make their reservation. (Administrators and Reservation Managers are not restricted by this setting.)', 'tremtr' ),
 				'blank_option'	=> false,
 				'options'       => array(
-					''		=> __( 'Any time', 'tremtr' ),
 					'1' 	=> __( 'From 1 day in advance', 'tremtr' ),
 					'7' 	=> __( 'From 1 week in advance', 'tremtr' ),
 					'14' 	=> __( 'From 2 weeks in advance', 'tremtr' ),

@@ -34,7 +34,9 @@
   
   
     .trem-reservation .hint{
-      margin: auto;
+      height: auto;
+
+      margin: 0 auto;
   
       display: flex;
       flex-flow: column;
@@ -297,7 +299,7 @@
                    }
   
       .trem-reservation .reservation3{
-        height: 300px;
+        height: 100%;
         width: 100%;
   
         margin: auto;
