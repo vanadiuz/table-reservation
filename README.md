@@ -13,14 +13,6 @@
   <a href="https://true-emotions.studio/">
     <img alt="True Emotions Studio" title="We are" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
   </a>
-  
-  <a href="https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI">
-    <img alt="Chat" title="Chat" src="http://true-emotions.studio/wp-content/uploads/2018/01/slack-e1516318903115.png" width="150">
-  </a>
-
-  <a href="https://trello.com/b/BdGT06ts">
-    <img alt="Road map" title="Road map" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo-blue-lg-300x95.png" width="150">
-  </a>
 </p>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
