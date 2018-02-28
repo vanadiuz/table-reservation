@@ -432,13 +432,23 @@ export default {
           }
         }
 
+        if (Number(timeFinish.substr(0, timeFinish.indexOf(':')))  < Number(timeStart.substr(0, timeStart.indexOf(':')))) {
+          this.$toasted.show("closing time should not be after 24:00 hours!🤷‍♂️", { 
+            theme: "primary", 
+            position: "top-center", 
+            duration : 30000,
+            className: 'toast',
+            containerClass: 'toast-container'
+          });
+        } 
+
         this.openHoursStart = timeStart;
         this.openHoursEnd = timeFinish;
 
         moment.locale(this.calendarTimeInitData.translation.calendar)
         if (moment().date() === moment(this.date, this.momentDateFormat).locale('en').date()) {
           let time = moment(timeStart, this.dbTimeFormatForMoment)
-
+          
           if (Number(time.hours()) <= Number(moment().hours())) {
             time = moment()
             let addMinutes = Number(this.calendarTimeInitData.late_reservations) 

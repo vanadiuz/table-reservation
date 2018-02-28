@@ -686,6 +686,7 @@ class sapAdminPageSettingScheduler_2_1_0 extends sapAdminPageSetting_2_1_0 {
 				}
 			}
 
+
 			if ( !empty( $rule['time']['start'] ) ) {
 				$output[$i]['time']['start'] = call_user_func( $this->sanitize_callback, $rule['time']['start'] );
 			}

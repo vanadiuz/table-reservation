@@ -88,6 +88,7 @@ class TREMtrReservation {
 		}
     }
 
+	
 	public function get_table_reservations( $date = '', $table = '' ) {
 
 	    $time_arr = array();
@@ -105,7 +106,8 @@ class TREMtrReservation {
                         'value' => $table,
                     )
                 )
-            );
+			);
+
 
             $query = new WP_Query($args_arr);
             if ( $query->have_posts() ) {
@@ -124,6 +126,7 @@ class TREMtrReservation {
 
         return $time_arr;
 	}
+
 
 	/**
 	 * Store metadata for post

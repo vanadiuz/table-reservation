@@ -15,7 +15,6 @@ if (!defined('ABSPATH')) {
 }
 
 
-
 if (!class_exists('TREMTableReservation')) :
 
     class TREMTableReservation {
@@ -55,12 +54,11 @@ if (!class_exists('TREMTableReservation')) :
 
             add_shortcode( 'table-reservation', array($this, 'tremtr_shortcode_output') );
 
-
             //Delete irrelevant reservations with wp-cron
             register_activation_hook( __FILE__, 'tremtr_activation_delete_irrelevant_reservations' );
             function tremtr_activation_delete_irrelevant_reservations() {
                 if (! wp_next_scheduled ( 'tremtr_daily_cleaning_event')) {
-                    wp_schedule_event( time(), 'twicedaily', 'tremtr_daily_cleaning_event');
+                    wp_schedule_event( time(), 'daily', 'tremtr_daily_cleaning_event');
                 }
             }
             add_action( 'tremtr_daily_cleaning_event', array($this, 'delete_old_table_reservations'), 10, 0);
@@ -71,17 +69,16 @@ if (!class_exists('TREMTableReservation')) :
             }
 
         }
-
+        
         function tremtr_common_styles_and_scripts(){
         
             wp_register_script('tremtr-fontawesome', TREMTR_PLUGIN_URL . '/assets/js/fontawesome.js');
             wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
         }
 
-
         //Delete irrelevant reservations with wp-cron
         public function delete_old_table_reservations() {
-            $query = new WP_Query(array('nopaging' => true, 'post_type' => 'trem-reservation'));
+            $query = new WP_Query(array('post_type' => 'trem-reservation'));
             if ( $query->have_posts() ) {
                 $i=0;
                 while( $query->have_posts() ) {
@@ -94,7 +91,7 @@ if (!class_exists('TREMTableReservation')) :
             }
             wp_reset_query();
         }
-
+       
 
         // Register tremtr post type
         public function tremtr_post_type_init() {
@@ -227,7 +224,9 @@ if (!class_exists('TREMTableReservation')) :
                 if( !empty($table_reservs) ){
                     foreach($table_reservs as $val){
                         if( $this->reservation->reservation_time_end != '' && $val['time_end'] != '' && $this->reservation->reservation_time_begin != '' && $val['time_begin'] != '' ) {
-                            if( $val['time_begin'] >= $this->reservation->reservation_time_begin && $val['time_end'] <= $this->reservation->reservation_time_end ){
+                            if( $val['time_begin'] <= $this->reservation->reservation_time_begin && $val['time_end'] >= $this->reservation->reservation_time_end ){
+                                wp_send_json_error(array('error' => 'not_free1'));
+                            } elseif( $val['time_begin'] >= $this->reservation->reservation_time_begin && $val['time_end'] <= $this->reservation->reservation_time_end ){
                                 wp_send_json_error(array('error' => 'not_free2'));
                             } elseif( $val['time_begin'] <= $this->reservation->reservation_time_begin && $val['time_end'] >= $this->reservation->reservation_time_begin ){
                                 wp_send_json_error(array('error' => 'not_free3'));
@@ -368,10 +367,10 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.5cb6e111ad30036e60be.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.be2e7daf831da040aaca.js', array(), '1.0.0', 'screen, all');
-            wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.5cb6e111ad30036e60be.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.be2e7daf831da040aaca.js', array(), '1.0.0', 'screen, all');
+            //wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',
