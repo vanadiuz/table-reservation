@@ -34,7 +34,7 @@
 
 ## Introduction :wave:
 
-This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Also it can be used for coworking, internet cafe (cybercafe) and night club. Undoubtedly, its simplicity and beauty will increase the attendance of your place. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
+This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Also it can be used for coworking, internet cafe (cybercafe) and night club.
 
 <p align="center">
   <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
