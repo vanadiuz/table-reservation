@@ -13,14 +13,6 @@
   <a href="https://true-emotions.studio/">
     <img alt="True Emotions Studio" title="We are" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
   </a>
-  
-  <a href="https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI">
-    <img alt="Chat" title="Chat" src="http://true-emotions.studio/wp-content/uploads/2018/01/slack-e1516318903115.png" width="150">
-  </a>
-
-  <a href="https://trello.com/b/BdGT06ts">
-    <img alt="Road map" title="Road map" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo-blue-lg-300x95.png" width="150">
-  </a>
 </p>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -42,7 +34,7 @@
 
 ## Introduction :wave:
 
-This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Undoubtedly, its simplicity and beauty will increase the attendance of your place. Built with Vue and Wordpress is the most feature-rich WP Table Reservation Plugin that is 100% free.
+This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Also it can be used for coworking, internet cafe (cybercafe) and night club.
 
 <p align="center">
   <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
@@ -69,7 +61,6 @@ A few of the things you can do with Table Reservation:
 
 Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issues/new). Feature requests are always welcome.
 
-If there's anything you'd like to chat about, please feel free to join our [Slack chat](https://join.slack.com/t/table-reservation/shared_invite/enQtMzAxMjUwMjk5ODYwLTFkYWEzYjBhODAwNmY3NTcyY2M4NWYxZmMzNTAwMWZhYmZhZWM3Nzc4NThkYzU1NDkzMjk0ZWRmYzY2ODcyYmI)!
 
 ## Build Process :hammer:
 
