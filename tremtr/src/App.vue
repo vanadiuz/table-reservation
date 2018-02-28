@@ -890,7 +890,12 @@ export default {
         // get body data 
         this.canvasInitData = response.body[0].tremtr_content
 
-        this.canvas = new fabric.Canvas('cc', { selection: false })
+        this.canvas = new fabric.Canvas('cc', { 
+          selection: false,
+          controlsAboveOverlay:true,
+          centeredScaling:true,
+          allowTouchScrolling: true
+        })
 
         this.canvas.loadFromJSON(this.canvasInitData);
 
@@ -1002,6 +1007,8 @@ export default {
             e.target.canvas.renderAll();
           }
         });
+
+
         
         _self.canvas.observe('mouse:down',function(e) {
 
