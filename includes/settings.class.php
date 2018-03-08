@@ -228,22 +228,6 @@ Table N{table} for {persons} Persons
 			)
 		);
 
-//		$sap->add_setting(
-//			'tremtr-settings',
-//			'tremtr-general',
-//			'select',
-//			array(
-//				'id'            => 'require-phone',
-//				'title'         => __( 'Require Phone', 'tremtr' ),
-//				'description'   => __( "Don't accept reservation requests without a phone number.", 'tremtr' ),
-//				'blank_option'	=> false,
-//				'options'       => array(
-//					'' => __( 'No', 'tremtr' ),
-//					'1' => __( 'Yes', 'tremtr' ),
-//				),
-//			)
-//		);
-
 		$sap->add_setting(
 			'tremtr-settings',
 			'tremtr-general',
@@ -436,34 +420,16 @@ Table N{table} for {persons} Persons
 				'description'   => __( 'Select how late customers can make their reservation. (Administrators and Reservation Managers are not restricted by this setting.)', 'tremtr' ),
 				'blank_option'	=> false,
 				'options'       => array(
-					'' 	       => __( 'Up to the last minute', 'tremtr' ),
+					'0' 	   => __( 'Up to the last minute', 'tremtr' ),
 					'15'       => __( 'At least 15 minutes in advance', 'tremtr' ),
 					'30'       => __( 'At least 30 minutes in advance', 'tremtr' ),
 					'45'       => __( 'At least 45 minutes in advance', 'tremtr' ),
 					'60'       => __( 'At least 1 hour in advance', 'tremtr' ),
 					'240'      => __( 'At least 4 hours in advance', 'tremtr' ),
-					'1440'     => __( 'At least 24 hours in advance', 'tremtr' ),
-					'same_day' => __( 'Block same-day reservations', 'tremtr' ),
 				)
 			)
 		);
 
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'select',
-			array(
-				'id'			=> 'date-onload',
-				'title'			=> __( 'Date Pre-selection', 'tremtr' ),
-				'description'	=> __( 'When the reservation form is loaded, should it automatically attempt to select a valid date?', 'tremtr' ),
-				'blank_option'	=> false,
-				'options'       => array(
-					'' 			=> __( 'Select today if valid', 'tremtr' ),
-					'soonest'	=> __( 'Select today or next valid date', 'tremtr' ),
-					'empty' 	=> __( 'Leave empty', 'tremtr' ),
-				)
-			)
-		);
 
 		$sap->add_setting(
 			'tremtr-settings',
@@ -475,10 +441,29 @@ Table N{table} for {persons} Persons
 				'description'	=> __( 'Select the number of minutes between each available time.', 'tremtr' ),
 				'blank_option'	=> false,
 				'options'       => array(
-					'' 			=> __( 'Every 30 minutes', 'tremtr' ),
+					'30' 		=> __( 'Every 30 minutes', 'tremtr' ),
 					'15' 		=> __( 'Every 15 minutes', 'tremtr' ),
-					'10' 		=> __( 'Every 10 minutes', 'tremtr' ),
-					'5' 		=> __( 'Every 5 minutes', 'tremtr' ),
+					'60' 		=> __( 'Every 60 minutes', 'tremtr' ),
+				)
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'tremtr-schedule',
+			'select',
+			array(
+				'id'			=> 'reservation-duration',
+				'title'			=> __( 'Reservation Duration', 'tremtr' ),
+				'description'	=> __( 'Select the duration of one reservation (i.e how long you clients will stay by you).', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'30' 		=> __( '30 minutes', 'tremtr' ),
+					'60' 		=> __( '1 Hour', 'tremtr' ),
+					'90' 		=> __( '1 Hour and 30 minutes', 'tremtr' ),
+					'120' 		=> __( '2 Hour', 'tremtr' ),
+					'180' 		=> __( '3 Hour', 'tremtr' ),
+					'end' 		=> __( 'To the closing', 'tremtr' ),
 				)
 			)
 		);
@@ -633,18 +618,6 @@ Table N{table} for {persons} Persons
 				'default'		=> $this->defaults['template-rejected-user'],
 			)
 		);
-
-		// $sap->add_setting(
-		// 	'tremtr-settings',
-		// 	'tremtr-notifications-templates',
-		// 	'text',
-		// 	array(
-		// 		'id'			=> 'subject-admin-notice',
-		// 		'title'			=> __( 'Admin Update Subject', 'tremtr' ),
-		// 		'description'	=> sprintf( __( 'The email subject a user should receive when an admin sends them a custom email message from the %sreservations panel%s.', 'tremtr' ), '<a href="' . admin_url( '?page=tremtr-reservations' ) . '">', '</a>' ),
-		// 		'placeholder'	=> $this->defaults['subject-admin-notice'],
-		// 	)
-		// );
 
 		$sap = apply_filters( 'tremtr_settings_page', $sap );
 
@@ -823,9 +796,6 @@ Table N{table} for {persons} Persons
 				'{date}'			=> __( '* Date and time of the reservation', 'tremtr' ),
 				'{phone}'			=> __( 'Phone number if supplied with the request', 'tremtr' ),
 				'{message}'			=> __( 'Message added to the request', 'tremtr' ),
-				// '{reservations_link}'	=> __( 'A link to the admin panel showing confirmed reservations', 'tremtr' ),
-				// '{confirm_link}'	=> __( 'A link to confirm this reservation. Only include this in admin notifications', 'tremtr' ),
-				// '{close_link}'		=> __( 'A link to reject this reservation. Only include this in admin notifications', 'tremtr' ),
 				'{site_name}'		=> __( 'The name of this website', 'tremtr' ),
 				'{site_link}'		=> __( 'A link to this website', 'tremtr' ),
 				'{current_time}'	=> __( 'Current date and time', 'tremtr' ),

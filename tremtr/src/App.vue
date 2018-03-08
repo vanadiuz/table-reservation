@@ -14,17 +14,11 @@
                   <flat-pickr :config="dateConfig" :placeholder="date" v-model="date" input-class="input"></flat-pickr>
                   <span class="trem-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
                 </div>
-                <span class="opening-hours" :style="[isDissableDate ? {opacity: 0} : '']">{{calendarTimeInitData.translation.workingHoursOpen}} {{openHoursStart}} - {{openHoursEnd}}</span>
-                <label :style="[isDissableDate ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.startTime}}</label>
-                <div class="form-element" :style="[isDissableDate ? {opacity: 0.5} : '']" >  
-                  <flat-pickr :config="startTimeConfig" v-model="timeStart" input-class="input"></flat-pickr>
-                  <span class="trem-icon tremtr-icon-uniF10E" aria-hidden="true"></span>
-                </div>
-                <label :style="[isDissableStartTime ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.endTime}}</label>
-                <div class="form-element" :style="[isDissableStartTime ? {opacity: 0.5} : '']" >  
-                  <flat-pickr :config="finishTimeConfig" v-model="timeEnd" input-class="input"></flat-pickr>
-                  <span class="trem-icon tremtr-icon-uniF10C" aria-hidden="true"></span>
-                </div>
+                <carousel :navigationEnabled="true" :paginationEnabled="false" :perPage="4" :navigationNextLabel="caruselNavNext" :navigationPrevLabel="caruselNavPrev">
+                  <slide v-for="(workingTime, i) of arrayOfWorkingTimes" :key="workingTime" >
+                    <div  @click="test($event)" :index="i">{{workingTime}}</div>
+                  </slide>
+                </carousel>
                 <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
                 <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
             </div>
@@ -58,10 +52,6 @@
                   <div class="form-element from">
                     <h4>{{calendarTimeInitData.translation.from}}</h4>
                     <h4>{{timeStart}}</h4>
-                  </div>
-                  <div class="form-element till">
-                    <h4>{{calendarTimeInitData.translation.to}}</h4>
-                    <h4>{{timeEnd}}</h4>
                   </div>
                   <div class="form-element cafe">
                     <h4>{{calendarTimeInitData.translation.in}}</h4>
@@ -173,7 +163,6 @@
       <transition name="fade" mode="in-out">
         <div class="reservation3" v-if="view === 2">
           <div class="confirmation">
-            <span class="trem-icon tremtr-icon-uniF104"></span>
             <h3>{{firstName}}</h3>
             <hr>
           </div>
@@ -193,11 +182,15 @@ import './assets/font/trem-reservation/css/trem-reservation.css'
 
 import FlatpickrI18n from 'flatpickr/dist/l10n'
 
+import { Carousel, Slide } from 'vue-carousel';
+
 export default {
   name: 'reservation',
   components: {
     flatPickr,
-    moment
+    moment,
+    Carousel,
+    Slide
   },
   props: {
     getView: {
@@ -207,6 +200,7 @@ export default {
   data () {
     return {
       date: '',
+      dateConfig: '',
       persons: '',
       maxPersons: '',
       timeStart: '',
@@ -242,13 +236,22 @@ export default {
       peopleFormHeight: 367,
       hintHeight: 150,
       reservationOne: [],
-      reservationTwo: []
+      reservationTwo: [],
+      arrayOfWorkingTimes: [' '],
+      caruselNavNext: '👉',
+      caruselNavPrev: '👈',
+      clickedTimes: []
 
     }
   },
 
   beforeMount: function () {
     this.width = window.innerWidth;
+
+    //for flatpickr
+    this.trueTimeFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.time_format) 
+    this.trueDateFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.date_format)
+    this.makeDateConfig() 
   },
 
   mounted: function () {
@@ -263,11 +266,8 @@ export default {
 
     this.initCanvas()
 
-    this.trueTimeFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.time_format)
-
-    this.trueDateFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.date_format)
-
     document.getElementById('reservation').style.setProperty('--button-color', this.calendarTimeInitData.mainColor)
+
   }, 
 
   computed: {
@@ -331,226 +331,6 @@ export default {
       return moment(this.date, this.momentDateFormat).locale('en').format('dddd').toLowerCase()
     },
 
-    dateConfig: function () {
-
-      let disabledDates = []
-      let disabledDatesFormatted = []
-      let disabledDaysOfWeek = []
-
-      for (let closed of this.calendarTimeInitData.schedule_closed){
-        if (closed.time === undefined) {
-          disabledDates.push(moment(closed.date, this.dbDateFormatForMoment))
-        }
-      }
-
-      for(let d of disabledDates){
-        disabledDatesFormatted.push(d.format(this.momentDateFormat))
-      }
-
-      
-      let locale = ''
-      if (this.calendarTimeInitData.translation.calendar !== 'en') {
-        locale = FlatpickrI18n[this.calendarTimeInitData.translation.calendar]
-        locale.firstDayOfWeek  = this.calendarTimeInitData.week_start
-      } else {
-         locale = {firstDayOfWeek: this.calendarTimeInitData.week_start}
-      }
-      
-
-      let timeFinish = ''
-      let timeStart = ''
-
-      for (let open of this.calendarTimeInitData.schedule_open){
-        let keyNames = Object.keys(open.weekdays);
-
-        if (this.calendarTimeInitData.week_start === '0') {
-
-          for (let i of this.weekDays0) {
-            if (keyNames.includes(i)) {
-              disabledDaysOfWeek.push(this.weekDays0.indexOf(i));
-            }
-          }
-        }
-
-        if (this.calendarTimeInitData.week_start === '1') {
-
-          for (let i of this.weekDays1) {
-            if (keyNames.includes(i)) {
-              disabledDaysOfWeek.push(this.weekDays0.indexOf(i));
-            }
-          }
-        }
-      }
-
-
-      let momentDateFormat =  this.momentDateFormat;
-
-      return {
-        defaultDate: null,
-        disableMobile: true,
-        dateFormat: this.trueDateFormat,
-        locale: locale,
-        minDate: "today",
-        maxDate: new Date().fp_incr(Number(this.calendarTimeInitData.early_reservations)),
-        disable: [
-            function(date) {
-              return (!(disabledDaysOfWeek.includes(date.getDay())) || disabledDatesFormatted.includes(moment(date).format(momentDateFormat)));
-            }
-        ]
-      }
-    },
-
-    startTimeConfig: function () {
-
-      if (this.isDissableDate) {
-        this.timeStart = ''
-      } 
-
-      if (this.date != '') {
-
-        this.renewDisabledTables ()    //also for endTimeConfig
-        this.disableTable ()  //
-
-        let timeFinish = ''
-        let timeStart = ''
-
-        for (let open of this.calendarTimeInitData.schedule_open){
-          let keyNames = Object.keys(open.weekdays);
-          for (let i of keyNames) {
-            if (i === this.dayOfWeek) {
-              timeFinish = open.time.end;
-              timeStart = open.time.start;
-            }
-          }
-        }
-
-        for (let open of this.calendarTimeInitData.schedule_closed){
-          moment.locale(this.calendarTimeInitData.translation.calendar)
-          if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
-            timeStart = open.time.start
-            timeFinish = open.time.end 
-          }
-        }
-
-        if (Number(timeFinish.substr(0, timeFinish.indexOf(':')))  < Number(timeStart.substr(0, timeStart.indexOf(':')))) {
-          this.$toasted.show("closing time should not be after 24:00 hours!🤷‍♂️", { 
-            theme: "primary", 
-            position: "top-center", 
-            duration : 30000,
-            className: 'toast',
-            containerClass: 'toast-container'
-          });
-        } 
-
-        this.openHoursStart = timeStart;
-        this.openHoursEnd = timeFinish;
-
-        moment.locale(this.calendarTimeInitData.translation.calendar)
-        if (moment().date() === moment(this.date, this.momentDateFormat).locale('en').date()) {
-          let time = moment(timeStart, this.dbTimeFormatForMoment)
-          
-          if (Number(time.hours()) <= Number(moment().hours())) {
-            time = moment()
-            let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
-            time.add(addMinutes, 'm')
-            let roundTime = Number(time.minutes()) % Number(this.calendarTimeInitData.time_interval) 
-            time.add(-roundTime, 'm')
-            
-            if (Number(moment(timeFinish, this.dbTimeFormatForMoment).diff(time)) < 0) {
-              this.date = ''
-            }
-            timeStart = time.format(this.momentTimeFormat)
-          }
-        }
-
-        let time24hr = false;
-        if (this.calendarTimeInitData.time_format.match(/A/g) === null){
-          time24hr = true;
-        }
-
-
-        if (this.timeStart === '') {
-          this.timeStart = timeStart
-        } 
-
-        
-        return {
-          time_24hr: time24hr,
-          enableTime: true,
-          noCalendar: true,
-          dateFormat: this.trueTimeFormat, 
-          minuteIncrement: this.calendarTimeInitData.time_interval, 
-          minDate: timeStart, 
-          maxDate: timeFinish
-        }
-
-      } else {
-
-        let time24hr = false;
-        if (this.calendarTimeInitData.time_format.match(/A/g) === null){
-          time24hr = true;
-        }
-
-        return {
-          time_24hr: time24hr,
-          enableTime: true,
-          noCalendar:true,
-          minuteIncrement: this.calendarTimeInitData.time_interval
-        }
-
-      } 
-    },
-
-    finishTimeConfig: function () {
-
-      let time = moment(this.timeStart, this.momentTimeFormat) 
-      time.add(Number(this.calendarTimeInitData.time_interval), 'm')
-
-      let timeF = '';
-
-      for (let open of this.calendarTimeInitData.schedule_open){
-        let keyNames = Object.keys(open.weekdays);
-        for (let i of keyNames) {
-          if (i === this.dayOfWeek) {
-           timeF = moment(open.time.end, this.dbTimeFormatForMoment).format(this.momentTimeFormat);
-          }
-        }
-      }
-
-      for (let open of this.calendarTimeInitData.schedule_closed){
-        moment.locale(this.calendarTimeInitData.translation.calendar)
-        if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
-          timeF = moment(open.time.end, this.dbTimeFormatForMoment).format(this.momentTimeFormat);
-        }
-      }
-
-      let time24hr = false;
-        if (this.calendarTimeInitData.time_format.match(/A/g) === null){
-          time24hr = true;
-      }
-
-      if (this.isDissableStartTime) {
-        this.timeEnd = ''
-      } else {
-        if (this.timeEnd === '' || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.timeStart, this.momentTimeFormat)) < 0) ) {
-          this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(60), 'm').format(this.momentTimeFormat)
-        } 
-        if ((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) < 0) || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) > 0) ) {
-          this.timeEnd = moment(this.openHoursEnd, this.momentTimeFormat).format(this.momentTimeFormat)
-        } 
-      }
-
-      return {
-        enableTime:true, 
-        minuteIncrement: this.calendarTimeInitData.time_interval, 
-        dateFormat: this.trueTimeFormat, 
-        noCalendar:true, 
-        minDate: time.format(this.momentTimeFormat), 
-        maxDate: timeF,
-        time_24hr: time24hr
-      }
-    },
-
     selectable: function () {
       if (this.canvas !== ''){
         if ((this.date !== '') && (this.timeEnd !== '') && (this.timeStart !== '')) {
@@ -574,13 +354,107 @@ export default {
   },
 
   watch: {
-    // whenever question changes, this function will run
+
     date: function (newDate) {
-      this.makeTablesSelectable()
+
+      if (this.isDissableDate) {
+        this.timeStart = ''
+        this.openHoursStart = ''
+        this.openHoursEnd = ''
+
+        //reset times
+        this.arrayOfWorkingTimes = []
+
+        // whenever question changes, this function will run
+        this.makeTablesSelectable()
+      }  else {
+
+        //clean times
+        this.timeStart = ''
+        this.timeEnd = ''
+
+        //init openHoursStart and openHoursEnd
+        let timeFinish = ''
+        let timeStart = ''
+        for (let open of this.calendarTimeInitData.schedule_open){
+          let keyNames = Object.keys(open.weekdays);
+          for (let i of keyNames) {
+            if (i === this.dayOfWeek) {
+              timeFinish = open.time.end;
+              timeStart = open.time.start;
+            }
+          }
+        }
+        for (let open of this.calendarTimeInitData.schedule_closed){
+          moment.locale(this.calendarTimeInitData.translation.calendar)
+          if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
+            timeStart = open.time.start
+            timeFinish = open.time.end 
+          }
+        }
+        if (Number(timeFinish.substr(0, timeFinish.indexOf(':')))  < Number(timeStart.substr(0, timeStart.indexOf(':')))) {
+          this.$toasted.show("closing time should not be after 24:00 hours!🤷‍♂️", { 
+            theme: "primary", 
+            position: "top-center", 
+            duration : 30000,
+            className: 'toast',
+            containerClass: 'toast-container'
+          });
+        } 
+        this.openHoursStart = timeStart;
+        this.openHoursEnd = timeFinish;
+
+        //restrict reservation hours for "today"
+        moment.locale(this.calendarTimeInitData.translation.calendar)
+        if (moment().date() === moment(this.date, this.momentDateFormat).locale('en').date()) {
+          let time = moment(timeStart, this.dbTimeFormatForMoment)
+          
+          if (Number(time.hours()) <= Number(moment().hours())) {
+            time = moment()
+            let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
+            time.add(addMinutes, 'm')
+            let roundTime = Number(time.minutes()) % Number(this.calendarTimeInitData.time_interval) 
+            time.add(Number(this.calendarTimeInitData.time_interval) -roundTime, 'm')
+            
+            if (Number(moment(timeFinish, this.dbTimeFormatForMoment).diff(time)) < 0) {
+              this.date = ''
+            }
+            this.openHoursStart = time.format(this.momentTimeFormat)
+          }
+        }
+
+        // whenever question changes, this function will run
+        this.makeTablesSelectable()
+
+        //Prevent make reservation in last minute before closing
+        if (this.openHoursStart && this.openHoursEnd){
+          const timeBegin = moment(this.openHoursStart, this.dbTimeFormatForMoment)
+          const timeEnd = moment(this.openHoursEnd, this.dbTimeFormatForMoment).add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+          this.arrayOfWorkingTimes = []
+
+          while (timeBegin.diff(timeEnd) <= 0) {
+            this.arrayOfWorkingTimes.push(timeBegin.format(this.dbTimeFormatForMoment))
+            timeBegin.add(Number(this.calendarTimeInitData.time_interval), 'm')
+          }
+        }
+      } 
     },
+
 
     timeStart: function (newTimeStart) {
       this.makeTablesSelectable()
+
+      //set time end
+      if (newTimeStart !== '') {
+        this.timeEnd = moment(newTimeStart, this.momentTimeFormat).add(Number(this.calendarTimeInitData.reservation_duration), 'm').format(this.momentTimeFormat)
+
+        //if timeEnd  setted then check tables
+        this.renewDisabledTables ()    //also for endTimeConfig
+        this.disableTable ()  //
+
+      } else {
+        this.timeEnd = ''
+      }
     },
 
     timeEnd: function (newTimeEnd) {
@@ -605,6 +479,90 @@ export default {
   },
 
   methods: {
+
+    test(e) {
+      this.clickedTimes.map(val => val.className -= " carusel-active-item")
+      this.clickedTimes = []
+      this.clickedTimes.push(e.target)
+      this.timeStart = e.target.innerHTML
+      e.target.className += " carusel-active-item"
+    },
+
+    makeDateConfig() {
+
+      let disabledDates = []
+      let disabledDatesFormatted = []
+      let disabledDaysOfWeek = []
+
+      //disable all closed dates from exceptions
+      for (let closed of this.calendarTimeInitData.schedule_closed){
+        if (closed.time === undefined) {
+          disabledDates.push(moment(closed.date, this.dbDateFormatForMoment))
+        }
+      }
+
+      for(let d of disabledDates){
+        disabledDatesFormatted.push(d.format(this.momentDateFormat))
+      }
+
+      //translate and set first day of week (e.g. Localization)
+      let locale = ''
+      if (this.calendarTimeInitData.translation.calendar !== 'en') {
+        locale = FlatpickrI18n[this.calendarTimeInitData.translation.calendar]
+        locale.firstDayOfWeek  = this.calendarTimeInitData.week_start
+      } else {
+         locale = {firstDayOfWeek: this.calendarTimeInitData.week_start}
+      }
+      
+
+      //disable all days of week without scheduling
+      let timeFinish = ''
+      let timeStart = ''
+
+      for (let open of this.calendarTimeInitData.schedule_open){
+        let keyNames = Object.keys(open.weekdays);
+
+        if (this.calendarTimeInitData.week_start === '0') {
+
+          for (let i of this.weekDays0) {
+            if (keyNames.includes(i)) {
+              disabledDaysOfWeek.push(this.weekDays0.indexOf(i)); //disabledDaysOfWeek means enabledDaysOfWeek 😑
+            }
+          }
+        }
+
+        if (this.calendarTimeInitData.week_start === '1') {
+
+          for (let i of this.weekDays1) {
+            if (keyNames.includes(i)) {
+              disabledDaysOfWeek.push(this.weekDays0.indexOf(i));
+            }
+          }
+        }
+      }
+
+      this.dateConfig = {
+        defaultDate: null,
+        disableMobile: true,
+        dateFormat: this.trueDateFormat,
+        locale: locale,
+        minDate: "today",
+        maxDate: new Date().fp_incr(Number(this.calendarTimeInitData.early_reservations)),
+        disable: [
+            (date) => {
+              
+              return (
+                (!(disabledDaysOfWeek.includes(date.getDay())) || // if for this day not setted a shedule
+                disabledDatesFormatted.includes(moment(date).format(this.momentDateFormat)) ) && // if there is that day in exceptions for all day (e.g. not working all day)
+                !Boolean(this.calendarTimeInitData.schedule_closed.filter( close => moment(date).format(this.dbDateFormatForMoment) === close.date).length )) // if there is that day in exceptions but not closed full day
+            }
+        ]
+      }
+    },
+
+    computeWokingtimes() {
+      this.windowWidth = document.getElementById("reservation").parentNode.parentElement.clientWidth;
+    },
 
     getWindowWidth(event) {
       this.windowWidth = document.getElementById("reservation").parentNode.parentElement.clientWidth;
@@ -777,9 +735,6 @@ export default {
         {
           emulateJSON: true
         }).then(response => {
-
-          console.log(JSON.parse(response.bodyText))
-
 
           if (JSON.parse(response.bodyText).success === true) {
 

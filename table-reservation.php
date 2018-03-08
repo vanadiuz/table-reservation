@@ -4,7 +4,7 @@
  * Plugin Name:  ☕️Table Reservation
  * Plugin URI:   https://github.com/vanadiuz/table-reservation
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      2.1.2
+ * Version:      3.0
  * Author:       True-Emotions.Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
@@ -339,9 +339,7 @@ if (!class_exists('TREMTableReservation')) :
                     'schedule_closed' => $this->settings->get_setting( 'schedule-closed' ),
                     'early_reservations' => is_admin() && current_user_can( 'manage_reservations' ) ? '' : $this->settings->get_setting( 'early-reservations' ),
                     'late_reservations' => is_admin() && current_user_can( 'manage_reservations' ) ? '' : $this->settings->get_setting( 'late-reservations' ),
-                    'date_onload' => $this->settings->get_setting( 'date-onload' ),
                     'time_interval' => $this->settings->get_setting( 'time-interval' ),
-                    'allow_past' => is_admin() && current_user_can( 'manage_reservations' ),
                     'nonce' => wp_create_nonce('wp_rest'),
                 )
             );
@@ -368,10 +366,10 @@ if (!class_exists('TREMTableReservation')) :
 
             $this->tremtr_common_styles_and_scripts();
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.169e100780cf89612bc6.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.e424088b4c628268276d.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.1f776a157a76b1d38de2.js', array(), '1.0.0', 'screen, all');
-            //wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.4842d854bb7008ebb1e2.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.455e853c255e399979f8.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.d31355d61a82f155ac3b.js', array(), '1.0.0', 'screen, all');
+            wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',
@@ -382,10 +380,9 @@ if (!class_exists('TREMTableReservation')) :
                     'schedule_closed' => tremtr_time_convert($this->settings->get_setting( 'schedule-closed' )),
                     'early_reservations' => is_admin() && current_user_can( 'manage_reservations' ) ? '' : $this->settings->get_setting( 'early-reservations' ),
                     'late_reservations' => is_admin() && current_user_can( 'manage_reservations' ) ? '' : $this->settings->get_setting( 'late-reservations' ),
-                    'date_onload' => $this->settings->get_setting( 'date-onload' ),
                     'time_interval' => $this->settings->get_setting( 'time-interval' ),
+                    'reservation_duration' => $this->settings->get_setting( 'reservation-duration' ),
                     'week_start' => $this->settings->get_setting( 'week-start' ) == '' ? '1' : $this->settings->get_setting( 'week-start' ),
-                    'allow_past' => is_admin() && current_user_can( 'manage_reservations' ),
                     'url'   => admin_url( 'admin-ajax.php' ),
                     'endpoint_cafe' => site_url() . '/wp-json/wp/v2/trem-cafes',
                     'endpoint_reservation' => site_url() . '/wp-json/wp/v2/trem-reservation/?per_page=100',
