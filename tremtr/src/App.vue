@@ -364,6 +364,7 @@ export default {
 
         //reset times
         this.arrayOfWorkingTimes = []
+        this.clickedTimes = []
 
         // whenever question changes, this function will run
         this.makeTablesSelectable()
@@ -372,6 +373,7 @@ export default {
         //clean times
         this.timeStart = ''
         this.timeEnd = ''
+        this.clickedTimes = []
 
         //init openHoursStart and openHoursEnd
         let timeFinish = ''
