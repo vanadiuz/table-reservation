@@ -14,6 +14,19 @@
       .trem-reservation{
         grid-template: minmax(100px, 800px) / auto;
       }
+      input[type="date"],
+      input[type="datetime"],
+      input[type="datetime-local"],
+      input[type="email"],
+      input[type="month"],
+      input[type="number"],
+      input[type="tel"],
+      input[type="text"],
+      input[type="time"],
+      select:focus,
+      textarea {
+          font-size: 16px;
+      }
     }
 
     .trem-reservation input, .trem-reservation .input{
@@ -206,6 +219,14 @@
   
              margin: 15px auto;
            }
+
+           @media all and (max-width: 1000px) {
+             .trem-reservation .reservation1 .envelope .people-form canvas {
+               border: 1px solid var(--button-color);
+             }
+           }
+
+
   
            .trem-reservation .reservation1 .envelope .people-form .c0ffee-button{
              margin: 30px auto auto auto;
@@ -449,7 +470,7 @@
       opacity: 1;
   }
   
-  @media (max-width:400px)
+  @media (max-width:325px)
   {
       .flatpickr-calendar.open
       {

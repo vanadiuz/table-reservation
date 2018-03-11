@@ -1,11 +1,7 @@
 <template>
-    <div id="reservation" class="trem-reservation" ref="tremReservation" v-if="view !== 4" :style="[canvasLoaded ? {height: envelopeHeight} : {height: hintHeight}] ">
-      <div class="hint"  v-if="(rotationHint === true) && (view === 0)" >
-        <h3>{{calendarTimeInitData.translation.hintHeader}}</h3>
-        <h3>{{calendarTimeInitData.translation.hintText}}<i  class="tremtr-icon-uniF10F"></i></h3>
-      </div>
+    <div id="reservation" class="trem-reservation" ref="tremReservation" v-if="view !== 4" :style="[canvasLoaded ? {height: envelopeHeight} : {}] ">
       <transition name="fade" mode="in-out">
-        <div class="reservation1" ref="reservationOne" v-show="(rotationHint === false) && (view === 0) && (canvasLoaded === true)">
+        <div class="reservation1" ref="reservationOne" v-show="(view === 0) && (canvasLoaded === true)">
           <div class="envelope"  :style="[canvasLoaded ? {height: envelopeHeight} : ''] ">
             <h3>{{calendarTimeInitData.translation.header}}</h3>
 
@@ -230,17 +226,29 @@ export default {
       canvasLoaded: false,
       windowWidth: 0,
       windowHeight: 0,
-      rotationHint: true,
-      mobileWidth: 560,
-      minMobileWidth: 450,
       peopleFormHeight: 367,
-      hintHeight: 150,
       reservationOne: [],
       reservationTwo: [],
       arrayOfWorkingTimes: [' '],
       caruselNavNext: '👉',
       caruselNavPrev: '👈',
-      clickedTimes: []
+      clickedTimes: [],
+      zoomStartScale: 0,
+      panning: false,
+      draglastX: 0,
+      draglastY: 0,
+      dragCurrentX: 0,
+      dragCurrentY: 0,
+      canvasMinZoom: 0,
+      canvasMaxZoom: 0,
+      canvasZoomedWidth: 0,
+      canvasZoomedHeight: 0,
+      canvasImageWidth: 0,
+      canvasImageHeight: 0,
+      canvasAllowedXPan: 0,
+      canvasAllowedYPan: 0,
+      canvasLastPinchScale: 0,
+      pausePanning: false
 
     }
   },
@@ -252,6 +260,7 @@ export default {
     this.trueTimeFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.time_format) 
     this.trueDateFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.date_format)
     this.makeDateConfig() 
+
   },
 
   mounted: function () {
@@ -294,11 +303,7 @@ export default {
     
     envelopeHeight: function() {
       if (this.canvas !== null) {
-        if (this.windowWidth > this.minMobileWidth) {
-          return (this.canvas.height + this.peopleFormHeight).toString() + 'px'
-        } else {
-          return (this.hintHeight).toString() + 'px'
-        } 
+        return (this.canvas.height + this.peopleFormHeight).toString() + 'px'
       }
     },
 
@@ -357,6 +362,12 @@ export default {
 
     date: function (newDate) {
 
+      //reset times
+      this.arrayOfWorkingTimes = []
+      this.clickedTimes.map(val => val.className -= " carusel-active-item")
+      this.clickedTimes = []
+      this.persons = ''
+
       if (this.isDissableDate) {
         this.timeStart = ''
         this.openHoursStart = ''
@@ -364,7 +375,6 @@ export default {
 
         //reset times
         this.arrayOfWorkingTimes = []
-        this.clickedTimes = []
 
         // whenever question changes, this function will run
         this.makeTablesSelectable()
@@ -373,7 +383,6 @@ export default {
         //clean times
         this.timeStart = ''
         this.timeEnd = ''
-        this.clickedTimes = []
 
         //init openHoursStart and openHoursEnd
         let timeFinish = ''
@@ -463,21 +472,6 @@ export default {
       this.makeTablesSelectable()
     },
 
-    windowHeight: function (newWindowHeight) {
-      if ( (this.windowWidth > this.minMobileWidth)) {
-        this.rotationHint = false
-      } else {
-          this.rotationHint = true
-      }
-    },
-
-    windowWidth: function (newWindowWidth) {
-      if ( (this.windowWidth > this.minMobileWidth)) {
-        this.rotationHint = false
-      } else {
-          this.rotationHint = true
-      }
-    }
   },
 
   methods: {
@@ -854,187 +848,278 @@ export default {
           allowTouchScrolling: true
         })
 
-        this.canvas.loadFromJSON(this.canvasInitData);
+        this.canvas.loadFromJSON(this.canvasInitData, () => {
 
-        let parsedInfo =  JSON.parse(this.canvasInitData);
-
-
-        if (parsedInfo.backgroundImage == null ){
-
-          this.canvas.setHeight(300)
-          this.canvas.setWidth(200)
-
-          this.$toasted.show("ADD IMAGE!", { 
-            theme: "bubble", 
-            position: "top-center", 
-            duration : 30000,
-            className: 'toast',
-            containerClass: 'toast-container'
-          });
-
-          this.canvas.renderAll()
-
-        } else {
-
-          let width = this.windowWidth;
-          if (width > parsedInfo.backgroundImage.width) {
-            width = parsedInfo.backgroundImage.width;
-          }
-
-          if (width < this.minMobileWidth) {
-            width = this.windowHeight;
-          }
-
-          let scale = (width*0.85)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
-          this.canvas.setZoom(scale)
-          this.canvas.renderAll()
-
-          this.canvas.setHeight(parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale)
-          this.canvas.setWidth(parsedInfo.backgroundImage.width * parsedInfo.backgroundImage.scaleX * scale)
-          this.canvas.renderAll()
-        }
-
-        //add id to canvas objects and lock objects
-        
-        let objCounter = 1;
-        let counter = 0;
-        let canvasObjectId = 0;
-
-        for(let i = 0; i < this.canvas.getObjects().length; i+=3){
-          
-          this.canvas.item(i).id = this.canvas.item(i + 1).text;
-          this.canvas.item(i + 1).id = this.canvas.item(i + 1).text
-          this.canvas.item(i + 2).id = this.canvas.item(i + 1).text
-
-          this.initCanvasObject (this.canvas.item(i))
-          this.initCanvasObject (this.canvas.item(i + 1))
-          this.initCanvasObject (this.canvas.item(i + 2))
-          
-          let tablePeople = [this.canvas.item(i+1).text, this.canvas.item(i+2).text]
-          this.canvas.item(i).name = tablePeople;
-
-          this.canvas.item(i).set({
-            fill: fillActive,
-            strokeWidth : 0,
-            opacity: 1
-          });
-
-          this.canvas.item(i+1).set({
-            opacity: 1,
-            left: this.canvas.item(i).left + 10,
-            top: this.canvas.item(i).top + 10,
-            fontSize: 20,
-            fontWeight: 'bold'
-          });
-
-          this.canvas.item(i+2).set({
-            text: ''
-          });
-
-          this.canvas.renderAll()
-        }
-
-        var _self = this;
-        let called = false //for toasts
-
-        this.canvas.on('mouse:over', function(e) {
+          let parsedInfo =  JSON.parse(this.canvasInitData);
 
 
-          if (e.target != null) {
-            if ((e.target.fill === fillActive) && (e.target.type === 'rect')) {
-              e.target.set({
-                 fill: fillHover
-              });
-            }
-            e.target.canvas.renderAll();
-          }
-        });
+          if (parsedInfo.backgroundImage == null ){
 
+            this.canvas.setHeight(300)
+            this.canvas.setWidth(200)
 
-        this.canvas.on('mouse:out', function(e) {
-          if (e.target != null) {
-            if ((e.target.fill === fillHover)  && (e.target.type === 'rect')) {
-              if (_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).opacity != 1) {
-                e.target.set({
-                  fill: fillActive
-                });
-
-              }
-            }
-            e.target.canvas.renderAll();
-          }
-        });
-
-
-        
-        _self.canvas.observe('mouse:down',function(e) {
-
-          if (((_self.date === '') || (_self.timeEnd === '') || (_self.timeStart === '')) && !(called)) {
-
-            _self.$toasted.show(_self.calendarTimeInitData.translation.canvasClickWarning, { 
-              theme: "primary", 
+            this.$toasted.show("ADD IMAGE!", { 
+              theme: "bubble", 
               position: "top-center", 
-              duration : 2000,
+              duration : 30000,
               className: 'toast',
               containerClass: 'toast-container'
             });
 
-            called = !called
-            setTimeout(function(){
-              called = !called
-            }, 5000)
+            this.canvas.renderAll()
+
+          } else {
+
+            let width = this.windowWidth;
+            if (width > parsedInfo.backgroundImage.width) {
+              width = parsedInfo.backgroundImage.width;
+            }
+
+
+            let scale = (width*0.9)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
+            this.canvas.setZoom(scale)
+            
+            this.canvas.renderAll()
+
+            const h = parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale;
+            const w = parsedInfo.backgroundImage.width * parsedInfo.backgroundImage.scaleX * scale;
+
+            this.canvas.setHeight(h)
+            this.canvas.setWidth(w)
+
+            this.canvas.renderAll()
+
+            if (h < 350) {
+
+              this.canvas.zoomToPoint({x: w/2, y: h/2}, scale*2.5)
+              this.canvas.setHeight(2.5*h)
+            }
+
+            this.canvasImageWidth = w / scale
+            this.canvasImageHeight = h / scale
+            this.canvasAllowedXPan = w / scale
+            this.canvasAllowedYPan = h / scale
+
+            this.canvasMinZoom = this.canvas.getZoom()
+            this.canvasMaxZoom = this.canvas.getZoom()*2
+            this.canvasZoomedWidth = this.canvasImageWidth
+            this.canvasZoomedHeight = this.canvasImageHeight
           }
 
-          if (e.target != null) {
+          //add id to canvas objects and lock objects
+          
+          let objCounter = 1;
+          let counter = 0;
+          let canvasObjectId = 0;
 
-            for(let i = 0; i < _self.canvas.getObjects().length; i++){
-              if (_self.canvas.item(i).fill === fillHover){
-                _self.canvas.item(i).set({
-                  fill: fillActive
-                });
-                _self.canvas.item(i+2).set({
-                  opacity: 0
+          for(let i = 0; i < this.canvas.getObjects().length; i+=3){
+            
+            this.canvas.item(i).id = this.canvas.item(i + 1).text;
+            this.canvas.item(i + 1).id = this.canvas.item(i + 1).text
+            this.canvas.item(i + 2).id = this.canvas.item(i + 1).text
+
+            this.initCanvasObject (this.canvas.item(i))
+            this.initCanvasObject (this.canvas.item(i + 1))
+            this.initCanvasObject (this.canvas.item(i + 2))
+            
+            let tablePeople = [this.canvas.item(i+1).text, this.canvas.item(i+2).text]
+            this.canvas.item(i).name = tablePeople;
+
+            this.canvas.item(i).set({
+              fill: fillActive,
+              strokeWidth : 0,
+              opacity: 1
+            });
+
+            this.canvas.item(i+1).set({
+              opacity: 1,
+              left: this.canvas.item(i).left + 10,
+              top: this.canvas.item(i).top + 10,
+              fontSize: 20,
+              fontWeight: 'bold'
+            });
+
+            this.canvas.item(i+2).set({
+              text: ''
+            });
+
+            this.canvas.renderAll()
+          }
+
+          var _self = this;
+          let called = false //for toasts
+
+          this.canvas.on('mouse:over', function(e) {
+
+
+            if (e.target != null) {
+              if ((e.target.fill === fillActive) && (e.target.type === 'rect')) {
+                e.target.set({
+                  fill: fillHover
                 });
               }
+              e.target.canvas.renderAll();
+            }
+          });
+
+
+          this.canvas.on('mouse:out', function(e) {
+            if (e.target != null) {
+              if ((e.target.fill === fillHover)  && (e.target.type === 'rect')) {
+                if (_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).opacity != 1) {
+                  e.target.set({
+                    fill: fillActive
+                  });
+
+                }
+              }
+              e.target.canvas.renderAll();
+            }
+          });
+
+
+          
+          _self.canvas.observe('mouse:down',function(e) {
+
+            if (((_self.date === '') || (_self.timeEnd === '') || (_self.timeStart === '')) && !(called)) {
+
+              _self.$toasted.show(_self.calendarTimeInitData.translation.canvasClickWarning, { 
+                theme: "primary", 
+                position: "top-center", 
+                duration : 2000,
+                className: 'toast',
+                containerClass: 'toast-container'
+              });
+
+              called = !called
+              setTimeout(function(){
+                called = !called
+              }, 5000)
             }
 
-            if (e.target.type === 'rect') {
-              let index = _self.canvas.getObjects().indexOf(e.target)
+            if (e.target != null) {
 
-              e.target.set({
-                fill: fillHover
-              });
+              for(let i = 0; i < _self.canvas.getObjects().length; i++){
+                if (_self.canvas.item(i).fill === fillHover){
+                  _self.canvas.item(i).set({
+                    fill: fillActive
+                  });
+                  _self.canvas.item(i+2).set({
+                    opacity: 0
+                  });
+                }
+              }
 
-              _self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).set({
-                opacity: 1
-              });
+              if (e.target.type === 'rect') {
+                let index = _self.canvas.getObjects().indexOf(e.target)
+
+                e.target.set({
+                  fill: fillHover
+                });
+
+                _self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).set({
+                  opacity: 1
+                });
+                
+                _self.table = e.target.name[0];
+                _self.persons = e.target.name[1];
+                _self.maxPersons = e.target.name[1];
+              }
               
-              _self.table = e.target.name[0];
-              _self.persons = e.target.name[1];
-              _self.maxPersons = e.target.name[1];
-            }
-            
-            if (e.target.type === 'text') {
-              let index = _self.canvas.getObjects().indexOf(e.target)
+              if (e.target.type === 'text') {
+                let index = _self.canvas.getObjects().indexOf(e.target)
 
-              _self.canvas.item(index-1).set({
-                fill: fillHover
-              });
+                _self.canvas.item(index-1).set({
+                  fill: fillHover
+                });
 
-              _self.table = _self.canvas.item(index-1).name[0];
-              _self.persons = _self.canvas.item(index-1).name[1];
-              _self.maxPersons = _self.canvas.item(index-1).name[1];
+                _self.table = _self.canvas.item(index-1).name[0];
+                _self.persons = _self.canvas.item(index-1).name[1];
+                _self.maxPersons = _self.canvas.item(index-1).name[1];
+              }
+              
+              _self.canvas.renderAll()
             }
-            
-            _self.canvas.renderAll()
+          });
+
+          this.canvas.on({
+              'touch:gesture': event => {
+
+                if (event.e.touches && event.e.touches.length == 2) {
+                  this.pausePanning = true;
+                  let point = new fabric.Point(this.canvas.getCenter().left, this.canvas.getCenter().top);
+                  if (event.self.state == "start") {
+                    this.zoomStartScale = this.canvas.getZoom();
+                  }
+                  let delta = this.zoomStartScale * event.self.scale;
+                  if (delta < this.canvasMaxZoom && delta > this.canvasMinZoom) {
+                    this.canvas.zoomToPoint(point, delta);
+                    this.canvasZoomedWidth = this.canvas.getZoom() * this.canvasImageWidth / this.canvasMinZoom
+                    this.canvasZoomedHeight = this.canvas.getZoom() * this.canvasImageHeight / this.canvasMinZoom
+                    this.canvasAllowedXPan = this.canvasZoomedWidth - this.canvas.getWidth()
+                    this.canvasAllowedYPan = this.canvasZoomedHeight - this.canvas.getHeight()
+                    // this.pausePanning = false;
+                  } 
+                  this.pausePanning = false;
+                  if (typeof event.e.stopPropagation === "function") {
+                    event.e.stopPropagation();
+                    event.e.preventDefault();
+                    return false;
+                  }
+                }
+              },
+              'object:selected': event => {
+                this.pausePanning = true;
+              },
+              'selection:cleared': event => {
+                this.pausePanning = false;
+              },
+              'touch:drag': event => {
+
+                if (this.pausePanning == false && event.e.touches != null ) {
+                    this.dragCurrentX = event.e.touches[0].pageX;
+                    this.dragCurrentY = event.e.touches[0].pageY;
+                    const xChange = this.dragCurrentX - this.draglastX;
+                    const yChange = this.dragCurrentY - this.draglastY;
+                    
+                    if((Math.abs(this.dragCurrentX - this.draglastX) <= 40) && (Math.abs(this.dragCurrentY - this.draglastY) <= 40)) {
+                       
+                        if ((Math.abs(this.canvas.viewportTransform[4]) <= this.canvasAllowedXPan) && (Math.abs(this.canvas.viewportTransform[5]) <= this.canvasAllowedYPan)) {
+                          this.canvas.relativePan({x: xChange,y: yChange})
+                        } else {
+                          if (Math.abs(this.canvas.viewportTransform[4]) > this.canvasAllowedXPan) {
+                            if (this.canvas.viewportTransform[4] > 0) {
+                              this.canvas.viewportTransform[4] = this.canvasAllowedXPan
+                            } else {
+                              this.canvas.viewportTransform[4] = -this.canvasAllowedXPan
+                            }
+                          } else {
+                            if (this.canvas.viewportTransform[5] > 0) {
+                              this.canvas.viewportTransform[5] = this.canvasAllowedYPan
+                            } else {
+                              this.canvas.viewportTransform[5] = -this.canvasAllowedYPan
+                            }
+                          }
+                        }
+                    }
+                    this.draglastX = this.dragCurrentX;
+                    this.draglastY = this.dragCurrentY;
+                }
+                
+                if (typeof event.e.stopPropagation === "function") {
+                  event.e.stopPropagation();
+                  event.e.preventDefault();
+                  return false;
+                }
+              }
+            });
+
+          if (this.table !== '') {
+            this.selectTable ()
           }
+
+          this.canvasLoaded = true
         });
-
-        if (this.table !== '') {
-          this.selectTable ()
-        }
-
-        this.canvasLoaded = true
       }, response => {
         // error callback 
       });
@@ -1156,21 +1241,18 @@ export default {
             } else {
               for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
 
-                if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) {
 
-                  this.canvas.item(i).set({
-                    evented: false
-                  });
-                  this.canvas.item(i+2).set({
-                    opacity: 0
-                  });
-                }
-                if (this.canvas.item(i).name[0] === this.table) {
-                  this.canvas.item(i).set({
+                this.canvas.item(i).set({
+                    evented: false,
                     fill: this.fillActive
-                  });
-                  this.table = ''
-                }
+                });
+
+                this.canvas.item(i+2).set({
+                  opacity: 0
+                });
+                
+                this.table = ''
+
               }
               this.canvas.renderAll()
             }

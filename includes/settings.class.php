@@ -463,7 +463,7 @@ Table N{table} for {persons} Persons
 					'90' 		=> __( '1 Hour and 30 minutes', 'tremtr' ),
 					'120' 		=> __( '2 Hour', 'tremtr' ),
 					'180' 		=> __( '3 Hour', 'tremtr' ),
-					'end' 		=> __( 'To the closing', 'tremtr' ),
+					'240' 		=> __( '4 Hour', 'tremtr' ),
 				)
 			)
 		);

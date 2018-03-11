@@ -4,7 +4,7 @@
  * Plugin Name:  ☕️Table Reservation
  * Plugin URI:   https://github.com/vanadiuz/table-reservation
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      3.0
+ * Version:      3.1
  * Author:       True-Emotions.Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
@@ -72,11 +72,7 @@ if (!class_exists('TREMTableReservation')) :
 
         }
 
-        function tremtr_common_styles_and_scripts(){
-        
-            wp_register_script('tremtr-fontawesome', TREMTR_PLUGIN_URL . '/assets/js/fontawesome.js');
-            wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
-        }
+
 
 
         //Delete irrelevant reservations with wp-cron
@@ -322,7 +318,8 @@ if (!class_exists('TREMTableReservation')) :
             wp_enqueue_style('tremtr-admin-flatpickr', TREMTR_PLUGIN_URL . '/assets/css/flatpickr.min.css');
             wp_enqueue_script('tremtr-admin-flatpickr', TREMTR_PLUGIN_URL . '/assets/js/flatpickr.js');
 
-            $this->tremtr_common_styles_and_scripts();
+            wp_register_script('tremtr-fontawesome', TREMTR_PLUGIN_URL . '/assets/js/fontawesome.js');
+            wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabricBackEnd.min.js');
 
             wp_register_script('tremtr-fabricBackEnd', TREMTR_PLUGIN_URL . '/assets/js/fabricBackEnd.min.js');
             wp_register_script('tremtr-admin_context_menu', TREMTR_PLUGIN_URL . '/assets/js/jquery.contextMenu.min.js');
@@ -364,11 +361,11 @@ if (!class_exists('TREMTableReservation')) :
                 }
             }
 
-            $this->tremtr_common_styles_and_scripts();
+            wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
 
-            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.4842d854bb7008ebb1e2.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.455e853c255e399979f8.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.d31355d61a82f155ac3b.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.ba4f69b832405c7bdf50.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.22f8368231fd1bb82935.js', array(), '1.0.0', 'screen, all');
+            // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.3c1a9ebf37881b4d21cf.js', array(), '1.0.0', 'screen, all');
             wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
@@ -392,16 +389,11 @@ if (!class_exists('TREMTableReservation')) :
                     'fillBooked' => tremtr_hex2rgb($this->settings->get_setting( 'reserved-color' )),
                     'translation' => array(
                         'header' => __('Plan your day with us', 'tremtr'),
-                        'hintHeader' => __('Reservation', 'tremtr'),
-                        'hintText' => __('*rotate your device', 'tremtr'),
                         'calendar' => $this->settings->get_setting('i8n') == '' ? 'en' : $this->settings->get_setting('i8n'),
                         'workingHoursOpen' => __('open', 'tremtr'),
-                        'workingHoursTo' => __('to', 'tremtr'),
-                        'startTime' => __('I will come at', 'tremtr'),
-                        'endTime' => __('and stay till', 'tremtr'),
                         'bookTableButton' => __('Book a table', 'tremtr'),
-                        'bookTableButtonWarning' => __('Firslty fill all fields and select a table!', 'tremtr'),
-                        'canvasClickWarning' => __('Firslty fill all fields!', 'tremtr'),
+                        'bookTableButtonWarning' => __('Please, select a table!', 'tremtr'),
+                        'canvasClickWarning' => __('Please, select date and time!', 'tremtr'),
                         'table' => __('Table', 'tremtr'),
                         'for' => __('for', 'tremtr'),
                         'people' => __('People', 'tremtr'),
