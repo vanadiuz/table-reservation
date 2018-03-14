@@ -248,7 +248,8 @@ export default {
       canvasAllowedXPan: 0,
       canvasAllowedYPan: 0,
       canvasLastPinchScale: 0,
-      pausePanning: false
+      pausePanning: false,
+      afterMindnight: false
 
     }
   },
@@ -274,6 +275,7 @@ export default {
     this.getWindowHeight()
 
     this.initCanvas()
+  
 
     document.getElementById('reservation').style.setProperty('--button-color', this.calendarTimeInitData.mainColor)
 
@@ -283,9 +285,15 @@ export default {
 
     dateForClient: function() { 
 
+      if(this.openHoursStart._i.substr(0, this.openHoursStart._i.indexOf(':')).length === 1){
+        this.openHoursStart._i = "0" + this.openHoursStart._i
+      }
+
       if(moment(this.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment) < this.openHoursStart._i){
+        this.afterMindnight = true
         return moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat)
       }
+      this.afterMindnight = false
       return this.date
     },
 
@@ -419,7 +427,7 @@ export default {
 
         //expand times to time/date for case of working after 12pm
         const momentDate = moment(this.date, this.momentDateFormat)
-        debugger
+
         this.openHoursStart = moment(timeStart, this.dbTimeFormatForMoment).set({
           day: momentDate.day(),
           month: momentDate.month(),
@@ -739,10 +747,18 @@ export default {
     confirm () {
       if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone'))) {
         moment.locale(this.calendarTimeInitData.translation.calendar)
+        
+        let date = null
+        if (this.afterMindnight) {
+          date = moment(this.dateForClient, this.momentDateFormat).format(this.dbDateFormatForMoment)
+        } else {
+          date = moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment)
+        }
+        
         this.$http.post(this.calendarTimeInitData.url, {
           'action': 'tremtr_reservation',
           'nonce': this.calendarTimeInitData.nonce,
-          'tremtr_reservation_date': moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment),
+          'tremtr_reservation_date': date,
           'tremtr_reservation_time_begin': moment(this.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment),
           'tremtr_reservation_time_end': moment(this.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment),
           'tremtr_reservation_table': this.table,
