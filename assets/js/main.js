@@ -71,10 +71,12 @@ canvas.observe('mouse:down', function (o) {
         o.hasControls = false;
         o.hoverCursor = 'pointer';
         o.hasBorders = false;
+        o.selectable = false;
         o.borderColor = 'red';
         o.cornerColor = 'green';
         o.cornerSize = 10;
         o.transparentCorners = false;
+        o.evented = false;
       }
     })
 

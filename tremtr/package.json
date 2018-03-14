@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "fs": "0.0.1-security",
+    "g": "^2.0.1",
     "jsdom": "^11.6.2",
     "moment": "^2.21.0",
+    "snyk": "^1.69.11",
     "v-tooltip": "^2.0.0-rc.31",
     "vee-validate": "^2.0.5",
     "vue": "^2.5.15",
@@ -22,6 +24,7 @@
     "vue-flatpickr-component": "^3.1.0",
     "vue-resource": "^1.5.0",
     "vue-scrollto": "^2.11.0",
+    "vue-slider-component": "^2.5.8",
     "vue-the-mask": "^0.11.1",
     "vue-toasted": "^1.1.20"
   },

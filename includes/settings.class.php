@@ -205,11 +205,12 @@ Table N{table} for {persons} Persons
 			)
 		);
 
+		
 		$sap->add_page(
 			'submenu',
 			array(
 				'id'            => 'tremtr-settings',
-				'title'         => __( 'Settings', 'tremtr' ),
+				'title'         => sprintf( __('<a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 200px;"><img  src="%s/assets/images/tremlogoblack.png"></a>Settings', 'tremtr' ), TREMTR_PLUGIN_URL),
 				'menu_title'    => __( 'Settings', 'tremtr' ),
 				'parent_menu'	=> 'edit.php?post_type=trem-cafes',
 				'description'   => '',
@@ -454,7 +455,7 @@ Table N{table} for {persons} Persons
 			'select',
 			array(
 				'id'			=> 'reservation-duration',
-				'title'			=> __( 'Reservation Duration', 'tremtr' ),
+				'title'			=> __( 'Average reservation duration', 'tremtr' ),
 				'description'	=> __( 'Select the duration of one reservation (i.e how long you clients will stay by you).', 'tremtr' ),
 				'blank_option'	=> false,
 				'options'       => array(

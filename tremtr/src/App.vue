@@ -43,7 +43,7 @@
                   </div>
                   <div class="form-element date">
                     <h4>{{calendarTimeInitData.translation.on}}</h4>
-                    <h4>{{date}}</h4>
+                    <h4>{{dateForClient}}</h4>
                   </div>
                   <div class="form-element from">
                     <h4>{{calendarTimeInitData.translation.from}}</h4>
@@ -281,6 +281,14 @@ export default {
 
   computed: {
 
+    dateForClient: function() { 
+
+      if(moment(this.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment) < this.openHoursStart._i){
+        return moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat)
+      }
+      return this.date
+    },
+
     fillActive: function() { 
       return 'rgba('+ this.calendarTimeInitData.fillActive +',0.4)'
     },
@@ -368,6 +376,8 @@ export default {
       this.clickedTimes = []
       this.persons = ''
 
+      
+
       if (this.isDissableDate) {
         this.timeStart = ''
         this.openHoursStart = ''
@@ -403,48 +413,62 @@ export default {
             timeFinish = open.time.end 
           }
         }
-        if (Number(timeFinish.substr(0, timeFinish.indexOf(':')))  < Number(timeStart.substr(0, timeStart.indexOf(':')))) {
-          this.$toasted.show("closing time should not be after 24:00 hours!🤷‍♂️", { 
-            theme: "primary", 
-            position: "top-center", 
-            duration : 30000,
-            className: 'toast',
-            containerClass: 'toast-container'
-          });
-        } 
+
         this.openHoursStart = timeStart;
         this.openHoursEnd = timeFinish;
+
+        //expand times to time/date for case of working after 12pm
+        const momentDate = moment(this.date, this.momentDateFormat)
+        debugger
+        this.openHoursStart = moment(timeStart, this.dbTimeFormatForMoment).set({
+          day: momentDate.day(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+        this.openHoursEnd = moment(timeFinish, this.dbTimeFormatForMoment).set({
+          day: momentDate.day(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+        if (moment(timeFinish, this.dbTimeFormatForMoment).diff(moment(timeStart, this.dbTimeFormatForMoment)) < 0) {
+          this.openHoursEnd.add(1, 'd')
+        }
+      
 
         //restrict reservation hours for "today"
         moment.locale(this.calendarTimeInitData.translation.calendar)
         if (moment().date() === moment(this.date, this.momentDateFormat).locale('en').date()) {
-          let time = moment(timeStart, this.dbTimeFormatForMoment)
+          let time = this.openHoursStart
           
-          if (Number(time.hours()) <= Number(moment().hours())) {
+          if (moment().diff(time)) {
             time = moment()
             let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
             time.add(addMinutes, 'm')
             let roundTime = Number(time.minutes()) % Number(this.calendarTimeInitData.time_interval) 
             time.add(Number(this.calendarTimeInitData.time_interval) -roundTime, 'm')
             
-            if (Number(moment(timeFinish, this.dbTimeFormatForMoment).diff(time)) < 0) {
+            if (time.diff(this.openHoursEnd) > 0) { 
               this.date = ''
             }
-            this.openHoursStart = time.format(this.momentTimeFormat)
+            this.openHoursStart.set({  
+              hour: time.hour(),
+              minute: time.minute(),
+            })
           }
         }
+
 
         // whenever question changes, this function will run
         this.makeTablesSelectable()
 
         //Prevent make reservation in last minute before closing
         if (this.openHoursStart && this.openHoursEnd){
-          const timeBegin = moment(this.openHoursStart, this.dbTimeFormatForMoment)
-          const timeEnd = moment(this.openHoursEnd, this.dbTimeFormatForMoment).add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+          const timeBegin = this.openHoursStart
+          const timeEnd = this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
           this.arrayOfWorkingTimes = []
 
           while (timeBegin.diff(timeEnd) <= 0) {
-            this.arrayOfWorkingTimes.push(timeBegin.format(this.dbTimeFormatForMoment))
+            this.arrayOfWorkingTimes.push(timeBegin.format(this.momentTimeFormat))
             timeBegin.add(Number(this.calendarTimeInitData.time_interval), 'm')
           }
         }
@@ -892,7 +916,7 @@ export default {
             if (h < 350) {
 
               this.canvas.zoomToPoint({x: w/2, y: h/2}, scale*2.5)
-              this.canvas.setHeight(2.5*h)
+              this.canvas.setHeight(400)
             }
 
             this.canvasImageWidth = w / scale
@@ -1058,7 +1082,7 @@ export default {
                     this.canvasZoomedHeight = this.canvas.getZoom() * this.canvasImageHeight / this.canvasMinZoom
                     this.canvasAllowedXPan = this.canvasZoomedWidth - this.canvas.getWidth()
                     this.canvasAllowedYPan = this.canvasZoomedHeight - this.canvas.getHeight()
-                    // this.pausePanning = false;
+                    //this.pausePanning = false;
                   } 
                   this.pausePanning = false;
                   if (typeof event.e.stopPropagation === "function") {
@@ -1082,7 +1106,7 @@ export default {
                     const xChange = this.dragCurrentX - this.draglastX;
                     const yChange = this.dragCurrentY - this.draglastY;
                     
-                    if((Math.abs(this.dragCurrentX - this.draglastX) <= 40) && (Math.abs(this.dragCurrentY - this.draglastY) <= 40)) {
+                    if((Math.abs(this.dragCurrentX - this.draglastX) <= 50) && (Math.abs(this.dragCurrentY - this.draglastY) <= 50)) {
                        
                         if ((Math.abs(this.canvas.viewportTransform[4]) <= this.canvasAllowedXPan) && (Math.abs(this.canvas.viewportTransform[5]) <= this.canvasAllowedYPan)) {
                           this.canvas.relativePan({x: xChange,y: yChange})
