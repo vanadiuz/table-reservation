@@ -32,12 +32,13 @@ class sapAdminPageSettingToggle_2_1_0 extends sapAdminPageSetting_2_1_0 {
 		?>
 
 			<input type="checkbox" name="<?php echo $input_name; ?>" id="<?php echo $input_name; ?>" value="1"<?php if( $this->value == '1' ) : ?> checked="checked"<?php endif; ?>>
-			<label for="<?php echo $input_name; ?>"><?php echo $this->label; ?></label>
+			
 
 		<?php
 
 		$this->display_description();
 
 	}
+
 
 }

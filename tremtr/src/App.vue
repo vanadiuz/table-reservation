@@ -3,18 +3,20 @@
       <transition name="fade" mode="in-out">
         <div class="reservation1" ref="reservationOne" v-show="(view === 0) && (canvasLoaded === true)">
           <div class="envelope"  :style="[canvasLoaded ? {height: envelopeHeight} : ''] ">
-            <h3>{{calendarTimeInitData.translation.header}}</h3>
+            <h2>{{calendarTimeInitData.translation.header}}</h2>
 
             <div class="people-form" >
                 <div class="form-element">
                   <flat-pickr :config="dateConfig" :placeholder="date" v-model="date" input-class="input"></flat-pickr>
                   <span class="trem-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
                 </div>
-                <carousel :navigationEnabled="true" :paginationEnabled="false" :perPage="4" :navigationNextLabel="caruselNavNext" :navigationPrevLabel="caruselNavPrev">
-                  <slide v-for="(workingTime, i) of arrayOfWorkingTimes" :key="workingTime" >
-                    <div  @click="test($event)" :index="i">{{workingTime}}</div>
-                  </slide>
-                </carousel>
+                <transition name="fade" mode="in-out">
+                  <carousel v-show="(date !== '')" :navigationEnabled="true" :paginationEnabled="false" :perPage="4" :navigationNextLabel="caruselNavNext" :navigationPrevLabel="caruselNavPrev">
+                    <slide v-for="(workingTime, i) of arrayOfWorkingTimes" :key="workingTime" >
+                      <div  @click="selectedTime($event)" :index="i">{{workingTime}}</div>
+                    </slide>
+                  </carousel>
+                </transition>
                 <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
                 <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
             </div>
@@ -51,7 +53,7 @@
                   </div>
                   <div class="form-element cafe">
                     <h4>{{calendarTimeInitData.translation.in}}</h4>
-                    <h4>{{calendarTimeInitData.translation.cafe}}</h4>
+                    <h4>{{cafeName}}</h4>
                   </div>
                   <a class="c0ffee-button" id="change" @click="change">{{calendarTimeInitData.translation.changeButton}}</a>
                 </div>
@@ -205,6 +207,7 @@ export default {
       openHoursEnd: '',
       table: '',
       name: '',
+      cafeName: '',
       message: '',
       email: '',
       phone: '',
@@ -508,7 +511,7 @@ export default {
 
   methods: {
 
-    test(e) {
+    selectedTime(e) {
       this.clickedTimes.map(val => val.className -= " carusel-active-item")
       this.clickedTimes = []
       this.clickedTimes.push(e.target)
@@ -880,6 +883,7 @@ export default {
 
         // get body data 
         this.canvasInitData = response.body[0].tremtr_content
+        this.cafeName = response.body[0].title.rendered
 
         this.canvas = new fabric.Canvas('cc', { 
           selection: false,
@@ -1193,7 +1197,7 @@ export default {
         for (let todaysReservation of todaysReservations){
           let timeBegin = moment(todaysReservation.tremtr_reservation_time_begin, this.momentTimeFormat)
           let timeEnd = moment(todaysReservation.tremtr_reservation_time_end, this.momentTimeFormat)
-          if ((selectedTimeStart.diff(timeBegin) >= 0) && (selectedTimeStart.diff(timeEnd) <= 0)) {
+          if ((selectedTimeStart.diff(timeBegin) >= 0) && (selectedTimeStart.diff(timeEnd) < 0)) {
             this.disabledTables.push(todaysReservation.tremtr_reservation_table)        
           }
         }
@@ -1205,7 +1209,7 @@ export default {
           for (let todaysReservation of todaysReservations){
             let timeBegin = moment(todaysReservation.tremtr_reservation_time_begin, this.momentTimeFormat)
             let timeEnd = moment(todaysReservation.tremtr_reservation_time_end, this.momentTimeFormat)
-            if ((selectedTimeEnd.diff(timeBegin) >= 0) && (selectedTimeEnd.diff(timeEnd) <= 0) || ((selectedTimeStart.diff(timeBegin) <= 0) && (selectedTimeEnd.diff(timeEnd) >= 0)) ) {
+            if ((selectedTimeEnd.diff(timeBegin) > 0) && (selectedTimeEnd.diff(timeEnd) <= 0) || ((selectedTimeStart.diff(timeBegin) <= 0) && (selectedTimeEnd.diff(timeEnd) >= 0)) ) {
               this.disabledTables.push(todaysReservation.tremtr_reservation_table)        
             }
           }
