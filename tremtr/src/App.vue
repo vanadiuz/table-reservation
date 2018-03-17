@@ -486,7 +486,6 @@ export default {
             counter++
           }
           timeBegin.add(-counter*Number(this.calendarTimeInitData.time_interval), 'm')
-          
         }
       } 
     },
@@ -1208,18 +1207,26 @@ export default {
             )
           )
         } else {
-          todaysReservations = this.reservations.filter(reservation => (
-            (
-              reservation.tremtr_reservation_date.toLowerCase() === moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat).toLowerCase() &&
-              reservation.tremtr_reservation_time_end <= this.openHoursEnd.format(this.momentTimeFormat)
-            ) 
-            || 
-            ( 
-              reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-              reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
-            )
-          ));
+          todaysReservations = this.reservations.filter(reservation => {
+
+            this.openHoursEnd.add(Number(this.calendarTimeInitData.reservation_duration), 'm') 
+
+            let tmp = (
+                        reservation.tremtr_reservation_date.toLowerCase() === moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat).toLowerCase() &&
+                        reservation.tremtr_reservation_time_end <= this.openHoursEnd.format(this.momentTimeFormat)
+                      ) 
+                      || 
+                      ( 
+                        reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
+                        reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
+                      )
+
+            this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+
+            return tmp
+          });
         }
+        
 
         const momentDate = moment(this.dateForClient, this.momentDateFormat)
 
