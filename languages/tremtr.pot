@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "Project-Id-Version: Table Reservation\n"
-"POT-Creation-Date: 2018-03-12 12:55+0300\n"
+"POT-Creation-Date: 2018-03-17 20:48+0300\n"
 "PO-Revision-Date: 2017-11-02 20:30+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -601,7 +601,7 @@ msgid "Every 60 minutes"
 msgstr ""
 
 #: includes/settings.class.php:458
-msgid "Reservation Duration"
+msgid "Average reservation duration"
 msgstr ""
 
 #: includes/settings.class.php:459

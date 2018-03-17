@@ -486,10 +486,7 @@ export default {
             counter++
           }
           timeBegin.add(-counter*Number(this.calendarTimeInitData.time_interval), 'm')
-          //set initial time
-          if (this.arrayOfWorkingTimes.length !== 0) {
-            this.timeStart = this.arrayOfWorkingTimes[0]
-          }
+          
         }
       } 
     },
