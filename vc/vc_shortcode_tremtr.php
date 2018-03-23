@@ -15,7 +15,7 @@ if(!class_exists('TREMTR_VC')){
 				"tremtr_id" => "0",
 			),$atts));
 
-			$output = do_shortcode('[table-reservation id="'.esc_attr($tremtr_id).'"]');
+			$output = do_shortcode('[table-reservation]');
 
 			return $output;
 		}

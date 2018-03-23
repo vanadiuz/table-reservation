@@ -282,6 +282,7 @@
                 height: unset !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                align-self: stretch;
               }
   
               .trem-reservation .reservation2 .envelope .info-form .c0ffee-button{

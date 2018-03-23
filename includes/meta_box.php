@@ -501,9 +501,7 @@ function tremtr_quick_edit_js() {
                 jQuery('.inline-edit-date', fieldset).addClass('hidden');
                 jQuery('.inline-edit-group', fieldset).addClass('hidden');
                 jQuery('br', fieldset).hide();
-                jQuery('.inline-edit-col-right select[name="_status"] option[value="publish"]', '#'+edit_id).text('Confirmed');
-                jQuery('.inline-edit-col-right select[name="_status"] option[value="pending"]', '#'+edit_id).text('Reject');
-                jQuery('.inline-edit-col-right select[name="_status"] option[value="draft"]', '#'+edit_id).remove();
+
 
                 /// set values
                 var reserv_date = jQuery('.reservation_date .tremtr_reservation_date', '#'+post_id).text();

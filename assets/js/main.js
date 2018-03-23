@@ -52,7 +52,7 @@ canvas.observe('mouse:down', function (o) {
         o.lockScalingX = false;
         o.lockScalingY = false;
         o.lockUniScaling = false;
-        o.lockRotation = false;
+        o.lockRotation = true;
         o.hasControls = true;
         o.hoverCursor = 'pointer';
         o.hasBorders = true;
@@ -60,6 +60,7 @@ canvas.observe('mouse:down', function (o) {
         o.cornerColor = 'green';
         o.cornerSize = 10;
         o.transparentCorners = false;
+        o.hasRotatingPoint = false;
       } else {
         o.setCoords();
         o.lockMovementX = true;

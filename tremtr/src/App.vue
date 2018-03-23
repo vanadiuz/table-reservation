@@ -26,7 +26,7 @@
       <transition name="fade" mode="in-out">
         <div class="reservation2" ref="reservationTwo" v-if="view === 1">
             <div class="envelope" ref="reservation2envelope">
-                <h3>{{calendarTimeInitData.translation.header}}</h3>
+                <h2>{{calendarTimeInitData.translation.header}}</h2>
                 <div class="info-form">
                   <div class="form-element table">
                     <h4>{{calendarTimeInitData.translation.table}}</h4>
@@ -738,7 +738,9 @@ export default {
         this.view = 1
 
         setTimeout(function () {
-          this.$refs.tremReservation.style.height = (this.$refs.reservation2envelope.clientHeight + 30).toString() + 'px'
+          if ((this.canvas.height + this.peopleFormHeight) < this.$refs.reservation2envelope.clientHeight) {
+            this.$refs.tremReservation.style.height = (this.$refs.reservation2envelope.clientHeight + 30).toString() + 'px'
+          }
         }.bind(this), 500)
 
 
@@ -788,11 +790,8 @@ export default {
 
           if (JSON.parse(response.bodyText).success === true) {
 
+            this.$refs.reservationTwo.style.display = 'none'
             this.view = 2
-
-            setTimeout(function () {
-              this.$refs.tremReservation.style.height =  '300px'
-            }.bind(this), 500)
 
             setTimeout(function () {
               this.hideReservation()

@@ -444,7 +444,9 @@ Table N{table} for {persons} Persons
 				'options'       => array(
 					'30' 		=> __( 'Every 30 minutes', 'tremtr' ),
 					'15' 		=> __( 'Every 15 minutes', 'tremtr' ),
-					'60' 		=> __( 'Every 60 minutes', 'tremtr' ),
+					'60' 		=> __( 'Every hour', 'tremtr' ),
+					'90' 		=> __( 'Every hour and 30 minutes', 'tremtr' ),
+					'120' 		=> __( 'Every 2 hours', 'tremtr' ),
 				)
 			)
 		);
@@ -593,30 +595,6 @@ Table N{table} for {persons} Persons
 				'title'			=> __( 'New Request Email', 'tremtr' ),
 				'description'	=> __( 'Enter the email a user should receive when they make an initial reservation request.', 'tremtr' ),
 				'default'		=> $this->defaults['template-reservation-user'],
-			)
-		);
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-notifications-templates',
-			'text',
-			array(
-				'id'			=> 'subject-rejected-user',
-				'title'			=> __( 'Rejected Email Subject', 'tremtr' ),
-				'description'	=> __( 'The email subject a user should receive when their reservation has been rejected.', 'tremtr' ),
-				'placeholder'	=> $this->defaults['subject-rejected-user'],
-			)
-		);
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-notifications-templates',
-			'editor',
-			array(
-				'id'			=> 'template-rejected-user',
-				'title'			=> __( 'Rejected Email', 'tremtr' ),
-				'description'	=> __( 'Enter the email a user should receive when their reservation has been rejected.', 'tremtr' ),
-				'default'		=> $this->defaults['template-rejected-user'],
 			)
 		);
 

@@ -4,7 +4,7 @@
  * Plugin Name:  ☕️Table Reservation
  * Plugin URI:   https://github.com/vanadiuz/table-reservation
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      3.2.3
+ * Version:      3.2.5
  * Author:       True Emotions Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
@@ -225,9 +225,9 @@ if (!class_exists('TREMTableReservation')) :
                         if( $this->reservation->reservation_time_end != '' && $val['time_end'] != '' && $this->reservation->reservation_time_begin != '' && $val['time_begin'] != '' ) {
                             if( $val['time_begin'] >= $this->reservation->reservation_time_begin && $val['time_end'] <= $this->reservation->reservation_time_end ){
                                 wp_send_json_error(array('error' => 'not_free2'));
-                            } elseif( $val['time_begin'] <= $this->reservation->reservation_time_begin && $val['time_end'] >= $this->reservation->reservation_time_begin ){
+                            } elseif( $val['time_begin'] <= $this->reservation->reservation_time_begin && $val['time_end'] > $this->reservation->reservation_time_begin ){
                                 wp_send_json_error(array('error' => 'not_free3'));
-                            } elseif( $val['time_begin'] <= $this->reservation->reservation_time_end && $val['time_end'] >= $this->reservation->reservation_time_end ){
+                            } elseif( $val['time_begin'] < $this->reservation->reservation_time_end && $val['time_end'] >= $this->reservation->reservation_time_end ){
                                 wp_send_json_error(array('error' => 'not_free4'));
                             }
                         }
@@ -363,9 +363,9 @@ if (!class_exists('TREMTableReservation')) :
 
             wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.c401b3cab4d71ea3fef9.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.366f16065df9779966b2.js', array(), '1.0.0', 'screen, all');
             wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.22f8368231fd1bb82935.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.efd311a5c60b3677d86c.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.093de57e56876ddd6f91.js', array(), '1.0.0', 'screen, all');
             // wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
