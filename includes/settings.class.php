@@ -47,6 +47,7 @@ class tremtrSettings {
 		'sk'	=> 'sk',
 		'et'	=> 'et',
 		'si'	=> 'si',
+		'it'	=> 'it',
 		'fa'	=> 'fa',
 		'ru'	=> 'ru',
 		'fi'	=> 'fi',
@@ -210,7 +211,7 @@ Table N{table} for {persons} Persons
 			'submenu',
 			array(
 				'id'            => 'tremtr-settings',
-				'title'         => sprintf( __('<a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 200px;"><img  src="%s/assets/images/tremlogoblack.png"></a>Settings', 'tremtr' ), TREMTR_PLUGIN_URL),
+				'title'         => sprintf( __('<a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 150px;"><img  src="%s/assets/images/tremlogoblack.png"></a>Settings', 'tremtr' ), TREMTR_PLUGIN_URL),
 				'menu_title'    => __( 'Settings', 'tremtr' ),
 				'parent_menu'	=> 'edit.php?post_type=trem-cafes',
 				'description'   => '',

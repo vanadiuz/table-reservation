@@ -11,7 +11,7 @@
                   <span class="trem-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
                 </div>
                 <transition name="fade" mode="in-out">
-                  <carousel v-show="(date !== '')" :navigationEnabled="true" :paginationEnabled="false" :perPage="4" :navigationNextLabel="caruselNavNext" :navigationPrevLabel="caruselNavPrev">
+                  <carousel v-show="(date !== '')" :navigationEnabled="true" :paginationEnabled="false" :perPage="3" :navigationNextLabel="caruselNavNext" :navigationPrevLabel="caruselNavPrev">
                     <slide v-for="(workingTime, i) of arrayOfWorkingTimes" :key="workingTime" >
                       <div  @click="selectedTime($event)" :index="i">{{workingTime}}</div>
                     </slide>
@@ -1202,7 +1202,7 @@ export default {
           todaysReservations = this.reservations.filter(reservation => 
             ( 
               reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-              reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
+              moment(reservation.tremtr_reservation_time_begin, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
             )
           )
         } else {
@@ -1212,12 +1212,12 @@ export default {
 
             let tmp = (
                         reservation.tremtr_reservation_date.toLowerCase() === moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat).toLowerCase() &&
-                        reservation.tremtr_reservation_time_end <= this.openHoursEnd.format(this.momentTimeFormat)
+                        moment(reservation.tremtr_reservation_time_end, this.momentTimeFormat).format(this.dbTimeFormatForMoment) <= this.openHoursEnd.format(this.dbTimeFormatForMoment)
                       ) 
                       || 
                       ( 
                         reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-                        reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
+                        moment(reservation.tremtr_reservation_time_begin, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
                       )
 
             this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
@@ -1240,7 +1240,8 @@ export default {
           year: momentDate.year()
         })
 
-        if (this.timeStart > this.timeEnd) {
+
+        if (moment(this.timeStart, this.momentTimeFormat).diff(moment(this.timeEnd, this.momentTimeFormat)) > 0) {
           selectedTimeEnd.add(1, 'd')
         }
 
@@ -1257,7 +1258,7 @@ export default {
             year: momentInitDateTimeBegin.year()
           })
 
-          if (timeBegin.format(this.momentTimeFormat) > timeEnd.format(this.momentTimeFormat)) {
+          if (moment(timeBegin.format(this.momentTimeFormat), this.momentTimeFormat).diff(moment(timeEnd.format(this.momentTimeFormat), this.momentTimeFormat)) > 0 ) {
             timeEnd.add(1, 'd')
           }
 

@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
 		});
 
 		if (window.location.href.indexOf('edit.php?post_type=trem-cafes') !== -1 || window.location.href.indexOf('edit.php?post_type=trem-reservation') !== -1) {
-			jQuery('h1.wp-heading-inline').before('<div style="display: flex;justify-content: center;margin: auto; width:100%;" ><a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 200px;"><img  src="https://true-emotions.studio/wp-content/uploads/2018/03/tremlogoblack-1.png"></a></div>')
+			jQuery('h1.wp-heading-inline').before('<div style="display: flex;justify-content: center;margin: auto; width:100%;" ><a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 150px;"><img  src="https://true-emotions.studio/wp-content/uploads/2018/03/tremlogoblack.png"></a></div>')
 		}
 		
 

@@ -175,6 +175,11 @@
                         user-select: none;
                     }
 
+                        .trem-reservation .reservation1 .envelope .people-form .VueCarousel div div div {
+                            display: flex;
+                            justify-content: center;
+                        }
+
                .trem-reservation .reservation1 .envelope .people-form .VueCarousel-navigation-button{
                  border: none;
                  outline: none;
