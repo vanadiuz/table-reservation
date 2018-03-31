@@ -153,7 +153,13 @@
                       
                     ></span>
                   </div>
-                  <a class="c0ffee-button" id="confirm" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
+                  <a class="c0ffee-button" id="confirm" v-if="!reservationConfirmed" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
+                  <flower-spinner
+                    v-else
+                    :animation-duration="2500"
+                    :size="70"
+                    color="var(--button-color)"
+                  />
                 </div>
             </div>
         </div>
@@ -180,7 +186,9 @@ import './assets/font/trem-reservation/css/trem-reservation.css'
 
 import FlatpickrI18n from 'flatpickr/dist/l10n'
 
-import { Carousel, Slide } from 'vue-carousel';
+import { Carousel, Slide } from 'vue-carousel'
+
+import { FlowerSpinner } from 'epic-spinners'
 
 export default {
   name: 'reservation',
@@ -188,7 +196,8 @@ export default {
     flatPickr,
     moment,
     Carousel,
-    Slide
+    Slide,
+    FlowerSpinner
   },
   props: {
     getView: {
@@ -236,6 +245,8 @@ export default {
       caruselNavNext: '👉',
       caruselNavPrev: '👈',
       clickedTimes: [],
+
+      reservationConfirmed: false,
 
       zoomStartScale: 0,
       panning: false,
@@ -456,7 +467,7 @@ export default {
         if (moment().date() === moment(this.date, this.momentDateFormat).date()) {
           let time = this.openHoursStart
           
-          if (moment().diff(time)) {
+          if (moment().diff(time) > 0) {
             time = moment()
             let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
             time.add(addMinutes, 'm')
@@ -762,6 +773,9 @@ export default {
 
     confirm () {
       if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone'))) {
+
+        this.reservationConfirmed = !this.reservationConfirmed
+        
         moment.locale(this.calendarTimeInitData.translation.calendar)
         
         let date = null
@@ -788,7 +802,7 @@ export default {
           emulateJSON: true
         }).then(response => {
 
-          if (JSON.parse(response.bodyText).success === true) {
+          if (response.bodyText.includes('"success":true')) {
 
             this.$refs.reservationTwo.style.display = 'none'
             this.view = 2
@@ -807,20 +821,7 @@ export default {
               containerClass: 'toast-container'
             });
 
-            this.$http.get(this.calendarTimeInitData.endpoint_reservation).then(response => {
-
-              // get body data 
-              this.reservations = response.body
-              for (let reservation of this.reservations){
-                reservation.tremtr_reservation_date = moment(reservation.tremtr_reservation_date, this.dbDateFormatForMoment).format(this.momentDateFormat)
-                reservation.tremtr_reservation_time_begin = moment(reservation.tremtr_reservation_time_begin, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
-                reservation.tremtr_reservation_time_end = moment(reservation.tremtr_reservation_time_end, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
-              }
-
-            }, response => {
-
-              // error callback 
-            });
+            this.reservationConfirmed = !this.reservationConfirmed
           }
           
 

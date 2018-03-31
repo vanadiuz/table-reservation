@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "epic-spinners": "^1.0.3",
     "fs": "0.0.1-security",
     "g": "^2.0.1",
     "jsdom": "^11.6.2",
