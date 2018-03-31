@@ -9,6 +9,7 @@
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
  * Text Domain:  tremtr
+ * Domain Path: /languages/
  ***********************************/
 if (!defined('ABSPATH')) {
     exit; // disable direct access
@@ -26,6 +27,9 @@ if (!class_exists('TREMTableReservation')) :
 
             define( 'TREMTR_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
             define( 'TREMTR_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+
+            // Initialize the plugin
+		    add_action( 'init', array( $this, 'load_textdomain' ) );
 
             // Register the post type.
             add_action( 'init', array( $this, 'tremtr_post_type_init' ) );
@@ -89,6 +93,14 @@ if (!class_exists('TREMTableReservation')) :
                 }
             }
             wp_reset_query();
+        }
+
+        /**
+         * Load the plugin textdomain for localistion
+         * @since 0.0.1
+         */
+        public function load_textdomain() {
+            load_plugin_textdomain( 'tremtr', false, plugin_basename( dirname( __FILE__ ) ) . "/languages/" );
         }
 
 
