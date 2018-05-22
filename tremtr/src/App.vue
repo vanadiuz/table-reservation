@@ -212,6 +212,8 @@ export default {
       maxPersons: '',
       timeStart: '',
       timeEnd: '',
+      siestaStart: '',
+      siestaEnd: '',
       openHoursStart: '',
       openHoursEnd: '',
       table: '',
@@ -425,12 +427,24 @@ export default {
         //init openHoursStart and openHoursEnd
         let timeFinish = ''
         let timeStart = ''
+        let siestaEnd = ''
+        let siestaStart = ''
+        let siestaIndex = 0; //just for siesta, order of ifs matter!
         for (let open of this.calendarTimeInitData.schedule_open){
           let keyNames = Object.keys(open.weekdays);
           for (let i of keyNames) {
-            if (i === this.dayOfWeek) {
+
+            if (i === this.dayOfWeek && siestaIndex === 1) {
+              siestaEnd = open.time.start;
+              siestaStart = timeFinish;
+              timeFinish = open.time.end;
+              siestaIndex++;
+            }
+
+            if (i === this.dayOfWeek && siestaIndex === 0) {
               timeFinish = open.time.end;
               timeStart = open.time.start;
+              siestaIndex++;
             }
           }
         }
@@ -441,12 +455,25 @@ export default {
             timeFinish = open.time.end 
           }
         }
-
+ 
         this.openHoursStart = timeStart;
         this.openHoursEnd = timeFinish;
 
         //expand times to time/date for case of working after 12pm
         const momentDate = moment(this.date, this.momentDateFormat)
+        if (siestaIndex === 2) {
+          this.siestaStart = moment(siestaStart, this.dbTimeFormatForMoment).set({
+            date: momentDate.date(),
+            month: momentDate.month(),
+            year: momentDate.year()
+          })
+          this.siestaEnd = moment(siestaEnd, this.dbTimeFormatForMoment).set({
+            date: momentDate.date(),
+            month: momentDate.month(),
+            year: momentDate.year()
+          })
+        }
+        
         this.openHoursStart = moment(timeStart, this.dbTimeFormatForMoment).set({
           date: momentDate.date(),
           month: momentDate.month(),
@@ -484,15 +511,30 @@ export default {
           }
         }
 
-        //Prevent make reservation in last minute before closing
+        //Prevent make reservation in last minute before closing and form arrayOfWorkingTimes
         if (this.openHoursStart && this.openHoursEnd){
           const timeBegin = this.openHoursStart
           const timeEnd = this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+
+          let siestaStart = ''
+          let siestaEnd = ''
+          if (siestaIndex === 2) {
+            siestaStart = this.siestaStart.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+            siestaEnd = this.siestaEnd
+          }
+
           this.arrayOfWorkingTimes = []
 
           let counter = 0
           while (timeBegin.diff(timeEnd) <= 0) {
-            this.arrayOfWorkingTimes.push(timeBegin.format(this.momentTimeFormat))
+            if (siestaIndex === 2) {
+              if (!(timeBegin.diff(siestaStart) >= 0 && timeBegin.diff(siestaEnd) < 0)){ //for siesta!
+                this.arrayOfWorkingTimes.push(timeBegin.format(this.momentTimeFormat))
+              }
+            } else {
+              this.arrayOfWorkingTimes.push(timeBegin.format(this.momentTimeFormat))
+            }
+
             timeBegin.add(Number(this.calendarTimeInitData.time_interval), 'm')
             counter++
           }
@@ -599,9 +641,9 @@ export default {
                   (
                     moment(date).format(this.dbDateFormatForMoment) === close.date
                     &&
-                    close.time !== undefined                  
+                    close.time !== undefined
                   )
-                ).length 
+                ).length
               )}
                             
               return (
