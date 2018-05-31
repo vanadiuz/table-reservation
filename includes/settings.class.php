@@ -250,7 +250,6 @@ Table N{table} for {persons} Persons
 				'id'			=> 'privacy-message',
 				'title'			=> __( 'Privacy Message', 'tremtr' ),
 				'description'	=> __( 'Enter the message to display before a reservation request is made. Leave the field blank if no message!', 'tremtr' ),
-				'placeholder'	=> $this->defaults['privacy-message'],
 			)
 		);
 
