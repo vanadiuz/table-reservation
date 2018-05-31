@@ -1437,3 +1437,8 @@
   .reservation .checkbox-component input {
     border-color: var(--button-color) !important;
 }
+
+.checkbox-component>input {
+    opacity: 0;
+    position: relative;
+}
