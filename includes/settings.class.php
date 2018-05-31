@@ -245,6 +245,18 @@ Table N{table} for {persons} Persons
 		$sap->add_setting(
 			'tremtr-settings',
 			'tremtr-general',
+			'textarea',
+			array(
+				'id'			=> 'privacy-message',
+				'title'			=> __( 'Privacy Message', 'tremtr' ),
+				'description'	=> __( 'Enter the message to display before a reservation request is made. Leave the field blank if no message!', 'tremtr' ),
+				'placeholder'	=> $this->defaults['privacy-message'],
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'tremtr-general',
 			'text',
 			array(
 				'id'            => 'date-format',

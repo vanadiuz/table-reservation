@@ -1433,3 +1433,7 @@
           box-shadow: rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px, rgb(255, 29, 94) 0px 0px 0px;
       }
   }
+
+  .reservation .checkbox-component input {
+    border-color: var(--button-color) !important;
+}

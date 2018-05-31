@@ -376,10 +376,10 @@ if (!class_exists('TREMTableReservation')) :
 
             wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.bd32a1190d98082efd29.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.3caab34dba32a52c51c9.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.35d010e0528d0a40a37f.js', array(), '1.0.0', 'screen, all');
-            // wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.0ff1271966222f6500e7.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.6d137089d7b61cb49866.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.504a35b9300c6a960f4b.js', array(), '1.0.0', 'screen, all');
+            //wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',
                 'tremtr_data',
@@ -423,6 +423,7 @@ if (!class_exists('TREMTableReservation')) :
                         'phone' => __('Phone', 'tremtr'),
                         'message' => __('Message', 'tremtr'),
                         'thanksAtTheEnd' => $this->settings->get_setting( 'success-message' ),
+                        'privacy' => $this->settings->get_setting( 'privacy-message' ),
                         'rejected' => __('Someone has already reserved the table. Please, select another one.', 'tremtr'),
                     ),
                 )

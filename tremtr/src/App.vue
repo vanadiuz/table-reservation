@@ -153,6 +153,10 @@
                       
                     ></span>
                   </div>
+                  <checkbox name="GDRP" value="true" v-model="GDRPCheck" v-if="calendarTimeInitData.translation.privacy">
+                       {{calendarTimeInitData.translation.privacy}}
+                  </checkbox>
+                  
                   <a class="c0ffee-button" id="confirm" v-if="!reservationConfirmed" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
                   <flower-spinner
                     v-else
@@ -270,6 +274,8 @@ export default {
 
       disabledDatesFormatted: [],
       disabledDaysOfWeek: [],
+
+      GDRPCheck: false
 
     }
   },
@@ -814,7 +820,8 @@ export default {
     },
 
     confirm () {
-      if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone'))) {
+      if (!this.calendarTimeInitData.translation.privacy) {this.GDRPCheck = true}
+      if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone')) && this.GDRPCheck ) {
 
         this.reservationConfirmed = !this.reservationConfirmed
         
@@ -1416,7 +1423,7 @@ export default {
 
 <style lang="scss"> 
 
-  
+
 
 </style>
 
