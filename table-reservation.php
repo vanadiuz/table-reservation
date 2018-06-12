@@ -4,7 +4,7 @@
  * Plugin Name:  ☕️Table Reservation
  * Plugin URI:   https://github.com/vanadiuz/table-reservation
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      3.3.0
+ * Version:      3.3.3
  * Author:       True Emotions Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
