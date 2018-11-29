@@ -1,7 +1,7 @@
 <h1 align="center"> Table Reservation - Wordpress Plugin </h1> <br>
 <p align="center">
   <a href="https://true-emotions.studio/">
-    <img alt="Table Reservation" title="Table Reservation" src="http://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
+    <img alt="Table Reservation" title="Table Reservation" src="https://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
   </a>
 </p>
 
@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://true-emotions.studio/">
-    <img alt="True Emotions Studio" title="We are" src="http://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
+    <img alt="True Emotions Studio" title="We are" src="https://true-emotions.studio/wp-content/uploads/2018/01/logo2.jpg" width="105">
   </a>
 </p>
 
@@ -37,7 +37,7 @@
 This plugin allows users quickly book a table in your cafe or make a restaurant reservation. Also it can be used for coworking, internet cafe (cybercafe) and night club.
 
 <p align="center">
-  <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
+  <img src = "https://true-emotions.studio/wp-content/uploads/2018/01/screenshot-1.gif" width=1000>
 </p>
 
 ## Features :eyeglasses:
@@ -54,7 +54,7 @@ A few of the things you can do with Table Reservation:
 * WPBakery(Visual Composer) compatible
 
 <p align="center">
-  <img src = "http://true-emotions.studio/wp-content/uploads/2018/01/banner-1544x500.gif" width=1000>
+  <img src = "https://true-emotions.studio/wp-content/uploads/2018/01/banner-1544x500.gif" width=1000>
 </p>
 
 ## Feedback :raising_hand:
@@ -69,7 +69,7 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
 - Go to table-reservation/tremtr (here is front-end web app on Vue js)
 - `npm install` to install dependencies 
 - `npm run dev` to start develope app
-- Activate plugin inside WordPress and [create a new table](http://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
+- Activate plugin inside WordPress and [create a new table](https://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4 "Video!")
 - Now you can modify the Vue Js code and immediately watch how it will work in Wordpress
 
 **Build Production Version of Plugin**
@@ -77,7 +77,7 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
 - Copy JS files from ./tremtr/dist/static/js to ./assets/js
 - Open table-reservation.php in plagin's root and comment 
 ```php
-  wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
+  wp_register_script( 'tremtr-app', 'https://localhost:8080/app.js' , '', '', true );
 ```
 - In the same place uncomment and rename next lines 
 ```php
@@ -92,7 +92,7 @@ This project follows the [all-contributors](https://github.com/kentcdodds/all-co
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-| [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](https://true-emotions.studio)<br />💻💬🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](https://true-emotions.studio)<br />🎨🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](https://true-emotions.studio)<br />💻🤔 | [<img src="http://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](http://alecrolla.com/)<br />💵 |
+| [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](https://true-emotions.studio)<br />💻💬🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](https://true-emotions.studio)<br />🎨🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](https://true-emotions.studio)<br />💻🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](https://alecrolla.com/)<br />💵 |
 | :---: | :---: | :---: | :---: | 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
