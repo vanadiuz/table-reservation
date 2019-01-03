@@ -86,7 +86,7 @@ abstract class TREMtrNotification {
 			'{date}'			=> $this->reservation->format_date( $this->reservation->reservation_date ).__( ' From ', 'tremtr' ).$this->reservation->format_time( $this->reservation->reservation_time_begin ).__( ' to ', 'tremtr' ).$this->reservation->format_time( $this->reservation->reservation_time_end ),
 			'{phone}'			=> $this->reservation->phone,
 			'{message}'			=> $this->reservation->message,
-			'{reservations_link}'	=> '<a href="' . admin_url( 'admin.php?page=tremtr-reservations&status=pending' ) . '">' . __( 'View pending reservations', 'tremtr' ) . '</a>',
+			'{reservations_link}'	=> '<a href="' . admin_url( 'edit.php?post_type=trem-reservation&status=pending' ) . '">' . __( 'View pending reservations', 'tremtr' ) . '</a>',
 			'{close_link}'		=> '<a href="' . admin_url( 'admin.php?page=tremtr-reservations&tremtr-quicklink=close&reservation=' . esc_attr( $this->reservation->ID ) ) . '">' . __( 'Reject this reservation', 'tremtr' ) . '</a>',
 			'{site_name}'		=> get_bloginfo( 'name' ),
 			'{site_link}'		=> '<a href="' . home_url( '/' ) . '">' . get_bloginfo( 'name' ) . '</a>',
