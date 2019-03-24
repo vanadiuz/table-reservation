@@ -51,18 +51,18 @@ function tremtr_main_metabox_output($post){
 
 //Outputs the content of the description meta box
 function tremtr_properties_metabox_output($post){
-    ?>
-    <div class="control-panel-info">
-        <span class="status">Status</span>  
-        <span class="number">№</span>
-        <span class="users">Seats</span>
-        <span class="size">Width</span>
-        <span class="size">Height</span>
-        <span class="remove">Remove</span>  
+    
+    echo '<div class="control-panel-info">
+        <span class="status">'.__( 'Status', 'tremtr' ).'</span>  
+        <span class="number">'.__( '№', 'tremtr' ).'</span>
+        <span class="users">'.__( 'Seats', 'tremtr' ).'</span>
+        <span class="size">'.__( 'Width', 'tremtr' ).'</span>
+        <span class="size">'.__( 'Height', 'tremtr' ).'</span>
+        <span class="remove">'.__( 'Remove', 'tremtr' ).'</span>  
     </div>
-    <ul id="control-items"></ul>
+    <ul id="control-items"></ul>';
 
-    <?php
+
 }
 
 // The function that outputs the metabox html
@@ -245,10 +245,10 @@ add_filter('manage_edit-trem-cafes_columns', 'trem_cafes_edit_columns');
 function trem_cafes_edit_columns($columns){
     $columns = array(
         'cb' => '<input type="checkbox" />',
-        'title' => 'Title',
-        'image' => 'Image',
-        'id' => 'ID',
-        'date' => 'Date'
+        'title' => __( 'Title', 'tremtr' ),
+        'image' => __( 'Image', 'tremtr' ),
+        'id' => __( 'ID', 'tremtr' ),
+        'date' => __( 'Date', 'tremtr' )
     );
 
     return $columns;
@@ -272,13 +272,13 @@ add_filter('manage_trem-reservation_posts_columns', 'trem_reservation_edit_colum
 function trem_reservation_edit_columns($columns){
     $columns = array(
         'cb' => '<input type="checkbox" />',
-        'title' => 'Name',
-        'reservation_date' => 'Reserved for',
-        'table' => 'Table №',
-        'persons' => 'Persons',
-        'phone' => 'Phone',
-        'email' => 'E-mail',
-        'date' => 'Date'
+	'title' => __( 'Name', 'tremtr' ),
+        'reservation_date' => __( 'Reserved for', 'tremtr' ),
+        'table' => __( 'Table N', 'tremtr' ),
+        'persons' => __( 'Persons', 'tremtr' ),
+        'phone' => __( 'Phone', 'tremtr' ),
+        'email' => __( 'E-mail', 'tremtr' ),
+        'date' => __( 'Date', 'tremtr' )
     );
 
     return $columns;
