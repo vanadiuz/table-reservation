@@ -68,7 +68,7 @@ if (!class_exists('TREMTableReservation')) :
                 }
             }
             add_action( 'tremtr_daily_cleaning_event', array($this, 'delete_old_table_reservations'), 10, 0);
-            
+
             register_deactivation_hook( __FILE__, 'tremtr_deactivation_delete_irrelevant_reservations' );
             function tremtr_deactivation_delete_irrelevant_reservations() {
                 wp_clear_scheduled_hook( 'tremtr_daily_cleaning_event' );
@@ -88,8 +88,8 @@ if (!class_exists('TREMTableReservation')) :
                     $query->the_post();
                     if(get_post_meta( get_the_ID(), 'tremtr_reservation_date', true ) < date( 'Y/m/d', current_time( 'timestamp', 0 ) )){
                         wp_delete_post( get_the_ID(), true);
-                    } 
-                    
+                    }
+
                 }
             }
             wp_reset_query();
@@ -301,9 +301,9 @@ if (!class_exists('TREMTableReservation')) :
 
         //Shortcode output
         public function tremtr_shortcode_output($atts) {
-            
+
             $content = '';
-            
+
             if (true) {
 
                 wp_enqueue_script( 'tremtr-fontawesome' );
@@ -314,7 +314,7 @@ if (!class_exists('TREMTableReservation')) :
 
                 $content = '<div id="reservation" class="reservation"></div>';
             }
-            
+
             return $content;
 
         }
@@ -358,16 +358,16 @@ if (!class_exists('TREMTableReservation')) :
         }
 
 
-        
+
         public function tremtr_enqueue_scripts() {
 
             wp_enqueue_style('tremtr-icons', TREMTR_PLUGIN_URL . '/assets/css/trem-reservation-icons/css/trem-reservation.css');
             wp_enqueue_style('tremtr-app', TREMTR_PLUGIN_URL . '/assets/css/tremtr-client.css');
-    
+
             $i8n = $this->settings->get_setting( 'i8n' );
             if ( !empty( $i8n ) ) {
                 wp_register_script( 'pickadate-i8n', TREMTR_PLUGIN_URL . '/includes/simple-admin-pages/lib/pickadate/translations/' . esc_attr( $i8n ) . '.js', array( 'jquery' ), '', true );
-    
+
                 // Arabic and Hebrew are right-to-left languages
                 if ( $i8n == 'ar' || $i8n == 'he_IL' ) {
                     wp_register_style( 'pickadate-rtl', TREMTR_PLUGIN_URL . '/includes/simple-admin-pages/lib/pickadate/themes/rtl.css' );
@@ -408,6 +408,7 @@ if (!class_exists('TREMTableReservation')) :
                         'bookTableButtonWarning' => __('Please, select a table!', 'tremtr'),
                         'canvasClickWarning' => __('Please, select date and time!', 'tremtr'),
                         'table' => __('Table', 'tremtr'),
+                        'no' => __('№', 'tremtr'),
                         'for' => __('for', 'tremtr'),
                         'people' => __('People', 'tremtr'),
                         'on' => __('on', 'tremtr'),
