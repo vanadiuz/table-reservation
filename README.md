@@ -86,20 +86,6 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
             // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.5ba64ddd460771627e94.js', array(), '1.0.0', 'screen, all');
 ```
 
-## Contributors :muscle:
-
-This project follows the [all-contributors](https://github.com/kentcdodds/all-contributors) specification and is brought to you by these [awesome contributors](./CONTRIBUTORS.md).
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
-| [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/ivan.jpg" width="100px;"/><br /><sub><b>Ivan Novikau</b></sub>](https://true-emotions.studio)<br />💻💬🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/helen.jpg" width="100px;"/><br /><sub><b>Helen Novikava</b></sub>](https://true-emotions.studio)<br />🎨🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2017/12/alex.jpg" width="100px;"/><br /><sub><b>Alexey Novikau</b></sub>](https://true-emotions.studio)<br />💻🤔 | [<img src="https://true-emotions.studio/wp-content/uploads/2018/01/photo.jpg" width="100px;"/><br /><sub><b>Alessandro Crolla</b></sub>](https://alecrolla.com/)<br />💵 |
-| :---: | :---: | :---: | :---: | 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-## Sponsors :moneybag:
-
-Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [Become a sponsor](https://true-emotions.studio/contact-us/)
-
 ## License :page_facing_up:
 
 GPL-3.0 License
