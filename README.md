@@ -21,13 +21,11 @@
 
 
 - [Demo](https://true-emotions.studio/sample-page/)
-- [WordPress Plugin Repository](https://wordpress.org/plugins/table-reservations/)
 - [Introduction](#introduction-wave)
 - [Features](#features-eyeglasses)
 - [Feedback](#feedback-raising_hand)
 - [Build Process](#build-process-hammer)
-- [Contributors](#contributors-muscle)
-- [Sponsors](#sponsors-moneybag)
+- [FAQ](#faq)
 - [License](#license-page_facing_up)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -44,13 +42,13 @@ This plugin allows users quickly book a table in your cafe or make a restaurant 
 
 A few of the things you can do with Table Reservation:
 
-* Selectable tables for reservations
-* THERE ARE NO COLLISIONS, i.e. one table can't be reserved by different people simultaneously.
-* Comfortably add, edit, delete or reject reservations from Wordpress dashboard
-* Email notifications about reservation (both for admin and guest)
-* Customisable colors, date/time format and all notification mails about reservation
-* Each field of reservation form is easily translatable into the required language
-* Well-thought-out mobile usability in the field
+* Rich schedule settings: *opening hours, week days, holidays, siesta...* 
+* Custom email notifications for admin and guests
+* Selectable tables for reservations *(one table can't be reserved by different people simultaneously, e.g. no collisions)
+* Add and edit bookings from the admin panel
+* Check correctness of user-input data *(date, party, time, name, email, phone, message)
+* Mobile UX
+* Customisable colors, date/time format, titles etc.
 * WPBakery(Visual Composer) compatible
 
 <p align="center">
@@ -85,6 +83,45 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
             // wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.27bdc60e48dd445d7732.js', array(), '1.0.0', 'screen, all');
             // wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.5ba64ddd460771627e94.js', array(), '1.0.0', 'screen, all');
 ```
+
+## FAQ
+
+**You will find "Cafe" and "Reservations" menu in your WordPress admin panel.**  
+ 1) Create scheme (Cafe -> Add new -> set featured image, select name of your cafe, draw tables markup)
+ 2) Add shortcode to page 
+ 3) Setup schedule (Cafe -> Settings)	
+ [Slightly outdated video](https://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4)
+ 
+**Shortcode?**  
+ [table-reservation]. 
+ 
+ 
+**How to customize appearance of this plugin?**  
+ 1) There is possibility to change colors in Cafe-> Settings.
+ 2) Also you can override styles in assets->css->tremtr-client.css, but you can't change HTML markup, because it very hard.
+ 
+**How to create beautiful email template? 🌻**
+ [Here!](http://telegra.ph/How-create-beautiful-email-template-01-26 "And write code!")
+ 
+ **Can I change the date/time format?**
+ Yes, set the format for front-end the datepicker in Cafe > Settings. 
+ 
+**How to translate the plugin?**
+Everything in this plugin can be translated using the standard translation process and software like PoEdit. 
+🔸 The language of the calendar is selected separately in the settings of the cafe (default English, uk = Ukrainian). 
+🔸 Files with translation (for example "tremtr-ru_RU") must be placed in the …\wp-content\languages\plugins\. 
+
+**Can I set up many venues/cafes/locations?**
+In [Pro-Version]( https://true-emotions.studio/products/plugins/table-reservation-pro/ )!
+
+**GDRP?**
+All user data is automatically deleted in 24 hours after the reservation time. In other words, the plugin doesn't store information about users after the moment when the reservation is not relevant. Data is collected solely for table reservation purposes. No additional processing of information and compilation of statistics is carried out.
+
+**Plugin does not work!😭**
+* Select "Post name" in Settings->Permalinks!!!
+* If you use W3 Total Cache(or another cache), you should turn off js minification to make everything work.
+* Please note that up to TWO time intervals for one day can be specified in the schedule!
+* The PHP version should be as fresh as possible (7 and above).
 
 ## License :page_facing_up:
 
