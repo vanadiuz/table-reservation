@@ -918,7 +918,31 @@ export default {
       this.date = ''
     },
     hideReservation () {
-      this.view = 4
+      this.table = ''
+      this.name = ''
+      this.persons = ''
+      this.email = ''
+      this.phone = ''
+      this.message = ''
+      this.date = ''
+      this.reservationConfirmed = false
+      this.view = 0
+      this.$http.get(this.calendarTimeInitData.endpoint_reservation).then(response => {
+
+        // get body data 
+        this.reservations = response.body
+
+        this.reservations = this.reservations.filter(reservation => reservation.tremtr_reservation_cafe === this.cafeName)
+        for (let reservation of this.reservations){
+          reservation.tremtr_reservation_date = moment(reservation.tremtr_reservation_date, this.dbDateFormatForMoment).format(this.momentDateFormat)
+          reservation.tremtr_reservation_time_begin = moment(reservation.tremtr_reservation_time_begin, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+          reservation.tremtr_reservation_time_end = moment(reservation.tremtr_reservation_time_end, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+        }
+
+      }, response => {
+
+        // error callback 
+      });
     },
 
     switchReservation () {
