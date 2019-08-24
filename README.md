@@ -92,7 +92,7 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
  3) Setup schedule (Cafe -> Settings)	
  [Slightly outdated video](https://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4)
  
-**Shortcode?**  
+**Shortcode?**  \
  [table-reservation]. 
  
  
@@ -100,24 +100,24 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
  1) There is possibility to change colors in Cafe-> Settings.
  2) Also you can override styles in assets->css->tremtr-client.css, but you can't change HTML markup, because it very hard.
  
-**How to create beautiful email template? 🌻**
+**How to create beautiful email template? 🌻**  \
  [Here!](http://telegra.ph/How-create-beautiful-email-template-01-26 "And write code!")
  
- **Can I change the date/time format?**
+ **Can I change the date/time format?**  \
  Yes, set the format for front-end the datepicker in Cafe > Settings. 
  
-**How to translate the plugin?**
+**How to translate the plugin?**  \
 Everything in this plugin can be translated using the standard translation process and software like PoEdit. 
 🔸 The language of the calendar is selected separately in the settings of the cafe (default English, uk = Ukrainian). 
 🔸 Files with translation (for example "tremtr-ru_RU") must be placed in the …\wp-content\languages\plugins\. 
 
-**Can I set up many venues/cafes/locations?**
+**Can I set up many venues/cafes/locations?**  \
 In [Pro-Version]( https://true-emotions.studio/products/plugins/table-reservation-pro/ )!
 
-**GDRP?**
+**GDRP?**  \
 All user data is automatically deleted in 24 hours after the reservation time. In other words, the plugin doesn't store information about users after the moment when the reservation is not relevant. Data is collected solely for table reservation purposes. No additional processing of information and compilation of statistics is carried out.
 
-**Plugin does not work!😭**
+**Plugin does not work!😭**  
 * Select "Post name" in Settings->Permalinks!!!
 * If you use W3 Total Cache(or another cache), you should turn off js minification to make everything work.
 * Please note that up to TWO time intervals for one day can be specified in the schedule!
