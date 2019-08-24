@@ -4,7 +4,7 @@
  * Plugin Name:  ☕️Table Reservation
  * Plugin URI:   https://github.com/vanadiuz/table-reservation
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      3.3.3
+ * Version:      3.3.4
  * Author:       True Emotions Studio
  * Author URI:   http://true-emotions.studio
  * License:      GPLv2 or later
@@ -376,9 +376,9 @@ if (!class_exists('TREMTableReservation')) :
 
             wp_register_script('tremtr-fabric', TREMTR_PLUGIN_URL . '/assets/js/fabric.min.js');
 
-            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.0ff1271966222f6500e7.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.6d137089d7b61cb49866.js', array(), '1.0.0', 'screen, all');
-            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.504a35b9300c6a960f4b.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-manifest', TREMTR_PLUGIN_URL . '/assets/js/manifest.a9188696ae128e04a04d.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-vendor', TREMTR_PLUGIN_URL . '/assets/js/vendor.cc393016b4ea6410233d.js', array(), '1.0.0', 'screen, all');
+            wp_register_script('tremtr-app', TREMTR_PLUGIN_URL . '/assets/js/app.a967e6835b7cf52c140c.js', array(), '1.0.0', 'screen, all');
             //wp_register_script( 'tremtr-app', 'http://localhost:8080/app.js' , '', '', true );
             wp_localize_script(
                 'tremtr-app',

@@ -158,12 +158,12 @@
                   </checkbox>
                   
                   <a class="c0ffee-button" id="confirm" v-if="!reservationConfirmed" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
-                  <flower-spinner
+                  <!-- <flower-spinner
                     v-else
                     :animation-duration="2500"
                     :size="70"
                     color="var(--button-color)"
-                  />
+                  /> -->
                 </div>
             </div>
         </div>
@@ -192,7 +192,7 @@ import FlatpickrI18n from 'flatpickr/dist/l10n'
 
 import { Carousel, Slide } from 'vue-carousel'
 
-import { FlowerSpinner } from 'epic-spinners'
+// import { FlowerSpinner } from 'epic-spinners'
 
 export default {
   name: 'reservation',
@@ -201,7 +201,7 @@ export default {
     moment,
     Carousel,
     Slide,
-    FlowerSpinner
+    // FlowerSpinner
   },
   props: {
     getView: {
@@ -269,13 +269,17 @@ export default {
       canvasAllowedXPan: 0,
       canvasAllowedYPan: 0,
       canvasLastPinchScale: 0,
+      initCanvasViewportTransformX: 0,
+      initCanvasViewportTransformY: 0,
       pausePanning: false,
       afterMindnight: false,
 
       disabledDatesFormatted: [],
       disabledDaysOfWeek: [],
 
-      GDRPCheck: false
+      GDRPCheck: false,
+
+      corouselStyle:  ''
 
     }
   },
@@ -411,6 +415,7 @@ export default {
       this.arrayOfWorkingTimes = []
       this.clickedTimes.map(val => val.className -= " carusel-active-item")
       this.clickedTimes = []
+      this.persons = ''
 
       
 
@@ -439,18 +444,20 @@ export default {
         for (let open of this.calendarTimeInitData.schedule_open){
           let keyNames = Object.keys(open.weekdays);
           for (let i of keyNames) {
+            if (i === this.dayOfWeek) {
 
-            if (i === this.dayOfWeek && siestaIndex === 1) {
-              siestaEnd = open.time.start;
-              siestaStart = timeFinish;
-              timeFinish = open.time.end;
-              siestaIndex++;
-            }
+              if (i === this.dayOfWeek && siestaIndex === 1) {
+                siestaEnd = open.time.start;
+                siestaStart = timeFinish;
+                timeFinish = open.time.end;
+                siestaIndex++;
+              }
 
-            if (i === this.dayOfWeek && siestaIndex === 0) {
-              timeFinish = open.time.end;
-              timeStart = open.time.start;
-              siestaIndex++;
+              if (i === this.dayOfWeek && siestaIndex === 0) {
+                timeFinish = open.time.end;
+                timeStart = open.time.start;
+                siestaIndex++;
+              }
             }
           }
         }
@@ -574,7 +581,11 @@ export default {
       this.clickedTimes = []
       this.clickedTimes.push(e.target)
       this.timeStart = e.target.innerHTML
-      e.target.className += " carusel-active-item"
+      if (e.target.className !== 'NaN') {
+        e.target.className += "carusel-active-item"
+      } else {
+        e.target.className = "carusel-active-item"
+      }
     },
 
     makeDateConfig() {
@@ -793,6 +804,8 @@ export default {
         let elementRes = document.getElementById('reservation')
         let offsetHeight = elementRes.offsetHeight
 
+        this.corouselStyle = document.getElementsByClassName('VueCarousel-inner')[0].style.cssText
+
         this.$refs.reservationOne.style.display = 'none';
         this.view = 1
 
@@ -894,6 +907,8 @@ export default {
       this.$refs.reservationTwo.style.display = 'none';
       this.view = 0
 
+      document.getElementsByClassName('VueCarousel-inner')[0].style.cssText = this.corouselStyle
+
       setTimeout(function () {
         this.$refs.tremReservation.style.height = this.envelopeHeight
       }.bind(this), 500)
@@ -993,22 +1008,40 @@ export default {
 
             this.canvas.renderAll()
 
-            if (h < 200) {
-
-              this.canvas.zoomToPoint({x: w/2, y: h/2}, scale*2.5)
-              this.canvas.setHeight(400)
-            }
-
             this.canvasImageWidth = w / scale
             this.canvasImageHeight = h / scale
-            this.canvasAllowedXPan = w / scale
-            this.canvasAllowedYPan = h / scale
 
-            this.canvasMinZoom = this.canvas.getZoom()
-            this.canvasMaxZoom = this.canvas.getZoom()*2
-            this.canvasZoomedWidth = this.canvasImageWidth
-            this.canvasZoomedHeight = this.canvasImageHeight
+            this.canvasMinZoom = this.canvas.getZoom() // max width or height
+            this.canvasMaxZoom = 1/this.canvas.getZoom() // original size
 
+            if (h < 200) {
+               let zoom = 400/this.canvasImageHeight
+
+              this.canvas.setHeight(400)
+
+              this.canvas.relativePan({x: 0,y: -this.canvasImageHeight*this.canvas.getZoom()/2 + this.canvas.getCenter().top}) //centered image inside canvas window
+
+              this.canvas.zoomToPoint({x:  this.canvas.getCenter().left,
+                                       y: this.canvas.getCenter().top}, zoom*0.8) //zoom*0.8 zoom to 0.9 of height
+            }
+
+            this.initCanvasViewportTransformX = this.canvas.viewportTransform[4]
+            this.initCanvasViewportTransformY = this.canvas.viewportTransform[5]
+
+            //set maximum panning for starting state
+            this.canvasZoomedWidth = this.canvasImageWidth*this.canvas.getZoom()
+            this.canvasZoomedHeight = this.canvasImageHeight*this.canvas.getZoom()
+
+            if (this.canvasZoomedWidth > this.canvas.getWidth()) {
+              this.canvasAllowedXPan = (this.canvasZoomedWidth - this.canvas.getWidth())/2
+            } else {
+              this.canvasAllowedXPan = 0
+            }
+            if (this.canvasZoomedHeight > this.canvas.getHeight()) {
+              this.canvasAllowedYPan = (this.canvasZoomedHeight - this.canvas.getHeight())/2
+            } else {
+              this.canvasAllowedYPan = 0
+            }
           }
 
           //add id to canvas objects and lock objects
@@ -1150,22 +1183,62 @@ export default {
           this.canvas.on({
               'touch:gesture': event => {
 
-                if (event.e.touches && event.e.touches.length == 2) {
+                if (event.e.touches != undefined && event.e.touches.length == 2) {
                   this.pausePanning = true;
-                  let point = new fabric.Point(this.canvas.getCenter().left, this.canvas.getCenter().top);
+                  let point = new fabric.Point(event.self.x, event.self.y);
                   if (event.self.state == "start") {
                     this.zoomStartScale = this.canvas.getZoom();
                   }
-                  let delta = this.zoomStartScale * event.self.scale;
+
+                  let delta = this.zoomStartScale * event.self.scale
+
                   if (delta < this.canvasMaxZoom && delta > this.canvasMinZoom) {
                     this.canvas.zoomToPoint(point, delta);
-                    this.canvasZoomedWidth = this.canvas.getZoom() * this.canvasImageWidth / this.canvasMinZoom
-                    this.canvasZoomedHeight = this.canvas.getZoom() * this.canvasImageHeight / this.canvasMinZoom
-                    this.canvasAllowedXPan = this.canvasZoomedWidth - this.canvas.getWidth()
-                    this.canvasAllowedYPan = this.canvasZoomedHeight - this.canvas.getHeight()
-                    //this.pausePanning = false;
-                  } 
+
+                    let xChange = 0;
+                    let yChange = 0;
+                    let vpx = -this.canvas.viewportTransform[4]
+                    let vpy = -this.canvas.viewportTransform[5]
+                    
+                    this.canvasZoomedWidth = this.canvasImageWidth*this.canvas.getZoom()
+                    this.canvasZoomedHeight = this.canvasImageHeight*this.canvas.getZoom()
+
+                    // corner case
+                    if (vpx + this.canvas.getWidth() > this.canvasZoomedWidth) {
+                      let d = vpx + this.canvas.getWidth() - this.canvasZoomedWidth
+                      xChange = d
+                    } else if (vpx < 0) {
+                      xChange = vpx
+                    }
+                    if (vpy + this.canvas.getHeight() > this.canvasZoomedHeight) {
+                      let d = vpy + this.canvas.getHeight() - this.canvasZoomedHeight
+                      yChange = d
+                    } else if (vpy < 0) {
+                      yChange = vpy
+                    }
+                    if (xChange != 0 || yChange != 0) {
+                      this.canvas.relativePan({x: xChange,y: yChange})
+                    }
+
+                    // add case when vp > image in both dims.
+                    xChange = 0;
+                    yChange = 0;
+                    vpx = -this.canvas.viewportTransform[4]
+                    vpy = -this.canvas.viewportTransform[5]
+                    if (this.canvas.getWidth() > this.canvasZoomedWidth) {
+                      let d = (this.canvas.getWidth() - this.canvasZoomedWidth)/2
+                      xChange = vpx + d
+                    }
+                    if (this.canvas.getHeight() > this.canvasZoomedHeight) {
+                      let d = (this.canvas.getHeight() - this.canvasZoomedHeight)/2
+                      yChange = vpy + d
+                    }
+                    if (xChange != 0 || yChange != 0) {
+                      this.canvas.relativePan({x: xChange,y: yChange})
+                    }
+                  }
                   this.pausePanning = false;
+
                   if (typeof event.e.stopPropagation === "function") {
                     event.e.stopPropagation();
                     event.e.preventDefault();
@@ -1181,34 +1254,29 @@ export default {
               },
               'touch:drag': event => {
 
-                if (this.pausePanning == false && event.e.touches != null ) {
+                if (event.e.touches != undefined && this.pausePanning == false && event.e.touches.length == 1 ) {
                     this.dragCurrentX = event.e.touches[0].pageX;
                     this.dragCurrentY = event.e.touches[0].pageY;
-                    const xChange = this.dragCurrentX - this.draglastX;
-                    const yChange = this.dragCurrentY - this.draglastY;
+                    let xChange = this.dragCurrentX - this.draglastX;
+                    let yChange = this.dragCurrentY - this.draglastY;
                     
-                    if((Math.abs(this.dragCurrentX - this.draglastX) <= 50) && (Math.abs(this.dragCurrentY - this.draglastY) <= 50)) {
-                       
-                        if ((Math.abs(this.canvas.viewportTransform[4]) <= this.canvasAllowedXPan) && (Math.abs(this.canvas.viewportTransform[5]) <= this.canvasAllowedYPan)) {
-                          this.canvas.relativePan({x: xChange,y: yChange})
-                        } else {
-                          if (Math.abs(this.canvas.viewportTransform[4]) > this.canvasAllowedXPan) {
-                            if (this.canvas.viewportTransform[4] > 0) {
-                              this.canvas.viewportTransform[4] = this.canvasAllowedXPan
-                            } else {
-                              this.canvas.viewportTransform[4] = -this.canvasAllowedXPan
-                            }
-                          } else {
-                            if (this.canvas.viewportTransform[5] > 0) {
-                              this.canvas.viewportTransform[5] = this.canvasAllowedYPan
-                            } else {
-                              this.canvas.viewportTransform[5] = -this.canvasAllowedYPan
-                            }
-                          }
-                        }
+                    if((Math.abs(xChange) <= 50) && (Math.abs(yChange) <= 50)) {
+
+                      let deltaXMax =  this.canvasZoomedWidth - this.canvas.getWidth()
+                      let deltaYMax =  this.canvasZoomedHeight - this.canvas.getHeight()
+                      let vpx = -this.canvas.viewportTransform[4]
+                      let vpy = -this.canvas.viewportTransform[5]
+                      if (vpx - xChange >= deltaXMax || vpx - xChange < 0){
+                        xChange = 0
+                      }
+                      if (vpy - yChange >= deltaYMax || vpy - yChange < 0){
+                        yChange = 0
+                      }
+                      this.canvas.relativePan({x: xChange,y: yChange})
+
                     }
-                    this.draglastX = this.dragCurrentX;
-                    this.draglastY = this.dragCurrentY;
+                    this.draglastX += xChange;
+                    this.draglastY += yChange;
                 }
                 
                 if (typeof event.e.stopPropagation === "function") {
