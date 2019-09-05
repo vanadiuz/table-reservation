@@ -17,6 +17,25 @@
                     </slide>
                   </carousel>
                 </transition>
+                <transition name="fade" mode="in-out">
+                  <label for="vue-slider-time-end" v-show="(timeStart !== '') && (sliderActive)">{{calendarTimeInitData.translation.stayTime}}</label>
+                </transition>
+                <transition name="fade" mode="in-out">
+                  <vue-slider 
+                    v-show="(timeStart !== '') && (sliderActive)"
+                    id="vue-slider-time-end"
+                    ref="slider" 
+                    v-model="sliderValue" 
+                    :min="sliderMin" 
+                    :max="sliderMax"
+                    :width="250"
+                    :height="8"
+                    :interval="sliderTimeInterval"
+                    tooltip="hover"
+                    :formatter="sliderTooltipFormat"
+                  >
+                  </vue-slider>
+                </transition>
                 <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
                 <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
             </div>
@@ -50,6 +69,10 @@
                   <div class="form-element from">
                     <h4>{{calendarTimeInitData.translation.from}}</h4>
                     <h4>{{timeStart}}</h4>
+                  </div>
+                  <div class="form-element from" v-show="sliderActive">
+                    <h4>{{calendarTimeInitData.translation.to}}</h4>
+                    <h4>{{timeEnd}}</h4>
                   </div>
                   <div class="form-element cafe">
                     <h4>{{calendarTimeInitData.translation.in}}</h4>
@@ -153,17 +176,17 @@
                       
                     ></span>
                   </div>
+
                   <checkbox name="GDRP" value="true" v-model="GDRPCheck" v-if="calendarTimeInitData.translation.privacy">
-                       {{calendarTimeInitData.translation.privacy}}
+                       <span v-html="calendarTimeInitData.translation.privacy"></span>
                   </checkbox>
-                  
                   <a class="c0ffee-button" id="confirm" v-if="!reservationConfirmed" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
-                  <!-- <flower-spinner
+                  <flower-spinner
                     v-else
                     :animation-duration="2500"
                     :size="70"
                     color="var(--button-color)"
-                  /> -->
+                  />
                 </div>
             </div>
         </div>
@@ -190,9 +213,11 @@ import './assets/font/trem-reservation/css/trem-reservation.css'
 
 import FlatpickrI18n from 'flatpickr/dist/l10n'
 
-import { Carousel, Slide } from 'vue-carousel'
+import { Carousel, Slide } from 'vue-carousel';
 
-// import { FlowerSpinner } from 'epic-spinners'
+import vueSlider from 'vue-slider-component'
+
+import { FlowerSpinner } from 'epic-spinners'
 
 export default {
   name: 'reservation',
@@ -201,7 +226,8 @@ export default {
     moment,
     Carousel,
     Slide,
-    // FlowerSpinner
+    vueSlider,
+    FlowerSpinner
   },
   props: {
     getView: {
@@ -233,8 +259,8 @@ export default {
       canvasInitData: '',
       reservations: '',
       disabledTables: [''],
-      toast: '',
-      calendarTimeInitData: tremtr_data,
+      toast: '', 
+      calendarTimeInitData: tremtr_data, 
       weekDays1: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
       weekDays0: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
       trueTimeFormat: '',
@@ -251,6 +277,7 @@ export default {
       caruselNavNext: '👉',
       caruselNavPrev: '👈',
       clickedTimes: [],
+
 
       reservationConfirmed: false,
 
@@ -276,6 +303,14 @@ export default {
 
       disabledDatesFormatted: [],
       disabledDaysOfWeek: [],
+
+      //for slider
+      sliderActive: false,
+      sliderValue: 0,
+      sliderMin: 0,
+      sliderMax: 0,
+      sliderTimeInterval: 1,
+      sliderTooltipFormat: '',
 
       GDRPCheck: false,
 
@@ -308,7 +343,7 @@ export default {
     moment.locale(this.calendarTimeInitData.translation.calendar)
 
     this.initCanvas()
-  
+
     document.getElementById('reservation').style.setProperty('--button-color', this.calendarTimeInitData.mainColor)
 
   }, 
@@ -317,7 +352,7 @@ export default {
 
     dateForClient: function() { 
 
-      if(this.openHoursStart._i.substr(0, this.openHoursStart._i.indexOf(':')).length === 1){
+       if(this.openHoursStart._i.substr(0, this.openHoursStart._i.indexOf(':')).length === 1){
         this.openHoursStart._i = "0" + this.openHoursStart._i
       }
 
@@ -382,7 +417,7 @@ export default {
     dayOfWeek: function () {
       let dayOfWeek = moment(this.date, this.momentDateFormat).locale('en').format('dddd').toLowerCase()
       moment.locale(this.calendarTimeInitData.translation.calendar)
-      return dayOfWeek    
+      return dayOfWeek
     },
 
     selectable: function () {
@@ -417,7 +452,7 @@ export default {
       this.clickedTimes = []
       this.persons = ''
 
-      
+
 
       if (this.isDissableDate) {
         this.timeStart = ''
@@ -446,18 +481,18 @@ export default {
           for (let i of keyNames) {
             if (i === this.dayOfWeek) {
 
-              if (i === this.dayOfWeek && siestaIndex === 1) {
-                siestaEnd = open.time.start;
-                siestaStart = timeFinish;
-                timeFinish = open.time.end;
-                siestaIndex++;
-              }
+            if (i === this.dayOfWeek && siestaIndex === 1) {
+              siestaEnd = open.time.start;
+              siestaStart = timeFinish;
+              timeFinish = open.time.end;
+              siestaIndex++;
+            }
 
-              if (i === this.dayOfWeek && siestaIndex === 0) {
-                timeFinish = open.time.end;
-                timeStart = open.time.start;
-                siestaIndex++;
-              }
+            if (i === this.dayOfWeek && siestaIndex === 0) {
+              timeFinish = open.time.end;
+              timeStart = open.time.start;
+              siestaIndex++;
+            }
             }
           }
         }
@@ -468,7 +503,7 @@ export default {
             timeFinish = open.time.end 
           }
         }
- 
+
         this.openHoursStart = timeStart;
         this.openHoursEnd = timeFinish;
 
@@ -486,7 +521,7 @@ export default {
             year: momentDate.year()
           })
         }
-        
+
         this.openHoursStart = moment(timeStart, this.dbTimeFormatForMoment).set({
           date: momentDate.date(),
           month: momentDate.month(),
@@ -500,21 +535,21 @@ export default {
         if (moment(timeFinish, this.dbTimeFormatForMoment).diff(moment(timeStart, this.dbTimeFormatForMoment)) < 0) {
           this.openHoursEnd.add(1, 'd')
         }
-      
+
 
         //restrict reservation hours for "today"
         moment.locale(this.calendarTimeInitData.translation.calendar)
         if (moment().date() === moment(this.date, this.momentDateFormat).date()) {
-          let time = this.openHoursStart
+           let time = this.openHoursStart
           
-          if (moment().diff(time) > 0) {
+           if (moment().diff(time) > 0) {
             time = moment()
             let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
             time.add(addMinutes, 'm')
             let roundTime = Number(time.minutes()) % Number(this.calendarTimeInitData.time_interval) 
             time.add(Number(this.calendarTimeInitData.time_interval) -roundTime, 'm')
             
-            if (time.diff(this.openHoursEnd) > 0) { 
+            if (time.diff(this.openHoursEnd) > 0) {
               this.date = ''
             }
             this.openHoursStart.set({  
@@ -524,18 +559,16 @@ export default {
           }
         }
 
-        //Prevent make reservation in last minute before closing and form arrayOfWorkingTimes
+        //Prevent make reservation in last minute before closing
         if (this.openHoursStart && this.openHoursEnd){
           const timeBegin = this.openHoursStart
-          const timeEnd = this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
-
+          const timeEnd = this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm')  
           let siestaStart = ''
           let siestaEnd = ''
           if (siestaIndex === 2) {
             siestaStart = this.siestaStart.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
             siestaEnd = this.siestaEnd
           }
-
           this.arrayOfWorkingTimes = []
 
           let counter = 0
@@ -549,7 +582,7 @@ export default {
             }
 
             timeBegin.add(Number(this.calendarTimeInitData.time_interval), 'm')
-            counter++
+             counter++
           }
           timeBegin.add(-counter*Number(this.calendarTimeInitData.time_interval), 'm')
         }
@@ -558,13 +591,22 @@ export default {
 
 
     timeStart: function (newTimeStart) {
+      this.sliderValue = ''
 
       //set time end
       if (newTimeStart !== '') {
-        this.timeEnd = moment(newTimeStart, this.momentTimeFormat).add(Number(this.calendarTimeInitData.reservation_duration), 'm').format(this.momentTimeFormat)
-        this.renewDisabledTables ()
+        this.initTimeEndSlider(newTimeStart)
       } else {
         this.timeEnd = ''
+        this.sliderActive = false
+      }
+    },
+
+    sliderValue: function (newSliderValue) {
+      if (this.sliderActive) {
+         this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(newSliderValue), 'm').format(this.momentTimeFormat)
+        //if timeEnd  setted then check tables
+        this.renewDisabledTables ()    //also for endTimeConfig
       }
     },
 
@@ -576,8 +618,48 @@ export default {
 
   methods: {
 
+    initTimeEndSlider(newTimeStart) {
+      this.sliderActive = Boolean(Number(this.calendarTimeInitData.reservation_duration_select))
+      this.sliderMin =  Number(this.calendarTimeInitData.reservation_duration_min)
+
+      //change sliderMax on the border
+      let momentDate = moment(this.dateForClient, this.momentDateFormat)
+      let timeStart = moment(newTimeStart, this.momentTimeFormat).set({
+        date: momentDate.date(),
+        month: momentDate.month(),
+        year: momentDate.year()
+      })
+      const overtime = timeStart.diff(this.openHoursEnd, 'minutes') + Number(this.calendarTimeInitData.reservation_duration_max) - Number(this.calendarTimeInitData.reservation_duration)
+      if (overtime > 0) {
+        this.sliderMax =  Number(this.calendarTimeInitData.reservation_duration_max) - overtime
+      } else {
+        this.sliderMax =  Number(this.calendarTimeInitData.reservation_duration_max)
+      }
+
+      this.sliderTimeInterval = Number(this.calendarTimeInitData.time_interval) 
+      this.sliderTooltipFormat = (value) => {
+        if (Math.floor(value/60) !== 0){
+          value = Math.floor(value/60)+ ' ' + this.calendarTimeInitData.translation.hours + ' ' + value%60 + ' ' + this.calendarTimeInitData.translation.minutes
+        }
+        else{
+          value = value%60 + ' ' + this.calendarTimeInitData.translation.minutes
+        }
+        return value
+      }
+      this.sliderValue = Math.floor((this.sliderMin + this.sliderMax)/2) - (Math.floor((this.sliderMin + this.sliderMax)/2))%this.sliderTimeInterval
+
+      if (this.sliderActive) {
+        this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(this.sliderValue), 'm').format(this.momentTimeFormat)
+      } else {
+        this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(this.calendarTimeInitData.reservation_duration), 'm').format(this.momentTimeFormat)
+      }
+
+      //if timeEnd  setted then check tables
+      this.renewDisabledTables ()    //also for endTimeConfig
+    },
+
     selectedTime(e) {
-      this.clickedTimes.map(val => val.className -= " carusel-active-item")
+      this.clickedTimes.map(val => val.className -= "carusel-active-item")
       this.clickedTimes = []
       this.clickedTimes.push(e.target)
       this.timeStart = e.target.innerHTML
@@ -602,7 +684,7 @@ export default {
       }
 
       for(let d of disabledDates){
-         this.disabledDatesFormatted.push(d.format(this.momentDateFormat))
+        this.disabledDatesFormatted.push(d.format(this.momentDateFormat))
       }
 
       //translate and set first day of week (e.g. Localization)
@@ -650,7 +732,7 @@ export default {
         maxDate: new Date().fp_incr(Number(this.calendarTimeInitData.early_reservations)),
         disable: [
             (date) => {
-
+              
               let workingDaysFromException = true
               // if there is that day in exceptions but not closed full day
               if (this.calendarTimeInitData.schedule_closed !== '0') {
@@ -658,9 +740,9 @@ export default {
                   (
                     moment(date).format(this.dbDateFormatForMoment) === close.date
                     &&
-                    close.time !== undefined
+                    close.time !== undefined                  
                   )
-                ).length
+                ).length 
               )}
                             
               return (
@@ -834,12 +916,12 @@ export default {
 
     confirm () {
       if (!this.calendarTimeInitData.translation.privacy) {this.GDRPCheck = true}
-      if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone')) && this.GDRPCheck ) {
+      if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone')) && this.GDRPCheck) {
 
         this.reservationConfirmed = !this.reservationConfirmed
-        
+
         moment.locale(this.calendarTimeInitData.translation.calendar)
-        
+
         let date = null
         if (this.afterMindnight) {
           date = moment(this.dateForClient, this.momentDateFormat).format(this.dbDateFormatForMoment)
@@ -854,6 +936,7 @@ export default {
           'tremtr_reservation_time_begin': moment(this.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment),
           'tremtr_reservation_time_end': moment(this.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment),
           'tremtr_reservation_table': this.table,
+          'tremtr_reservation_cafe': this.cafeName,
           'tremtr_reservation_name': this.name,
           'tremtr_reservation_persons': this.persons,
           'tremtr_reservation_email': this.email,
@@ -865,7 +948,7 @@ export default {
         }).then(response => {
 
           if (response.bodyText.includes('"success":true')) {
-
+            
             this.$refs.reservationTwo.style.display = 'none'
             this.view = 2
 
@@ -884,6 +967,8 @@ export default {
             });
 
             this.reservationConfirmed = !this.reservationConfirmed
+
+            
           }
           
 
@@ -981,8 +1066,8 @@ export default {
       this.$http.get(this.calendarTimeInitData.endpoint_cafe).then(response => {
 
         // get body data 
-        this.canvasInitData = response.body[0].tremtr_content
-        this.cafeName = response.body[0].title.rendered
+        this.canvasInitData = response.body.tremtr_content
+        this.cafeName = response.body.title.rendered
 
         this.canvas = new fabric.Canvas('cc', { 
           selection: false,
@@ -1021,7 +1106,7 @@ export default {
 
             let scale = (width*0.9)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
             this.canvas.setZoom(scale)
-            
+
             this.canvas.renderAll()
 
             const h = parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale;
@@ -1038,8 +1123,9 @@ export default {
             this.canvasMinZoom = this.canvas.getZoom() // max width or height
             this.canvasMaxZoom = 1/this.canvas.getZoom() // original size
 
+            //initial zoom if needed
             if (h < 200) {
-               let zoom = 400/this.canvasImageHeight
+              let zoom = 400/this.canvasImageHeight
 
               this.canvas.setHeight(400)
 
@@ -1048,7 +1134,6 @@ export default {
               this.canvas.zoomToPoint({x:  this.canvas.getCenter().left,
                                        y: this.canvas.getCenter().top}, zoom*0.8) //zoom*0.8 zoom to 0.9 of height
             }
-
             this.initCanvasViewportTransformX = this.canvas.viewportTransform[4]
             this.initCanvasViewportTransformY = this.canvas.viewportTransform[5]
 
@@ -1074,19 +1159,14 @@ export default {
           let counter = 0;
           let canvasObjectId = 0;
 
-          for(let i = 0; i < this.canvas.getObjects().length; i+=3){
+          for(let i = 0; i < this.canvas.getObjects().length; i=i+2){
             
             this.canvas.item(i).id = this.canvas.item(i + 1).text;
             this.canvas.item(i + 1).id = this.canvas.item(i + 1).text
-            this.canvas.item(i + 2).id = this.canvas.item(i + 1).text
 
             this.initCanvasObject (this.canvas.item(i))
             this.initCanvasObject (this.canvas.item(i + 1))
-            this.initCanvasObject (this.canvas.item(i + 2))
             
-            let tablePeople = [this.canvas.item(i+1).text, this.canvas.item(i+2).text]
-            this.canvas.item(i).name = tablePeople;
-
             this.canvas.item(i).set({
               fill: fillActive,
               strokeWidth : 0,
@@ -1099,10 +1179,6 @@ export default {
               top: this.canvas.item(i).top + 10,
               fontSize: 20,
               fontWeight: 'bold'
-            });
-
-            this.canvas.item(i+2).set({
-              text: ''
             });
 
             this.canvas.renderAll()
@@ -1128,7 +1204,7 @@ export default {
           this.canvas.on('mouse:out', function(e) {
             if (e.target != null) {
               if ((e.target.fill === fillHover)  && (e.target.type === 'rect')) {
-                if (_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).opacity != 1) {
+                if (!_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)).active) {
                   e.target.set({
                     fill: fillActive
                   });
@@ -1164,10 +1240,8 @@ export default {
               for(let i = 0; i < _self.canvas.getObjects().length; i++){
                 if (_self.canvas.item(i).fill === fillHover){
                   _self.canvas.item(i).set({
-                    fill: fillActive
-                  });
-                  _self.canvas.item(i+2).set({
-                    opacity: 0
+                    fill: fillActive,
+                    active: false
                   });
                 }
               }
@@ -1176,16 +1250,13 @@ export default {
                 let index = _self.canvas.getObjects().indexOf(e.target)
 
                 e.target.set({
-                  fill: fillHover
+                  fill: fillHover,
+                  active: true
                 });
 
-                _self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+2).set({
-                  opacity: 1
-                });
-                
-                _self.table = e.target.name[0];
-                _self.persons = e.target.name[1];
-                _self.maxPersons = e.target.name[1];
+                _self.table = e.target.name;
+                _self.persons = e.target.persons;
+                _self.maxPersons = e.target.persons;
               }
               
               if (e.target.type === 'text') {
@@ -1195,9 +1266,9 @@ export default {
                   fill: fillHover
                 });
 
-                _self.table = _self.canvas.item(index-1).name[0];
-                _self.persons = _self.canvas.item(index-1).name[1];
-                _self.maxPersons = _self.canvas.item(index-1).name[1];
+                _self.table = _self.canvas.item(index-1).name;
+                _self.persons = _self.canvas.item(index-1).persons;
+                _self.maxPersons = _self.canvas.item(index-1).persons;
               }
               
               _self.canvas.renderAll()
@@ -1321,6 +1392,8 @@ export default {
 
         // get body data 
         this.reservations = response.body
+
+        this.reservations = this.reservations.filter(reservation => reservation.tremtr_reservation_cafe === this.cafeName)
         for (let reservation of this.reservations){
           reservation.tremtr_reservation_date = moment(reservation.tremtr_reservation_date, this.dbDateFormatForMoment).format(this.momentDateFormat)
           reservation.tremtr_reservation_time_begin = moment(reservation.tremtr_reservation_time_begin, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
@@ -1338,28 +1411,28 @@ export default {
       this.disabledTables = []
 
       if (this.timeStart !== '' && this.timeEnd != '') {
-        
+
         let todaysReservations = ''
         if (this.openHoursStart.format(this.momentDateFormat) === this.openHoursEnd.format(this.momentDateFormat)) {
           todaysReservations = this.reservations.filter(reservation => 
             ( 
               reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-              moment(reservation.tremtr_reservation_time_begin, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+              reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
             )
           )
         } else {
           todaysReservations = this.reservations.filter(reservation => {
-
+            
             this.openHoursEnd.add(Number(this.calendarTimeInitData.reservation_duration), 'm') 
 
             let tmp = (
                         reservation.tremtr_reservation_date.toLowerCase() === moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat).toLowerCase() &&
-                        moment(reservation.tremtr_reservation_time_end, this.momentTimeFormat).format(this.dbTimeFormatForMoment) <= this.openHoursEnd.format(this.dbTimeFormatForMoment)
+                        reservation.tremtr_reservation_time_end <= this.openHoursEnd.format(this.momentTimeFormat)
                       ) 
                       || 
                       ( 
                         reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-                        moment(reservation.tremtr_reservation_time_begin, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+                        reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
                       )
 
             this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
@@ -1367,7 +1440,6 @@ export default {
             return tmp
           });
         }
-        
 
         const momentDate = moment(this.dateForClient, this.momentDateFormat)
 
@@ -1382,8 +1454,7 @@ export default {
           year: momentDate.year()
         })
 
-
-        if (moment(this.timeStart, this.momentTimeFormat).diff(moment(this.timeEnd, this.momentTimeFormat)) > 0) {
+        if (this.timeStart > this.timeEnd) {
           selectedTimeEnd.add(1, 'd')
         }
 
@@ -1400,7 +1471,7 @@ export default {
             year: momentInitDateTimeBegin.year()
           })
 
-          if (moment(timeBegin.format(this.momentTimeFormat), this.momentTimeFormat).diff(moment(timeEnd.format(this.momentTimeFormat), this.momentTimeFormat)) > 0 ) {
+          if (timeBegin.format(this.momentTimeFormat) > timeEnd.format(this.momentTimeFormat)) {
             timeEnd.add(1, 'd')
           }
 
@@ -1433,26 +1504,27 @@ export default {
 
     disableTable () {
       
-      for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
-        if (this.disabledTables.includes(this.canvas.item(i).name[0])) {
+      for(let i = 0; i < this.canvas.getObjects().length; i= i+2){
+
+        if (this.disabledTables.includes(this.canvas.item(i).name.toString())) {
           this.canvas.item(i).set({
             fill: this.fillBooked,
             evented: false
           });
-
-          if (this.canvas.item(i).name[0] === this.table) {
+            
+          if (this.canvas.item(i).name.toString() === this.table.toString()) {
             this.canvas.item(i).set({
               fill: this.fillBooked,
-              evented: false
+              evented: false,
+              active: false
             });
-            this.canvas.item(i+2).set({
-              opacity: 0
-            });
+
+            
             this.table = ''
           }
         }
 
-        if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) {
+        if (!(this.disabledTables.includes(this.canvas.item(i).name.toString()))) {
           if (this.canvas.item(i).fill === this.fillBooked) {
             this.canvas.item(i).set({
               fill: this.fillActive,
@@ -1468,39 +1540,33 @@ export default {
 
     makeTablesSelectable () {
 
-        if (this.canvas !== ''){
-            if ((this.date !== '') && (this.timeEnd !== '') && (this.timeStart !== '')) {
-              for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
+      if (this.canvas !== ''){
+          if ((this.date !== '') && (this.timeEnd !== '') && (this.timeStart !== '')) {
+            for(let i = 0; i < this.canvas.getObjects().length; i= i+2){
 
-                if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) { 
-
-                  this.canvas.item(i).set({
-                    evented: true
-                  });
-                }
-
-              }
-              this.canvas.renderAll()
-            } else {
-              for(let i = 0; i < this.canvas.getObjects().length; i= i+3){
-
+              if (!(this.disabledTables.includes(this.canvas.item(i).name.toString()))) { 
 
                 this.canvas.item(i).set({
-                    evented: false,
-                    fill: this.fillActive
+                  evented: true
                 });
-
-                this.canvas.item(i+2).set({
-                  opacity: 0
-                });
-                
-                this.table = ''
-
               }
-              this.canvas.renderAll()
+
             }
-  
-        }
+            this.canvas.renderAll()
+          } else {
+            for(let i = 0; i < this.canvas.getObjects().length; i= i+2){
+
+              this.canvas.item(i).set({
+                  evented: false,
+                  active: false,
+                  fill: this.fillActive
+                });
+              this.table = ''
+            }
+            this.canvas.renderAll()
+          }
+
+      }
       
      
     }
@@ -1515,7 +1581,7 @@ export default {
 
 <style lang="scss"> 
 
-
+  
 
 </style>
 

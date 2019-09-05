@@ -1,36 +1,36 @@
 jQuery(document).ready(function ($) {
 
-  var canvas = new fabric.Canvas('c', {
+  let canvas = new fabric.Canvas('c', {
     selection: false
   });
   canvas.setHeight(window.innerHeight);
   canvas.setWidth($('#tremtr_main_metabox').width() - 24);
   canvas.defaultCursor = 'crosshair'
 
-  var canvasObjectId = 0;
+  let canvasObjectId = 0;
 
-  var circle = '';
-  var isDown = '';
-  var originX = '';
-  var originY = '';
+  let rectangle = '';
+  let isDown = '';
+  let originX = '';
+  let originY = '';
 
-  var currentElement = '';
+  let currentElement = '';
 
-  var mouseOverObject = null;
+  let mouseOverObject = null;
 
-  var justCreated = null;
+  let justCreated = null;
 
-  var missedTables = [];
+  let missedTables = [];
 
-  var sortedTablesAfterLoad = [];
+  let sortedTablesAfterLoad = [];
 
 
 canvas.observe('mouse:down', function (o) {
 
   if (o.target != null) {
 
-    var objId = o.target.id;
-    var item = '';
+    let objId = o.target.id;
+    let item = '';
 
     $.each(canvas.getObjects(), function (i) {
 
@@ -87,13 +87,13 @@ canvas.observe('mouse:down', function (o) {
   } else {
 
     isDown = true;
-    var pointer = canvas.getPointer(o.e);
+    let pointer = canvas.getPointer(o.e);
     origX = pointer.x;
     origY = pointer.y;
 
-    var circleId = nextTableNumber()
+    let rectangleId = nextTableNumber()
 
-    circle = new fabric.Rect({
+    rectangle = new fabric.Rect({
       left: origX,
       top: origY,
       rx: 10,
@@ -102,8 +102,7 @@ canvas.observe('mouse:down', function (o) {
       stroke: 'black',
       fill: 'transparent',
       selectable: true,
-      name: [circleId, 1],
-      id: circleId,
+      id: rectangleId,
       lockMovementX: true,
       lockMovementY: true,
       lockScalingX: true,
@@ -114,11 +113,23 @@ canvas.observe('mouse:down', function (o) {
       hoverCursor: 'pointer',
       hasBorders: false
     });
+    rectangle.toObject = (function(toObject) {
+      return function() {
+        return fabric.util.object.extend(toObject.call(this), {
+          name: this.name,
+          persons: this.persons,
+          active: this.active
+        });
+      };
+    })(rectangle.toObject);  
+    rectangle.name = rectangleId;
+    rectangle.persons = 1;
+    rectangle.active = false; //for front end
 
-    canvas.add(circle);
+    canvas.add(rectangle);
 
-    mouseOverObject = circle;
-    justCreated = circle;
+    mouseOverObject = rectangle;
+    justCreated = rectangle;
 
     canvas.renderAll();
   }
@@ -127,7 +138,7 @@ canvas.observe('mouse:down', function (o) {
 canvas.observe('mouse:move', function (o) {
 
   if (!(isDown)) return;
-  var pointer = canvas.getPointer(o.e);
+  let pointer = canvas.getPointer(o.e);
 
   if (origX > pointer.x) {
     justCreated.set({
@@ -158,13 +169,13 @@ canvas.on('mouse:up', function (o) {
 
   isDown = false;
 
-  if ((circle.width < 30 || circle.height < 30) && circle === justCreated) {
+  if ((rectangle.width < 30 || rectangle.height < 30) && rectangle === justCreated) {
 
     $.each(canvas.getObjects(), function (i) {
 
-      if (Number(circle.id) === Number(canvas.item(i).id)) {
+      if (Number(rectangle.id) === Number(canvas.item(i).id)) {
 
-        addMissedTable(circle.id)
+        addMissedTable(rectangle.id)
 
         canvas.remove(canvas.item(i));
         canvas.renderAll();
@@ -173,14 +184,14 @@ canvas.on('mouse:up', function (o) {
       }
     });
 
-  } else if (circle === justCreated) {
+  } else if (rectangle === justCreated) {
 
-    var table = new fabric.Text(circle.name[0].toString(), {
+    let table = new fabric.Text(rectangle.name.toString(), {
       fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
       fontSize: 25,
       id: justCreated.id,
-      top: circle.top + 10,
-      left: circle.left + 10,
+      top: rectangle.top + 10,
+      left: rectangle.left + 10,
       selectable: false,
       lockMovementX: true,
       lockMovementY: true,
@@ -192,35 +203,17 @@ canvas.on('mouse:up', function (o) {
       evented: false
     });
 
-    var people = new fabric.Text(circle.name[1].toString(), {
-      fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
-      fontSize: 25,
-      id: justCreated.id,
-      top: circle.top,
-      left: circle.left + 20,
-      selectable: false,
-      opacity: 0,
-      lockMovementX: true,
-      lockMovementY: true,
-      lockScalingX: true,
-      lockScalingY: true,
-      lockUniScaling: true,
-      lockRotation: true,
-      hasControls: false,
-      evented: false
-    });
 
     canvas.add(table);
-    canvas.add(people);
 
-    var b = circle.name[1];
-    var html = '<li id="' + circle.id + '"> <i class="fa fa-circle " style="color: white;"></i> <span class="table" >' + circle.name[0] + '</span>  <input type="number" name="people" min="1" step="1" value="' + b + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(circle.width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(circle.height) + '"> <button class="trem-remove" ><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
+    let b = rectangle.persons;
+    let html = '<li id="' + rectangle.id + '"> <i class="fa fa-circle" style="color: white;"></i> <span class="table" >' + rectangle.name + '</span>  <input type="number" name="people" min="1" step="1" value="' + b + '"> <button class="trem-remove" ><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
 
     if ($("#control-items").children('li').length !== 0) {
-      if (Number(circle.id) < Number($("#control-items").children('li')[0].id)) {
+      if (Number(rectangle.id) < Number($("#control-items").children('li')[0].id)) {
         $("#control-items").prepend(html)
       } else {
-        $(html).insertAfter($("#control-items").find('#' + (Number(circle.id) - 1)));
+        $(html).insertAfter($("#control-items").find('#' + (Number(rectangle.id) - 1)));
       }
     } else {
       $("#control-items").append(html)
@@ -230,14 +223,13 @@ canvas.on('mouse:up', function (o) {
     $(".trem-remove").click(function (event) {
       event.preventDefault();
 
-      var objId = $(this).closest('li').attr('id');
+      let objId = $(this).closest('li').attr('id');
 
       $(this).parent().remove();
 
       $.each(canvas.getObjects(), function (i) {
 
         if (Number(objId) === Number(canvas.item(i).id)) {
-          canvas.remove(canvas.item(i + 2));
           canvas.remove(canvas.item(i + 1));
           canvas.remove(canvas.item(i));
           canvas.renderAll();
@@ -251,14 +243,13 @@ canvas.on('mouse:up', function (o) {
 
     $('input[name="people"]').change(function () {
       
-      var objId = $(this).parent('li').attr('id');
-      var newVal = $(this).val();
+      let objId = $(this).parent('li').attr('id');
+      let newVal = $(this).val();
 
       $.each(canvas.getObjects(), function (i) {
 
-        if (Number(objId) === Number(canvas.item(i).id)) {
-          canvas.item(i + 2).text = newVal
-          canvas.item(i).name[1] = Number(newVal);
+        if (Number(objId) === Number(canvas.item(i).id) && canvas.item(i).type === 'rect') {
+          canvas.item(i).persons = Number(newVal);
           canvas.renderAll();
           return false;
         }
@@ -266,38 +257,6 @@ canvas.on('mouse:up', function (o) {
 
     });
 
-
-    $('input[name="width"]').change(function () {
-      var objId = $(this).parent('li').attr('id');
-      var newVal = $(this).val();
-      $.each(canvas.getObjects(), function (i) {
-
-        if (Number(objId) === Number(canvas.item(i).id)) {
-          canvas.item(i).set({
-            width: Number(newVal)
-          });
-          canvas.renderAll();
-          return false;
-        }
-      });
-
-    });
-
-    $('input[name="height"]').change(function () {
-      var objId = $(this).parent('li').attr('id');
-      var newVal = $(this).val();
-      $.each(canvas.getObjects(), function (i) {
-
-        if (Number(objId) === Number(canvas.item(i).id)) {
-          canvas.item(i).set({
-            height: Number(newVal)
-          });
-          canvas.renderAll();
-          return false;
-        }
-      });
-
-    });
 
     justCreated = null;
   }
@@ -309,17 +268,17 @@ canvas.on('mouse:up', function (o) {
 
     if (missedTables.length !== 0) {
 
-      var next = missedTables[0]
+      let next = missedTables[0]
       missedTables.shift()
 
       return next
 
     } else {
 
-      var max = 0
+      let max = 0
 
-      for (let i = 1; i < canvas.getObjects().length; i = i + 3) {
-        var tableNumber = Number(canvas.item(i).text)
+      for (let i = 1; i < canvas.getObjects().length; i = i + 2) {
+        let tableNumber = Number(canvas.item(i).text)
         if (max < tableNumber) {
           max = tableNumber
         }
@@ -332,8 +291,8 @@ canvas.on('mouse:up', function (o) {
   //create missedTables array after JSON parse (load)
   function createMissedTable () {
 
-    var tables = [0]
-    for (let i = 1; i < canvas.getObjects().length; i = i + 3) {
+    let tables = [0]
+    for (let i = 1; i < canvas.getObjects().length; i = i + 2) {
       tables.push(Number(canvas.item(i).text))
     }
 
@@ -342,7 +301,7 @@ canvas.on('mouse:up', function (o) {
     });
 
     for (let i = 0; i < canvas.getObjects().length; i++) {
-      var diff = Number(tables[i + 1]) - Number(tables[i]) - 1
+      let diff = Number(tables[i + 1]) - Number(tables[i]) - 1
       if (diff !== 0) {
         for (let j = 1; j <= diff; j++) {
           missedTables.push(tables[i] + j)
@@ -355,8 +314,8 @@ canvas.on('mouse:up', function (o) {
   //create sorted array of existed tables after JSON parse (load)
   function createSortedTables() {
 
-    var tables = []
-    for (let i = 1; i < canvas.getObjects().length; i = i + 3) {
+    let tables = []
+    for (let i = 1; i < canvas.getObjects().length; i = i + 2) {
       tables.push(Number(canvas.item(i).text))
     }
 
@@ -369,7 +328,7 @@ canvas.on('mouse:up', function (o) {
 
   //add next table number in missedTables array
   function addMissedTable(id) {
-    var value = Number(id);
+    let value = Number(id);
 
     missedTables.splice(_.sortedIndex(missedTables, value), 0, value);
   }
@@ -380,8 +339,8 @@ canvas.on('mouse:up', function (o) {
     if (e.keyCode == 46) {
       if ((canvas.getObjects().length != 0) && (canvas.getActiveObject() != null)) {
 
-        var objId = canvas.getActiveObject().id;
-        var element = '#' + objId;
+        let objId = canvas.getActiveObject().id;
+        let element = '#' + objId;
         $(element).remove();
         $.each(canvas.getObjects(), function (i) {
 
@@ -390,7 +349,6 @@ canvas.on('mouse:up', function (o) {
               mouseOverObject = null;
             }
 
-            canvas.remove(canvas.item(i + 2));
             canvas.remove(canvas.item(i + 1));
             canvas.remove(canvas.item(i));
             canvas.renderAll();
@@ -421,15 +379,12 @@ canvas.on('mouse:up', function (o) {
   canvas.on('object:moving', function (e) {
     if (canvas.getActiveObject() != undefined) {
 
-      var id = canvas.getActiveObject().id;
+      let id = canvas.getActiveObject().id;
 
       $.each(canvas.getObjects(), function (i) {
 
         if (!(canvas.item(i).id === undefined)) {
           if (Number(id) === Number(canvas.item(i).id)) {
-
-            canvas.item(i + 2).top = canvas.getActiveObject().top;
-            canvas.item(i + 2).left = canvas.getActiveObject().left;
 
             canvas.item(i + 1).top = canvas.getActiveObject().top + 10;
             canvas.item(i + 1).left = canvas.getActiveObject().left + 10;
@@ -450,15 +405,12 @@ canvas.on('mouse:up', function (o) {
 
     if (canvas.getActiveObject() != undefined) {
 
-      var id = canvas.getActiveObject().id;
+      let id = canvas.getActiveObject().id;
 
       $.each(canvas.getObjects(), function (i) {
 
         if (!(canvas.item(i).id === undefined)) {
           if (Number(id) === Number(canvas.item(i).id)) {
-
-            canvas.item(i + 2).top = canvas.getActiveObject().top;
-            canvas.item(i + 2).left = canvas.getActiveObject().left;
 
             canvas.item(i + 1).top = canvas.getActiveObject().top + 10;
             canvas.item(i + 1).left = canvas.getActiveObject().left + 10;
@@ -491,15 +443,6 @@ canvas.on('mouse:up', function (o) {
         scaleY: 1
       });
       canvas.renderAll();
-
-
-      var objId = canvas.getActiveObject().id;
-      var newValWidth = canvas.getActiveObject().width;
-      var newValHeight = canvas.getActiveObject().height;
-
-      var str = "#" + Number(objId);
-      $(str).children('input[name="width"]').val(Number(newValWidth));
-      $(str).children('input[name="height"]').val(Number(newValHeight));
     }
 
   });
@@ -511,8 +454,8 @@ canvas.on('mouse:up', function (o) {
     if (currentElement) {
       currentElement.css("color", "white");
     }
-    var id = canvas.getActiveObject().id;
-    var li = "#" + id.toString();
+    let id = canvas.getActiveObject().id;
+    let li = "#" + id.toString();
     currentElement = $(li).children("i");
     currentElement.css("color", "green");
 
@@ -550,8 +493,8 @@ canvas.on('mouse:up', function (o) {
 
             if (mouseOverObject != null) {
 
-              var objId = mouseOverObject.id;
-              var item = '';
+              let objId = mouseOverObject.id;
+              let item = '';
 
               $.each(canvas.getObjects(), function (i) {
 
@@ -580,11 +523,11 @@ canvas.on('mouse:up', function (o) {
 
 
   if (typeof wp != 'undefined' && typeof wp.media != 'undefined') {
-    var featuredImage = wp.media.featuredImage.frame();
+    let featuredImage = wp.media.featuredImage.frame();
     featuredImage.on('select', function () {
-      var attachment = featuredImage.state().get('selection').first().toJSON();
+      let attachment = featuredImage.state().get('selection').first().toJSON();
 
-      var newScale = 1;
+      let newScale = 1;
       canvas.setWidth($('#tremtr_main_metabox').width() - 24);
       if (attachment.width > canvas.width) {
         newScale = canvas.width / Number(attachment.width);
@@ -607,8 +550,8 @@ canvas.on('mouse:up', function (o) {
   if ($('#tremtr_content').val() != '') {
     canvas.loadFromJSON($('#tremtr_content').val(), function () {
 
-      var objCounter = 1;
-      var counter = 0;
+      let objCounter = 1;
+      let counter = 0;
 
       createMissedTable()
       createSortedTables()
@@ -617,27 +560,31 @@ canvas.on('mouse:up', function (o) {
         $.each(canvas.getObjects(), function (i) {
           if (canvas.item(i).get('type') === 'rect' && canvas.item(i + 1).text == sortedTablesAfterLoad[k]) {
 
-            var tablePeople = [canvas.item(i + 1).text, canvas.item(i + 2).text]
-            canvas.item(i).name = tablePeople;
-
             canvas.item(i).id = canvas.item(i+1).text;
             canvas.item(i + 1).id = canvas.item(i + 1).text;
-            canvas.item(i + 2).id = canvas.item(i + 1).text;
+            canvas.item(i).toObject = (function(toObject) {
+              return function() {
+                return fabric.util.object.extend(toObject.call(this), {
+                  name: this.name,
+                  persons: this.persons,
+                  active: this.active 
+                });
+              };
+            })(canvas.item(i).toObject);  
 
-            var html = '<li id="' + canvas.item(i).id + '"> <i class="fa fa-circle " style="color: white;"></i> <span class="table" >' + canvas.item(i).name[0] + '</span> <input type="number" name="people" min="1" step="1" value="' + canvas.item(i).name[1] + '"> <input type="number" name="width" min="40" step="1" value="' + parseInt(canvas.item(i).width) + '"> <input type="number" name="height" min="40" step="1" value="' + parseInt(canvas.item(i).height) + '"> <button class="trem-remove"><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
+            let html = '<li id="' + canvas.item(i).id + '"> <i class="fa fa-circle" style="color: white;"></i> <span class="table" >' + canvas.item(i).name + '</span> <input type="number" name="people" min="1" step="1" value="' + canvas.item(i).persons + '">  <button class="trem-remove"><i class="fa fa-times" aria-hidden="true" style="color: #f00;"></button></li>';
             $("#control-items").append(html)
 
             $(".trem-remove").click(function (event) {
               event.preventDefault();
 
-              var objId = $(this).parent('li').attr('id');
+              let objId = $(this).parent('li').attr('id');
 
               $(this).parent().remove();
 
               $.each(canvas.getObjects(), function (i) {
 
                 if (Number(objId) === Number(canvas.item(i).id)) {
-                  canvas.remove(canvas.item(i + 2));
                   canvas.remove(canvas.item(i + 1));
                   canvas.remove(canvas.item(i));
                   canvas.renderAll();
@@ -655,14 +602,13 @@ canvas.on('mouse:up', function (o) {
 
 
       $('input[name="people"]').change(function () {
-        var objId = $(this).parent('li').attr('id');
-        var newVal = $(this).val();
+        let objId = $(this).parent('li').attr('id');
+        let newVal = $(this).val();
 
         $.each(canvas.getObjects(), function (i) {
 
-          if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i + 2).text = newVal;
-            canvas.item(i).name[1] = Number(newVal);
+          if (Number(objId) === Number(canvas.item(i).id) && canvas.item(i).type === 'rect') {
+            canvas.item(i).persons = Number(newVal);
             canvas.renderAll();
             return false;
           }
@@ -671,40 +617,8 @@ canvas.on('mouse:up', function (o) {
       });
 
 
-      $('input[name="width"]').change(function () {
-        var objId = $(this).parent('li').attr('id');
-        var newVal = $(this).val();
-        $.each(canvas.getObjects(), function (i) {
 
-          if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i).set({
-              width: Number(newVal)
-            });
-            canvas.renderAll();
-            return false;
-          }
-        });
-
-      });
-
-      $('input[name="height"]').change(function () {
-        var objId = $(this).parent('li').attr('id');
-        var newVal = $(this).val();
-        $.each(canvas.getObjects(), function (i) {
-
-          if (Number(objId) === Number(canvas.item(i).id)) {
-            canvas.item(i).set({
-              height: Number(newVal)
-            });
-            canvas.renderAll();
-            return false;
-          }
-        });
-
-      });
-
-
-      var newScale = 1;
+      let newScale = 1;
       if (canvas.backgroundImage !== null) {
         if (canvas.backgroundImage.width > canvas.width) {
           newScale = canvas.width / Number(canvas.backgroundImage.width);

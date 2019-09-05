@@ -36,6 +36,7 @@ class sapAdminPage_2_1_0 {
 	 * @since 1.1
 	 */
 	private function parse_args( $args ) {
+		
 		foreach ( $args as $key => $val ) {
 			switch ( $key ) {
 
@@ -109,6 +110,7 @@ class sapAdminPage_2_1_0 {
 	 * @since 2.0
 	 */
 	public function sanitize_callback( $value ) {
+		
 
 		if ( empty( $_POST['_wp_http_referer'] ) ) {
 			return $value;
@@ -117,6 +119,7 @@ class sapAdminPage_2_1_0 {
 		// Get the current page/tab so we only update those settings
 		parse_str( $_POST['_wp_http_referer'], $referrer );
 		$current_page = $this->get_current_page( $referrer );
+
 
 		// Use a new empty value so only values for settings that were added are
 		// passed to the db.

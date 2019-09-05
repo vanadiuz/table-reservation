@@ -5,10 +5,14 @@ import App from './App'
 import VueResource from 'vue-resource'
 import Toasted from 'vue-toasted'
 import VeeValidate from 'vee-validate'
+import KeenUI from 'keen-ui';
+import 'keen-ui/dist/keen-ui.css';
 
+Vue.use(KeenUI);
 Vue.use(VeeValidate)
 Vue.use(Toasted)
 Vue.use(VueResource)
+
 
 Vue.config.productionTip = false
 

@@ -1,77 +1,57 @@
 <template>
-    <div id="reservation" class="trem-reservation" ref="tremReservation" v-if="view !== 4" :style="[canvasLoaded ? {height: envelopeHeight} : {height: hintHeight}] ">
-      <div class="hint"  v-if="(rotationHint === true) && (view === 0)" >
-        <h3>{{calendarTimeInitData.translation.hintHeader}}</h3>
-        <h3>{{calendarTimeInitData.translation.hintText}}<i  class="tremtr-icon-uniF10F"></i></h3>
-      </div>
+    <div id="reservation" class="trem-scheme" ref="tremReservation" v-if="view !== 4" :style="[canvasLoaded ? {height: envelopeHeight} : {}] ">
       <transition name="fade" mode="in-out">
-        <div class="reservation1" ref="reservationOne" v-show="(rotationHint === false) && (view === 0) && (canvasLoaded === true)">
+        <div class="reservation1" ref="reservationOne" v-show="(view === 0) && (canvasLoaded === true)">
           <div class="envelope"  :style="[canvasLoaded ? {height: envelopeHeight} : ''] ">
-            <h3>{{calendarTimeInitData.translation.header}}</h3>
-
-            <div class="people-form" >
-                <div class="form-element">
-                  <flat-pickr :config="dateConfig" :placeholder="date" v-model="date" input-class="input"></flat-pickr>
-                  <span class="trem-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
-                </div>
-                <span class="opening-hours" :style="[isDissableDate ? {opacity: 0} : '']">{{calendarTimeInitData.translation.workingHoursOpen}} {{openHoursStart}} - {{openHoursEnd}}</span>
-                <label :style="[isDissableDate ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.startTime}}</label>
-                <div class="form-element" :style="[isDissableDate ? {opacity: 0.5} : '']" >  
-                  <flat-pickr :config="startTimeConfig" v-model="timeStart" input-class="input"></flat-pickr>
-                  <span class="trem-icon tremtr-icon-uniF10E" aria-hidden="true"></span>
-                </div>
-                <label :style="[isDissableStartTime ? {opacity: 0.5} : '']" >{{calendarTimeInitData.translation.endTime}}</label>
-                <div class="form-element" :style="[isDissableStartTime ? {opacity: 0.5} : '']" >  
-                  <flat-pickr :config="finishTimeConfig" v-model="timeEnd" input-class="input"></flat-pickr>
-                  <span class="trem-icon tremtr-icon-uniF10C" aria-hidden="true"></span>
-                </div>
-                <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
-                <a class="c0ffee-button" @click="book">{{calendarTimeInitData.translation.bookTableButton}}</a>
-            </div>
-          </div>
-        </div>
-      </transition>
-      <transition name="fade" mode="in-out">
-        <div class="reservation2" ref="reservationTwo" v-if="view === 1">
-            <div class="envelope" ref="reservation2envelope">
-                <h3>{{calendarTimeInitData.translation.header}}</h3>
-                <div class="info-form">
-                  <div class="form-element table">
-                    <h4>{{calendarTimeInitData.translation.table}}</h4>
-                    <h4>№ {{table}} </h4>
-                  </div>
-                  <div class="form-element guests" >
-                    <h4>{{calendarTimeInitData.translation.for}}</h4>
-                    <span> <input 
-                      type="number"
-                      v-model="persons" 
-                      :max="maxPersons"
-                      min="1"                     
-                      > 
+            <h1>{{cafeName}}</h1>
+            <ui-modal
+                dismiss-on="close-button esc"
+                ref="modalFree"
+                :title="calendarTimeInitData.translation.modalFreeHeader"
+                size="small"
+                @close="modalClosed"
+            >
+              <div class="input-form">
+                  <div class="time-persons-element">
+                    <div class="timeStart">
+                      <h4>Time Begin</h4>
+                      <h3>{{timeStart}}</h3>
+                    </div>
+                    <div class="timeEnd">
+                      <h4>Time End</h4>
+                      <h3>{{timeEnd}}</h3>
+                    </div>
+                    <div class="persons">
                       <h4>{{calendarTimeInitData.translation.people}}</h4> 
-                    </span>
+                      <input 
+                        type="number"
+                        v-model="persons" 
+                        :max="maxPersons"
+                        min="1"                     
+                      > 
+                    </div>
                   </div>
-                  <div class="form-element date">
-                    <h4>{{calendarTimeInitData.translation.on}}</h4>
-                    <h4>{{date}}</h4>
-                  </div>
-                  <div class="form-element from">
-                    <h4>{{calendarTimeInitData.translation.from}}</h4>
-                    <h4>{{timeStart}}</h4>
-                  </div>
-                  <div class="form-element till">
-                    <h4>{{calendarTimeInitData.translation.to}}</h4>
-                    <h4>{{timeEnd}}</h4>
-                  </div>
-                  <div class="form-element cafe">
-                    <h4>{{calendarTimeInitData.translation.in}}</h4>
-                    <h4>{{calendarTimeInitData.translation.cafe}}</h4>
-                  </div>
-                  <a class="c0ffee-button" id="change" @click="change">{{calendarTimeInitData.translation.changeButton}}</a>
-                </div>
-                
 
-                <div class="input-form">
+                  <div class="input-element timeSlider">
+                    <label for="vue-slider-time-end">{{calendarTimeInitData.translation.stayTime}}</label>
+                    <vue-slider 
+                      id="vue-slider-time-end"
+                      
+                      ref="slider" 
+                      v-if="timeSliderShow"
+                      v-model="sliderValue" 
+                      :min="sliderMin" 
+                      :max="sliderMax"
+                      :width="250"
+                      :height="8"
+                      :interval="5"
+                      tooltip="false"
+                      :formatter="sliderTooltipFormat"
+                    >
+                    </vue-slider>
+                  </div>
+
+
                   <div class="input-element name">
                     <input
                       class="name"
@@ -165,17 +145,89 @@
                       
                     ></span>
                   </div>
-                  <a class="c0ffee-button" id="confirm" @click="confirm">{{calendarTimeInitData.translation.confirmButton}}</a>
+                  <div class="input-element confirm">
+                    <ui-button  id="confirm" @click="confirm" color="green" v-if="isTableInDisabledTables">{{calendarTimeInitData.translation.confirmButton}}</ui-button>
+                    <h4 v-else>{{calendarTimeInitData.translation.tableBooked}}</h4>
+                  </div>
                 </div>
+            </ui-modal>
+
+            <ui-modal
+                dismiss-on="close-button esc"
+                ref="modalReserved"
+                :title="calendarTimeInitData.translation.modalReservedHeader"
+                size="small"
+            >
+              <div class="input-form">
+                <div class="time-persons-element">
+                  <div class="timeStart">
+                    <h4>Time Begin</h4>
+                    <h3>{{modalReservedData.timeStart}}</h3>
+                  </div>
+                  <div class="timeEnd">
+                    <h4>Time End</h4>
+                    <h3>{{modalReservedData.timeEnd}}</h3>
+                  </div>
+                  <div class="persons">
+                    <h4>{{calendarTimeInitData.translation.people}}</h4> 
+                    <h3>{{modalReservedData.persons}}</h3>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-form">
+                <div class="form-element">
+                  <h4>{{calendarTimeInitData.translation.name}}:</h4>
+                  <h4>{{modalReservedData.name}}</h4> 
+                </div>
+                <div class="form-element">
+                  <h4>{{calendarTimeInitData.translation.email}}:</h4>
+                  <h4>{{modalReservedData.email}}</h4> 
+                </div>
+                <div class="form-element">
+                  <h4>{{calendarTimeInitData.translation.phone}}:</h4>
+                  <h4>{{modalReservedData.phone}}</h4> 
+                </div>
+                <div class="form-element">
+                  <h4>{{calendarTimeInitData.translation.message}}:</h4>
+                  <h4>{{modalReservedData.message}}</h4> 
+                </div>
+
+                <div class="delete">
+                  <ui-button  id="confirm" @click="deleteReservation" color="red">{{calendarTimeInitData.translation.deleteButton}}</ui-button>
+                </div>
+              </div>
+            </ui-modal>
+
+            <div class="summary-table">
+              <table>
+                <tr>
+                  <th>{{calendarTimeInitData.translation.time}}</th>
+                  <th>{{calendarTimeInitData.translation.tables}}</th>
+                </tr>
+                <tr v-for="(value, time) of summaryTable" :key="time" >
+                  <td>{{value.time}}</td>
+                  
+                  <td>{{value.tables}}</td>
+                </tr>
+              </table>
             </div>
-        </div>
-      </transition>
-      <transition name="fade" mode="in-out">
-        <div class="reservation3" v-if="view === 2">
-          <div class="confirmation">
-            <span class="trem-icon tremtr-icon-uniF104"></span>
-            <h3>{{firstName}}</h3>
-            <hr>
+
+            <div class="people-form" >
+                <div class="form-element" id="dateinput">
+                  <flat-pickr  :config="dateConfig" :placeholder="date" v-model="date" input-class="input"></flat-pickr>
+                  <span class="trem-icon tremtr-icon-uniF10A" aria-hidden="true"></span>
+                </div>
+                <transition name="fade" mode="in-out">
+                  <carousel v-show="(date !== '')" :navigationEnabled="true" :paginationEnabled="false" :perPage="3" :navigationNextLabel="caruselNavNext" :navigationPrevLabel="caruselNavPrev">
+                    <slide v-for="(workingTime, i) of arrayOfWorkingTimes" :key="workingTime" ref="timeCarousel">
+                      <div  @click="selectedTime($event)" :index="i">{{workingTime}}</div>
+                    </slide>
+                  </carousel>
+                </transition>
+                
+                <canvas id="cc" class="context-menu-one" width="1000px" height="1000px" ></canvas>
+            </div>
           </div>
         </div>
       </transition>
@@ -193,11 +245,18 @@ import './assets/font/trem-reservation/css/trem-reservation.css'
 
 import FlatpickrI18n from 'flatpickr/dist/l10n'
 
+import { Carousel, Slide } from 'vue-carousel';
+
+import vueSlider from 'vue-slider-component'
+
 export default {
   name: 'reservation',
   components: {
     flatPickr,
-    moment
+    moment,
+    Carousel,
+    Slide,
+    vueSlider
   },
   props: {
     getView: {
@@ -207,14 +266,19 @@ export default {
   data () {
     return {
       date: '',
+      dateConfig: '',
       persons: '',
       maxPersons: '',
       timeStart: '',
       timeEnd: '',
+      siestaStart: '',
+      siestaEnd: '',
       openHoursStart: '',
       openHoursEnd: '',
       table: '',
+      tableModal: '',
       name: '',
+      cafeName: '',
       message: '',
       email: '',
       phone: '',
@@ -225,8 +289,9 @@ export default {
       canvasInitData: '',
       reservations: '',
       disabledTables: [''],
-      toast: '',
-      calendarTimeInitData: tremtr_data,
+      tables: [],
+      toast: '', 
+      calendarTimeInitData: tremtr_data, 
       weekDays1: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
       weekDays0: ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
       trueTimeFormat: '',
@@ -236,19 +301,70 @@ export default {
       canvasLoaded: false,
       windowWidth: 0,
       windowHeight: 0,
-      rotationHint: true,
-      mobileWidth: 560,
-      minMobileWidth: 450,
       peopleFormHeight: 367,
-      hintHeight: 150,
       reservationOne: [],
-      reservationTwo: []
+      reservationTwo: [],
+      arrayOfWorkingTimes: [' '],
+      caruselNavNext: '👉',
+      caruselNavPrev: '👈',
+      clickedTimes: [],
+
+      zoomStartScale: 0,
+      panning: false,
+      draglastX: 0,
+      draglastY: 0,
+      dragCurrentX: 0,
+      dragCurrentY: 0,
+      canvasMinZoom: 0,
+      canvasMaxZoom: 0,
+      canvasZoomedWidth: 0,
+      canvasZoomedHeight: 0,
+      canvasImageWidth: 0,
+      canvasImageHeight: 0,
+      canvasAllowedXPan: 0,
+      canvasAllowedYPan: 0,
+      canvasLastPinchScale: 0,
+      pausePanning: false,
+      afterMindnight: false,
+
+      disabledDatesFormatted: [],
+      disabledDaysOfWeek: [],
+
+      isTableInDisabledTables: false,
+
+      summaryTable: '',
+
+      //for modalReserved
+      modalReservedData: '',
+
+      //for slider
+      sliderActive: false,
+      sliderValue: 0,
+      sliderValueBeforeModalOpened: '',
+      sliderMin: 0,
+      sliderMax: 0,
+      sliderTimeInterval: 1,
+      sliderTooltipFormat: '',
+      timeSliderShow: false
 
     }
   },
 
-  beforeMount: function () {
+  created: function () {
     this.width = window.innerWidth;
+
+    //for flatpickr
+    this.trueTimeFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.time_format) 
+    this.trueDateFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.date_format)
+    this.makeDateConfig() 
+
+    //important to localize before canvas init
+    moment.locale(this.calendarTimeInitData.translation.calendar)
+
+    this.initCanvas()
+
+    this.infinityAutoRenew()
+
   },
 
   mounted: function () {
@@ -261,16 +377,29 @@ export default {
     this.getWindowWidth()
     this.getWindowHeight()
 
-    this.initCanvas()
-
-    this.trueTimeFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.time_format)
-
-    this.trueDateFormat = this.pickadateToFlatPickrFormat(this.calendarTimeInitData.date_format)
-
     document.getElementById('reservation').style.setProperty('--button-color', this.calendarTimeInitData.mainColor)
+  
   }, 
 
   computed: {
+
+    dateForClient: function() { 
+
+       if(this.openHoursStart._i.substr(0, this.openHoursStart._i.indexOf(':')).length === 1){
+        this.openHoursStart._i = "0" + this.openHoursStart._i
+      }
+
+      if(moment(this.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment) < this.openHoursStart._i){
+        this.afterMindnight = true
+        return moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat)
+      }
+      this.afterMindnight = false
+      return this.date
+    },
+
+    dateDBFormat: function() { 
+      return moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment)
+    },
 
     fillActive: function() { 
       return 'rgba('+ this.calendarTimeInitData.fillActive +',0.4)'
@@ -280,12 +409,16 @@ export default {
       return 'rgba('+ this.calendarTimeInitData.fillActive +'0)'
     },
 
-     fillHover: function() { 
+     fillActiveHover: function() { 
       return 'rgba('+ this.calendarTimeInitData.fillActive +',0.9)'
     },
 
      fillBooked: function() { 
       return 'rgba('+ this.calendarTimeInitData.fillBooked +',0.4)'
+    },
+
+    fillBookedHover: function() { 
+      return 'rgba('+ this.calendarTimeInitData.fillBooked +',0.9)'
     },
 
     bookedFrame: function() { 
@@ -294,11 +427,7 @@ export default {
     
     envelopeHeight: function() {
       if (this.canvas !== null) {
-        if (this.windowWidth > this.minMobileWidth) {
-          return (this.canvas.height + this.peopleFormHeight).toString() + 'px'
-        } else {
-          return (this.hintHeight).toString() + 'px'
-        } 
+        return '100%'
       }
     },
 
@@ -327,226 +456,9 @@ export default {
     },
 
     dayOfWeek: function () {
+      let dayOfWeek = moment(this.date, this.momentDateFormat).locale('en').format('dddd').toLowerCase()
       moment.locale(this.calendarTimeInitData.translation.calendar)
-      return moment(this.date, this.momentDateFormat).locale('en').format('dddd').toLowerCase()
-    },
-
-    dateConfig: function () {
-
-      let disabledDates = []
-      let disabledDatesFormatted = []
-      let disabledDaysOfWeek = []
-
-      for (let closed of this.calendarTimeInitData.schedule_closed){
-        if (closed.time === undefined) {
-          disabledDates.push(moment(closed.date, this.dbDateFormatForMoment))
-        }
-      }
-
-      for(let d of disabledDates){
-        disabledDatesFormatted.push(d.format(this.momentDateFormat))
-      }
-
-      
-      let locale = ''
-      if (this.calendarTimeInitData.translation.calendar !== 'en') {
-        locale = FlatpickrI18n[this.calendarTimeInitData.translation.calendar]
-        locale.firstDayOfWeek  = this.calendarTimeInitData.week_start
-      } else {
-         locale = {firstDayOfWeek: this.calendarTimeInitData.week_start}
-      }
-      
-
-      let timeFinish = ''
-      let timeStart = ''
-
-      for (let open of this.calendarTimeInitData.schedule_open){
-        let keyNames = Object.keys(open.weekdays);
-
-        if (this.calendarTimeInitData.week_start === '0') {
-
-          for (let i of this.weekDays0) {
-            if (keyNames.includes(i)) {
-              disabledDaysOfWeek.push(this.weekDays0.indexOf(i));
-            }
-          }
-        }
-
-        if (this.calendarTimeInitData.week_start === '1') {
-
-          for (let i of this.weekDays1) {
-            if (keyNames.includes(i)) {
-              disabledDaysOfWeek.push(this.weekDays0.indexOf(i));
-            }
-          }
-        }
-      }
-
-
-      let momentDateFormat =  this.momentDateFormat;
-
-      return {
-        defaultDate: null,
-        disableMobile: true,
-        dateFormat: this.trueDateFormat,
-        locale: locale,
-        minDate: "today",
-        maxDate: new Date().fp_incr(Number(this.calendarTimeInitData.early_reservations)),
-        disable: [
-            function(date) {
-              return (!(disabledDaysOfWeek.includes(date.getDay())) || disabledDatesFormatted.includes(moment(date).format(momentDateFormat)));
-            }
-        ]
-      }
-    },
-
-    startTimeConfig: function () {
-
-      if (this.isDissableDate) {
-        this.timeStart = ''
-      } 
-
-      if (this.date != '') {
-
-        this.renewDisabledTables ()    //also for endTimeConfig
-        this.disableTable ()  //
-
-        let timeFinish = ''
-        let timeStart = ''
-
-        for (let open of this.calendarTimeInitData.schedule_open){
-          let keyNames = Object.keys(open.weekdays);
-          for (let i of keyNames) {
-            if (i === this.dayOfWeek) {
-              timeFinish = open.time.end;
-              timeStart = open.time.start;
-            }
-          }
-        }
-
-        for (let open of this.calendarTimeInitData.schedule_closed){
-          moment.locale(this.calendarTimeInitData.translation.calendar)
-          if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
-            timeStart = open.time.start
-            timeFinish = open.time.end 
-          }
-        }
-
-        this.openHoursStart = timeStart;
-        this.openHoursEnd = timeFinish;
-
-        moment.locale(this.calendarTimeInitData.translation.calendar)
-        if (moment().date() === moment(this.date, this.momentDateFormat).locale('en').date()) {
-          let time = moment(timeStart, this.dbTimeFormatForMoment)
-
-          if (Number(time.hours()) <= Number(moment().hours())) {
-            time = moment()
-            let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
-            time.add(addMinutes, 'm')
-            let roundTime = Number(time.minutes()) % Number(this.calendarTimeInitData.time_interval) 
-            time.add(-roundTime, 'm')
-            
-            if (Number(moment(timeFinish, this.dbTimeFormatForMoment).diff(time)) < 0) {
-              this.date = ''
-            }
-            timeStart = time.format(this.momentTimeFormat)
-          }
-        }
-
-        let time24hr = false;
-        if (this.calendarTimeInitData.time_format.match(/A/g) === null){
-          time24hr = true;
-        }
-
-
-        if (this.timeStart === '') {
-          this.timeStart = timeStart
-        } 
-
-        
-        return {
-          time_24hr: time24hr,
-          enableTime: true,
-          noCalendar: true,
-          dateFormat: this.trueTimeFormat, 
-          minuteIncrement: this.calendarTimeInitData.time_interval, 
-          minDate: timeStart, 
-          maxDate: timeFinish
-        }
-
-      } else {
-
-        let time24hr = false;
-        if (this.calendarTimeInitData.time_format.match(/A/g) === null){
-          time24hr = true;
-        }
-
-        return {
-          time_24hr: time24hr,
-          enableTime: true,
-          noCalendar:true,
-          minuteIncrement: this.calendarTimeInitData.time_interval
-        }
-
-      } 
-    },
-
-    finishTimeConfig: function () {
-
-      let time = moment(this.timeStart, this.momentTimeFormat) 
-      time.add(Number(this.calendarTimeInitData.time_interval), 'm')
-
-      let timeF = '';
-
-      for (let open of this.calendarTimeInitData.schedule_open){
-        let keyNames = Object.keys(open.weekdays);
-        for (let i of keyNames) {
-          if (i === this.dayOfWeek) {
-           timeF = moment(open.time.end, this.dbTimeFormatForMoment).format(this.momentTimeFormat);
-          }
-        }
-      }
-
-      for (let open of this.calendarTimeInitData.schedule_closed){
-        moment.locale(this.calendarTimeInitData.translation.calendar)
-        if (open.date === moment(this.date, this.momentDateFormat).locale('en').format(this.dbDateFormatForMoment)) { 
-          timeF = moment(open.time.end, this.dbTimeFormatForMoment).format(this.momentTimeFormat);
-        }
-      }
-
-      let time24hr = false;
-        if (this.calendarTimeInitData.time_format.match(/A/g) === null){
-          time24hr = true;
-      }
-
-      if (this.isDissableStartTime) {
-        this.timeEnd = ''
-      } else {
-        if (this.timeEnd === '' || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.timeStart, this.momentTimeFormat)) < 0) ) {
-          this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(60), 'm').format(this.momentTimeFormat)
-        } 
-        if ((moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursStart, this.momentTimeFormat)) < 0) || (moment(this.timeEnd, this.momentTimeFormat).diff(moment(this.openHoursEnd, this.momentTimeFormat)) > 0) ) {
-          this.timeEnd = moment(this.openHoursEnd, this.momentTimeFormat).format(this.momentTimeFormat)
-        } 
-      }
-
-      return {
-        enableTime:true, 
-        minuteIncrement: this.calendarTimeInitData.time_interval, 
-        dateFormat: this.trueTimeFormat, 
-        noCalendar:true, 
-        minDate: time.format(this.momentTimeFormat), 
-        maxDate: timeF,
-        time_24hr: time24hr
-      }
-    },
-
-    selectable: function () {
-      if (this.canvas !== ''){
-        if ((this.date !== '') && (this.timeEnd !== '') && (this.timeStart !== '')) {
-          this.makeTablesSelectable()
-        }
-      }
+      return dayOfWeek
     },
 
     firstName: function () {
@@ -564,37 +476,439 @@ export default {
   },
 
   watch: {
-    // whenever question changes, this function will run
+
     date: function (newDate) {
-      this.makeTablesSelectable()
+
+      //reset times
+      this.arrayOfWorkingTimes = []
+      this.clickedTimes.map(val => val.className -= " carusel-active-item")
+      this.clickedTimes = []
+      this.disabledTables = []
+
+
+
+      if (this.isDissableDate) {
+        this.timeStart = ''
+        this.openHoursStart = ''
+        this.openHoursEnd = ''
+
+        //reset times
+        this.arrayOfWorkingTimes = []
+
+        // whenever question changes, this function will run
+        this.makeTablesSelectable()
+      }  else {
+
+        //clean times
+        this.timeStart = ''
+        this.timeEnd = ''
+
+        //init openHoursStart and openHoursEnd
+        let timeFinish = ''
+        let timeStart = ''
+        let siestaEnd = ''
+        let siestaStart = ''
+        let siestaIndex = 0; //just for siesta, order of ifs matter!
+        for (let open of this.calendarTimeInitData.schedule_open){
+          let keyNames = Object.keys(open.weekdays);
+          for (let i of keyNames) {
+            if (i === this.dayOfWeek) {
+
+               if (i === this.dayOfWeek && siestaIndex === 1) {
+              siestaEnd = open.time.start;
+              siestaStart = timeFinish;
+              timeFinish = open.time.end;
+              siestaIndex++;
+            }
+
+            if (i === this.dayOfWeek && siestaIndex === 0) {
+              timeFinish = open.time.end;
+              timeStart = open.time.start;
+              siestaIndex++;
+            }
+            }
+          }
+        }
+        for (let open of this.calendarTimeInitData.schedule_closed){
+          moment.locale(this.calendarTimeInitData.translation.calendar)
+          if (open.date === moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment)) { 
+            timeStart = open.time.start
+            timeFinish = open.time.end 
+          }
+        }
+
+        this.openHoursStart = timeStart;
+        this.openHoursEnd = timeFinish;
+
+        //expand times to time/date for case of working after 12pm
+        const momentDate = moment(this.date, this.momentDateFormat)
+        if (siestaIndex === 2) {
+          this.siestaStart = moment(siestaStart, this.dbTimeFormatForMoment).set({
+            date: momentDate.date(),
+            month: momentDate.month(),
+            year: momentDate.year()
+          })
+          this.siestaEnd = moment(siestaEnd, this.dbTimeFormatForMoment).set({
+            date: momentDate.date(),
+            month: momentDate.month(),
+            year: momentDate.year()
+          })
+        }
+        
+        this.openHoursStart = moment(timeStart, this.dbTimeFormatForMoment).set({
+          date: momentDate.date(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+        this.openHoursEnd = moment(timeFinish, this.dbTimeFormatForMoment).set({
+          date: momentDate.date(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+        if (moment(timeFinish, this.dbTimeFormatForMoment).diff(moment(timeStart, this.dbTimeFormatForMoment)) < 0) {
+          this.openHoursEnd.add(1, 'd')
+        }
+
+
+        //restrict reservation hours for "today"
+        moment.locale(this.calendarTimeInitData.translation.calendar)
+        if (moment().date() === moment(this.date, this.momentDateFormat).date()) {
+           let time = this.openHoursStart
+          
+           if (moment().diff(time) > 0) {
+            time = moment()
+            let addMinutes = Number(this.calendarTimeInitData.late_reservations) 
+            time.add(addMinutes, 'm')
+            let roundTime = Number(time.minutes()) % Number(this.calendarTimeInitData.time_interval) 
+            time.add(Number(this.calendarTimeInitData.time_interval) -roundTime, 'm')
+            
+            if (time.diff(this.openHoursEnd) > 0) {
+              this.date = ''
+            }
+            this.openHoursStart.set({  
+              hour: time.hour(),
+              minute: time.minute()
+            })
+          }
+        }
+
+        //Prevent make reservation in last minute before closing
+        if (this.openHoursStart && this.openHoursEnd){
+          const timeBegin = this.openHoursStart
+          const timeEnd = this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm')  
+          let siestaStart = ''
+          let siestaEnd = ''
+          if (siestaIndex === 2) {
+            siestaStart = this.siestaStart.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+            siestaEnd = this.siestaEnd
+          }
+          this.arrayOfWorkingTimes = []
+
+          let counter = 0
+          while (timeBegin.diff(timeEnd) <= 0) {
+            if (siestaIndex === 2) {
+              if (!(timeBegin.diff(siestaStart) >= 0 && timeBegin.diff(siestaEnd) < 0)){ //for siesta!
+                this.arrayOfWorkingTimes.push(timeBegin.format(this.momentTimeFormat))
+              }
+            } else {
+              this.arrayOfWorkingTimes.push(timeBegin.format(this.momentTimeFormat))
+            }
+
+            timeBegin.add(Number(this.calendarTimeInitData.time_interval), 'm')
+            counter++
+          }
+          timeBegin.add(-counter*Number(this.calendarTimeInitData.time_interval), 'm')
+          
+        }
+
+        this.renewSummaryTable()
+      } 
     },
 
+
     timeStart: function (newTimeStart) {
-      this.makeTablesSelectable()
+      this.sliderValue = ''
+
+      //set time end
+      if (newTimeStart !== '') {
+        this.initTimeEndSlider(newTimeStart)
+      } else {
+        this.timeEnd = ''
+        this.sliderActive = false
+      }
+    },
+
+    sliderValue: function (newSliderValue) {
+      if (this.sliderActive) {
+         this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(newSliderValue), 'm').format(this.momentTimeFormat)
+      }
     },
 
     timeEnd: function (newTimeEnd) {
       this.makeTablesSelectable()
+      this.renewDisabledTables ()
     },
 
-    windowHeight: function (newWindowHeight) {
-      if ( (this.windowWidth > this.minMobileWidth)) {
-        this.rotationHint = false
-      } else {
-          this.rotationHint = true
-      }
+    disabledTables: function (newDisabledTables) {
+
+      this.isTableInDisabledTables = !(newDisabledTables.includes(this.tableModal.toString()))
     },
 
-    windowWidth: function (newWindowWidth) {
-      if ( (this.windowWidth > this.minMobileWidth)) {
-        this.rotationHint = false
-      } else {
-          this.rotationHint = true
-      }
-    }
+
   },
 
   methods: {
+
+    infinityAutoRenew() {
+      setInterval( () => {
+        this.renewReservations()
+      }, 300000);
+    },
+
+    renewSummaryTable(){
+
+      this.summaryTable = []
+      
+      //just a good function
+      const groupBy = (arr, fn) =>
+      arr.map(typeof fn === 'function' ? fn : val => val[fn]).reduce((acc, val, i) => {
+        acc[val] = (acc[val] || []).concat(arr[i]);
+        return acc;
+      }, {});
+
+      //get all reservations for current day
+      let todaysReservations = ''
+      if (this.openHoursStart.format(this.momentDateFormat) === this.openHoursEnd.format(this.momentDateFormat)) {
+        todaysReservations = this.reservations.filter(reservation => 
+          ( 
+            reservation.date.toLowerCase() === this.date.toLowerCase() && 
+            moment(reservation.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+          )
+        )
+      } else {
+        todaysReservations = this.reservations.filter(reservation => {
+          
+          this.openHoursEnd.add(Number(this.calendarTimeInitData.reservation_duration), 'm') 
+
+          let tmp = (
+                      reservation.date.toLowerCase() === moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat).toLowerCase() &&
+                      moment(reservation.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment) <= this.openHoursEnd.format(this.dbTimeFormatForMoment)
+                    ) 
+                    || 
+                    ( 
+                      reservation.date.toLowerCase() === this.date.toLowerCase() &&
+                      moment(reservation.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+                    )
+
+          this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+
+          return tmp
+        });
+      }
+      
+      //prepare data for output
+      let groupedReservationsForToday = groupBy(todaysReservations, 'timeStart')
+
+      for (let time in groupedReservationsForToday) {
+        this.summaryTable.push({
+          'time': time,
+          'tables': groupedReservationsForToday[time].sort((a, b) => a.table - b.table).map(v => v.table).toString().split(',').join(', ')
+        })
+      }
+
+
+      const momentDate = moment(this.dateForClient, this.momentDateFormat)
+
+      this.summaryTable.sort((a,b) => {
+
+        let selectedTimeA = moment(a.time, this.momentTimeFormat).set({
+          date: momentDate.date(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+        let selectedTimeB = moment(b.time, this.momentTimeFormat).set({
+          date: momentDate.date(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+
+        if (moment(a.time, this.momentTimeFormat).format(this.dbTimeFormatForMoment) < this.openHoursStart.format(this.dbTimeFormatForMoment)) {
+          selectedTimeA.add(1, 'd')
+        }
+
+        if (moment(b.time, this.momentTimeFormat).format(this.dbTimeFormatForMoment) < this.openHoursStart.format(this.dbTimeFormatForMoment)) {
+          selectedTimeB.add(1, 'd')
+        }
+
+        return selectedTimeA.diff(selectedTimeB)
+
+      })
+
+     
+    },
+
+
+    selectedTableFreeModal() {
+      if (this.table != '') {
+        this.openModal('modalFree')
+        this.tableModal = this.table
+        this.isTableInDisabledTables = !(this.disabledTables.includes(this.tableModal.toString()))
+      }
+    },
+
+    selectedTableReservedModal() {
+      this.openModal('modalReserved')
+    },
+
+    openModal(ref) {
+        this.$refs[ref].open();
+
+        if (ref === 'modalFree') {
+          this.timeSliderShow = true
+          //for reset time after modal closed
+          this.sliderValueBeforeModalOpened = this.sliderValue
+        }
+    },
+    
+    //for modalFree
+    closeModal(ref) {
+        this.$refs[ref].close();
+        this.timeSliderShow = false
+    },
+
+
+    //for modalFree
+    modalClosed() {
+      //for reset time after modal closed
+      this.sliderValue = this.sliderValueBeforeModalOpened 
+    },
+
+    initTimeEndSlider(newTimeStart) {
+      this.sliderActive = true
+      this.sliderMin =  Number(this.calendarTimeInitData.reservation_duration_min)
+
+      //change sliderMax on the border
+      let momentDate = moment(this.dateForClient, this.momentDateFormat)
+      let timeStart = moment(newTimeStart, this.momentTimeFormat).set({
+        date: momentDate.date(),
+        month: momentDate.month(),
+        year: momentDate.year()
+      })
+      const overtime = timeStart.diff(this.openHoursEnd, 'minutes') + Number(this.calendarTimeInitData.reservation_duration_max) - Number(this.calendarTimeInitData.reservation_duration)
+      if (overtime > 0) {
+        this.sliderMax =  Number(this.calendarTimeInitData.reservation_duration_max) - overtime
+      } else {
+        this.sliderMax =  Number(this.calendarTimeInitData.reservation_duration_max)
+      }
+
+      this.sliderTimeInterval = Number(this.calendarTimeInitData.slider_time_interval) 
+      this.sliderTooltipFormat = '{value} ' + this.calendarTimeInitData.translation.minutes
+      this.sliderValue = Math.floor((this.sliderMin + this.sliderMax)/2) - (Math.floor((this.sliderMin + this.sliderMax)/2))%this.sliderTimeInterval
+      if (this.sliderValue < this.sliderMin) {
+        this.sliderValue = this.sliderMin
+      }
+      if (this.sliderActive) {
+        this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(this.sliderValue), 'm').format(this.momentTimeFormat)
+      } else {
+        this.timeEnd = moment(this.timeStart, this.momentTimeFormat).add(Number(this.calendarTimeInitData.reservation_duration), 'm').format(this.momentTimeFormat)
+      }
+    },
+
+    selectedTime(e) {
+      this.clickedTimes.map(val => val.className -= " carusel-active-item")
+      this.clickedTimes = []
+      this.clickedTimes.push(e.target)
+      this.timeStart = e.target.innerHTML
+      e.target.className += " carusel-active-item"
+    },
+
+    makeDateConfig() {
+
+      let disabledDates = []
+
+
+      //disable all closed dates from exceptions
+      moment.locale(this.calendarTimeInitData.translation.calendar)
+      for (let closed of this.calendarTimeInitData.schedule_closed){
+        if (closed.time === undefined) {
+          disabledDates.push(moment(closed.date, this.dbDateFormatForMoment))
+        }
+      }
+
+      for(let d of disabledDates){
+        this.disabledDatesFormatted.push(d.format(this.momentDateFormat))
+      }
+
+      //translate and set first day of week (e.g. Localization)
+      let locale = ''
+      if (this.calendarTimeInitData.translation.calendar !== 'en') {
+        locale = FlatpickrI18n[this.calendarTimeInitData.translation.calendar]
+        locale.firstDayOfWeek  = this.calendarTimeInitData.week_start
+      } else {
+         locale = {firstDayOfWeek: this.calendarTimeInitData.week_start}
+      }
+      
+
+      //disable all days of week without scheduling
+      let timeFinish = ''
+      let timeStart = ''
+
+      for (let open of this.calendarTimeInitData.schedule_open){
+        let keyNames = Object.keys(open.weekdays);
+
+        if (this.calendarTimeInitData.week_start === '0') {
+
+          for (let i of this.weekDays0) {
+            if (keyNames.includes(i)) {
+              this.disabledDaysOfWeek.push(this.weekDays0.indexOf(i)); //this.disabledDaysOfWeek means enabledDaysOfWeek 😑
+            }
+          }
+        }
+
+        if (this.calendarTimeInitData.week_start === '1') {
+
+          for (let i of this.weekDays1) {
+            if (keyNames.includes(i)) {
+              this.disabledDaysOfWeek.push(this.weekDays0.indexOf(i));
+            }
+          }
+        }
+      }
+
+      this.dateConfig = {
+        defaultDate: null,
+        disableMobile: true,
+        dateFormat: this.trueDateFormat,
+        locale: locale,
+        minDate: "today",
+        maxDate: new Date().fp_incr(Number(this.calendarTimeInitData.early_reservations)),
+        disable: [
+            (date) => {
+
+              let workingDaysFromException = true
+              // if there is that day in exceptions but not closed full day
+              if (this.calendarTimeInitData.schedule_closed !== '0') {
+                workingDaysFromException = !Boolean(this.calendarTimeInitData.schedule_closed.filter( close => 
+                  (
+                    moment(date).format(this.dbDateFormatForMoment) === close.date
+                    &&
+                    close.time !== undefined                  
+                  )
+                ).length 
+              )}
+                            
+              return (
+                (!(this.disabledDaysOfWeek.includes(date.getDay())) || // if for this day not setted a shedule
+                this.disabledDatesFormatted.includes(moment(date).format(this.momentDateFormat)) ) && // if there is that day in exceptions for all day (e.g. not working all day)
+                workingDaysFromException) // if there is that day in exceptions but not closed full day
+            }
+        ]
+      }
+    },
+
+    computeWokingtimes() {
+      this.windowWidth = document.getElementById("reservation").parentNode.parentElement.clientWidth;
+    },
 
     getWindowWidth(event) {
       this.windowWidth = document.getElementById("reservation").parentNode.parentElement.clientWidth;
@@ -751,59 +1065,58 @@ export default {
     confirm () {
       if ((this.name !== '') && (this.mail !== '') && (this.phone !== '') && (!this.errors.has('email')) && (!this.errors.has('phone'))) {
         moment.locale(this.calendarTimeInitData.translation.calendar)
+
+        let date = null
+        if (this.afterMindnight) {
+          date = moment(this.dateForClient, this.momentDateFormat).format(this.dbDateFormatForMoment)
+        } else {
+          date = moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment)
+        }
+
+        this.closeModal('modalFree')
+        
         this.$http.post(this.calendarTimeInitData.url, {
           'action': 'tremtr_reservation',
           'nonce': this.calendarTimeInitData.nonce,
-          'tremtr_reservation_date': moment(this.date, this.momentDateFormat).format(this.dbDateFormatForMoment),
+          'tremtr_reservation_date': date,
           'tremtr_reservation_time_begin': moment(this.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment),
           'tremtr_reservation_time_end': moment(this.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment),
-          'tremtr_reservation_table': this.table,
+          'tremtr_reservation_table': this.tableModal,
           'tremtr_reservation_name': this.name,
           'tremtr_reservation_persons': this.persons,
           'tremtr_reservation_email': this.email,
           'tremtr_reservation_phone': this.phone,
-          'tremtr_reservation_message': this.message
+          'tremtr_reservation_message': this.message,
+          'tremtr_reservation_cafe': this.cafeName
         },
         {
           emulateJSON: true
         }).then(response => {
 
+          if (response.bodyText.includes('"success":true')) {
+            this.name = ''
+            this.persons = ''
+            this.email = ''
+            this.phone = ''
+            this.message = ''
 
-          if (JSON.parse(response.bodyText).success === true) {
+            this.renewReservations()
 
-            this.view = 2
-
-            setTimeout(function () {
-              this.$refs.tremReservation.style.height =  '300px'
-            }.bind(this), 500)
-
-            setTimeout(function () {
-              this.hideReservation()
-            }.bind(this), 3000)
-
+            this.$toasted.show(this.calendarTimeInitData.translation.confirmedReservation, { 
+              theme: "outline", 
+              position: "bottom-right", 
+              duration : 5000,
+              className: 'toast',
+              containerClass: 'toast-container-status'
+            });
           } else {
 
-            this.$toasted.show(this.calendarTimeInitData.translation.rejected, { 
+            this.$toasted.show(this.calendarTimeInitData.translation.rejectRequest, { 
               theme: "primary", 
               position: "top-center", 
               duration : 7000,
               className: 'toast',
               containerClass: 'toast-container'
-            });
-
-            this.$http.get(this.calendarTimeInitData.endpoint_reservation).then(response => {
-
-              // get body data 
-              this.reservations = response.body
-              for (let reservation of this.reservations){
-                reservation.tremtr_reservation_date = moment(reservation.tremtr_reservation_date, this.dbDateFormatForMoment).format(this.momentDateFormat)
-                reservation.tremtr_reservation_time_begin = moment(reservation.tremtr_reservation_time_begin, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
-                reservation.tremtr_reservation_time_end = moment(reservation.tremtr_reservation_time_end, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
-              }
-
-            }, response => {
-
-              // error callback 
             });
           }
           
@@ -823,6 +1136,48 @@ export default {
         });
       }
     },
+
+    deleteReservation() {
+      this.closeModal('modalReserved')
+      
+      this.$http.delete(this.calendarTimeInitData.endpoint_reservation + '/' + this.modalReservedData.id, {
+        headers: { 'X-WP-Nonce': this.calendarTimeInitData.nonce }
+      }, {
+        emulateJSON: true
+      }).then(response => {
+        
+        
+        if (response.statusText === 'OK') {
+          this.modalReservedData = ''
+
+          this.renewReservations()
+
+          this.$toasted.show(this.calendarTimeInitData.translation.deletedReservation, { 
+            theme: "outline", 
+            position: "bottom-right", 
+            duration : 5000,
+            className: 'toast',
+            containerClass: 'toast-container-status'
+          });
+        } else {
+
+          this.$toasted.show(this.calendarTimeInitData.translation.rejectRequest, { 
+            theme: "primary", 
+            position: "top-center", 
+            duration : 7000,
+            className: 'toast',
+            containerClass: 'toast-container'
+          });
+        }
+        
+
+      }, response => {
+        // error callback
+      });
+
+    },
+
+
     change () {
 
       this.$refs.reservationTwo.style.display = 'none';
@@ -850,223 +1205,363 @@ export default {
       }
     },
 
+    initCanvasObject (obj){
+
+      obj.lockMovementX = true; 
+      obj.lockMovementY = true; 
+      obj.lockScalingX = true;
+      obj.lockScalingY = true;
+      obj.lockUniScaling = true;
+      obj.lockRotation = true; 
+      obj.hasControls = false;
+      obj.hoverCursor = 'pointer';
+      obj.hasBorders = false;
+      obj.opacity = 0;
+      obj.selectable = false;
+      obj.evented = false;
+    },
+
     initCanvas () {
 
-      let fillActive = this.fillActive
-      let fillHover = this.fillHover
-      let fillBooked = this.fillBooked
+      const fillActive = this.fillActive
+      const fillActiveHover = this.fillActiveHover
+      const fillBooked = this.fillBooked
+      const fillBookedHover = this.fillBookedHover
 
 
       this.$http.get(this.calendarTimeInitData.endpoint_cafe).then(response => {
 
         // get body data 
-        this.canvasInitData = response.body[0].tremtr_content
+        this.canvasInitData = response.body.tremtr_content
+        this.cafeName = response.body.title.rendered
 
-        this.canvas = new fabric.Canvas('cc', { selection: false })
+        this.canvas = new fabric.Canvas('cc', { 
+          selection: false,
+          controlsAboveOverlay:true,
+          centeredScaling:true,
+          allowTouchScrolling: true
+        })
 
-        this.canvas.loadFromJSON(this.canvasInitData);
+        this.canvas.loadFromJSON(this.canvasInitData, () => {
 
-        let parsedInfo =  JSON.parse(this.canvasInitData);
-
-        let width = this.windowWidth;
-        if (width > parsedInfo.backgroundImage.width) {
-          width = parsedInfo.backgroundImage.width;
-        }
-
-        if (width < this.minMobileWidth) {
-          width = this.windowHeight;
-        }
-
-        let scale = (width*0.85)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
-        this.canvas.setZoom(scale)
-        this.canvas.renderAll()
-
-        this.canvas.setHeight(parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale)
-        this.canvas.setWidth(parsedInfo.backgroundImage.width * parsedInfo.backgroundImage.scaleX * scale)
-        this.canvas.renderAll()
-        
+          let parsedInfo =  JSON.parse(this.canvasInitData);
 
 
-        //add id to canvas objects and lock objects
-        
-        let objCounter = 1;
-        let counter = 0;
-        let canvasObjectId = 0;
+          if (parsedInfo.backgroundImage == null ){
 
-        for(let i = 0; i < this.canvas.getObjects().length; i++){
+            this.canvas.setHeight(300)
+            this.canvas.setWidth(200)
+
+            this.$toasted.show("ADD IMAGE!", { 
+              theme: "bubble", 
+              position: "top-center", 
+              duration : 30000,
+              className: 'toast',
+              containerClass: 'toast-container'
+            });
+
+            this.canvas.renderAll()
+
+          } else {
+
+            let width = this.windowWidth;
+            if (width > parsedInfo.backgroundImage.width) {
+              width = parsedInfo.backgroundImage.width;
+            }
+
+
+            let scale = (width*0.9)/(parsedInfo.backgroundImage.width*parsedInfo.backgroundImage.scaleX);
+            this.canvas.setZoom(scale)
+
+            this.canvas.renderAll()
+
+            const h = parsedInfo.backgroundImage.height * parsedInfo.backgroundImage.scaleY * scale;
+            const w = parsedInfo.backgroundImage.width * parsedInfo.backgroundImage.scaleX * scale;
+
+            this.canvas.setHeight(h)
+            this.canvas.setWidth(w)
+
+            this.canvas.renderAll()
+
+            if (h < 350) {
+
+              this.canvas.zoomToPoint({x: w/2, y: h/2}, scale*2.5)
+              this.canvas.setHeight(400)
+            }
+
+            this.canvasImageWidth = w / scale
+            this.canvasImageHeight = h / scale
+            this.canvasAllowedXPan = w / scale
+            this.canvasAllowedYPan = h / scale
+
+            this.canvasMinZoom = this.canvas.getZoom()
+            this.canvasMaxZoom = this.canvas.getZoom()*2
+            this.canvasZoomedWidth = this.canvasImageWidth
+            this.canvasZoomedHeight = this.canvasImageHeight
+          }
+
+          //add id to canvas objects and lock objects
           
-          this.canvas.item(i).id = canvasObjectId;
-          counter ++;
+          let objCounter = 1;
+          let counter = 0;
+          let canvasObjectId = 0;
 
-          this.canvas.item(i).lockMovementX = true; 
-          this.canvas.item(i).lockMovementY = true; 
-          this.canvas.item(i).lockScalingX = true;
-          this.canvas.item(i).lockScalingY = true;
-          this.canvas.item(i).lockUniScaling = true;
-          this.canvas.item(i).lockRotation = true; 
-          this.canvas.item(i).hasControls = false;
-          this.canvas.item(i).hoverCursor = 'pointer';
-          this.canvas.item(i).hasBorders = false;
-          this.canvas.item(i).opacity = 0;
-          this.canvas.item(i).selectable = false;
-          this.canvas.item(i).evented = false;
+          for(let i = 0; i < this.canvas.getObjects().length; i=i+2){
+            
+            this.canvas.item(i).id = this.canvas.item(i + 1).text;
+            this.canvas.item(i + 1).id = this.canvas.item(i + 1).text
 
-
-          if (counter%5 === 0) {
-
-            let tablePeople = [this.canvas.item(i-4).text, this.canvas.item(i-3).text]
-            this.canvas.item(i).name = tablePeople;
-
+            this.initCanvasObject (this.canvas.item(i))
+            this.initCanvasObject (this.canvas.item(i + 1))
+            
             this.canvas.item(i).set({
               fill: fillActive,
               strokeWidth : 0,
               opacity: 1
             });
 
-            this.canvas.item(i-4).set({
+            this.canvas.item(i+1).set({
               opacity: 1,
-              left: this.canvas.item(i).left-this.canvas.item(i).width/2 + 8,
-              top: this.canvas.item(i).top-this.canvas.item(i).height/2 + 8,
-              fontSize: 20,
+              left: this.canvas.item(i).left + 5,
+              top: this.canvas.item(i).top + 5,
+              fontSize: 14,
               fontWeight: 'bold'
             });
 
-            this.canvas.item(i-2).set({
-              fontFamily:"trem-reservation",
-              text:"",
-              left: this.canvas.item(i).left+this.canvas.item(i).width/2 - 25,
-              top: this.canvas.item(i).top+this.canvas.item(i).height/2 - 25 ,
-              fontSize: 20
-            });
-
-            this.canvas.item(i-2).moveTo(i)
-            this.canvas.item(i-4).moveTo(i)
-            // this.canvas.item(i).moveTo(i-4)
-
             this.canvas.renderAll()
-            canvasObjectId++;
           }
-        }
 
-        var _self = this;
-        let called = false //for toasts
-
-        this.canvas.on('mouse:over', function(e) {
-
-
-          if (e.target != null) {
-            if ((e.target.fill === fillActive) && (e.target.type === 'rect')) {
-              e.target.set({
-                 fill: fillHover
-              });
-            }
-            e.target.canvas.renderAll();
+          for(let i = 0; i < this.canvas.getObjects().length; i+=2){
+            this.tables.push({
+              tableNumber: this.canvas.item(i).name, 
+              canvasItem: i,
+              state : 'free',
+              timeStart: '',
+              timeEnd: '',
+              date: '',
+              message: '',
+              email: '',
+              phone: '',
+              persons: '',
+              name: '',
+              id: ''
+            })
           }
-        });
+
+          let called = false //for toasts
+
+          this.canvas.on('mouse:over', (e) => {
 
 
-        this.canvas.on('mouse:out', function(e) {
-          if (e.target != null) {
-            if ((e.target.fill === fillHover)  && (e.target.type === 'rect')) {
-              if (_self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+1).opacity != 1) {
+            if (e.target != null) {
+              if ((e.target.fill === fillActive) && (e.target.type === 'rect')) {
                 e.target.set({
-                  fill: fillActive
+                  fill: fillActiveHover
                 });
-
               }
+              if ((e.target.fill === fillBooked) && (e.target.type === 'rect')) {
+                e.target.set({
+                  fill: fillBookedHover
+                });
+              }
+              e.target.canvas.renderAll();
             }
-            e.target.canvas.renderAll();
-          }
-        });
-        
-        _self.canvas.observe('mouse:down',function(e) {
+          });
 
-          if (((_self.date === '') || (_self.timeEnd === '') || (_self.timeStart === '')) && !(called)) {
 
-            _self.$toasted.show(_self.calendarTimeInitData.translation.canvasClickWarning, { 
-              theme: "primary", 
-              position: "top-center", 
-              duration : 2000,
-              className: 'toast',
-              containerClass: 'toast-container'
-            });
+          this.canvas.on('mouse:out', (e) => {
+            if (e.target != null) {
+              if ((e.target.fill === fillActiveHover)  && (e.target.type === 'rect')) {
+                if (!this.canvas.item(this.canvas.getObjects().indexOf(e.target)).active) {
+                  e.target.set({
+                    fill: fillActive
+                  });
+                }
+              }
+              if ((e.target.fill === fillBookedHover)  && (e.target.type === 'rect')) {
+                if (!this.canvas.item(this.canvas.getObjects().indexOf(e.target)).active) {
+                  e.target.set({
+                    fill: fillBooked
+                  });
+                }
+              }
+              e.target.canvas.renderAll();
+            }
+          });
 
-            called = !called
-            setTimeout(function(){
+
+          
+          this.canvas.observe('mouse:down', (e) => {
+
+            if (((this.date === '') || (this.timeEnd === '') || (this.timeStart === '')) && !(called)) {
+
+              this.$toasted.show(this.calendarTimeInitData.translation.canvasClickWarning, { 
+                theme: "primary", 
+                position: "top-center", 
+                duration : 2000,
+                className: 'toast',
+                containerClass: 'toast-container'
+              });
+
               called = !called
-            }, 5000)
-          }
+              setTimeout(function(){
+                called = !called
+              }, 5000)
+            }
 
-          if (e.target != null) {
+            if (e.target && e.target.type === 'rect') {
+              //for free table
+              if (e.target.fill == fillActiveHover) {
 
-            for(let i = 0; i < _self.canvas.getObjects().length; i++){
-              if (_self.canvas.item(i).fill === fillHover){
-                _self.canvas.item(i).set({
-                  fill: fillActive
-                });
-                _self.canvas.item(i+1).set({
-                  opacity: 0
-                });
+                this.table = e.target.name;
+                this.persons = e.target.persons;
+                this.maxPersons = e.target.persons;
+
+                this.selectedTableFreeModal()
               }
-            }
 
-            if (e.target.type === 'rect') {
-              let index = _self.canvas.getObjects().indexOf(e.target)
+              //for reserved table
+              if (e.target.fill == fillBookedHover) {
+                
+                this.tables.filter( table => {
+                  if (table.tableNumber === e.target.name) {
+                    this.modalReservedData = table
+                  }
+                })
+                
 
-              e.target.set({
-                fill: fillHover
-              });
-
-              _self.canvas.item(_self.canvas.getObjects().indexOf(e.target)+1).set({
-                opacity: 1
-              });
-              
-              _self.table = e.target.name[0];
-              _self.persons = e.target.name[1];
-              _self.maxPersons = e.target.name[1];
-            }
-
-            if (e.target.type === 'text') {
-              let index = _self.canvas.getObjects().indexOf(e.target)
-
-              _self.canvas.item(index-1).set({
-                fill: fillHover
-              });
-
-              e.target.set({
-                fontFamily:"trem-reservation",
-                text:""
-              });
-
-              _self.table = _self.canvas.item(index-1).name[0];
-              _self.persons = _self.canvas.item(index-1).name[1];
-              _self.maxPersons = _self.canvas.item(index-1).name[1];
+                this.selectedTableReservedModal()
+              }
             }
             
-            _self.canvas.renderAll()
-          }
+            this.canvas.renderAll()
+          });
+
+          this.canvas.on({
+              'touch:gesture': event => {
+
+                if (event.e.touches && event.e.touches.length == 2) {
+                  this.pausePanning = true;
+                  let point = new fabric.Point(this.canvas.getCenter().left, this.canvas.getCenter().top);
+                  if (event.self.state == "start") {
+                    this.zoomStartScale = this.canvas.getZoom();
+                  }
+                  let delta = this.zoomStartScale * event.self.scale;
+                  if (delta < this.canvasMaxZoom && delta > this.canvasMinZoom) {
+                    this.canvas.zoomToPoint(point, delta);
+                    this.canvasZoomedWidth = this.canvas.getZoom() * this.canvasImageWidth / this.canvasMinZoom
+                    this.canvasZoomedHeight = this.canvas.getZoom() * this.canvasImageHeight / this.canvasMinZoom
+                    this.canvasAllowedXPan = this.canvasZoomedWidth - this.canvas.getWidth()
+                    this.canvasAllowedYPan = this.canvasZoomedHeight - this.canvas.getHeight()
+                    //this.pausePanning = false;
+                  } 
+                  this.pausePanning = false;
+                  if (typeof event.e.stopPropagation === "function") {
+                    event.e.stopPropagation();
+                    event.e.preventDefault();
+                    return false;
+                  }
+                }
+              },
+              'object:selected': event => {
+                this.pausePanning = true;
+              },
+              'selection:cleared': event => {
+                this.pausePanning = false;
+              },
+              'touch:drag': event => {
+
+                if (this.pausePanning == false && event.e.touches != null ) {
+                    this.dragCurrentX = event.e.touches[0].pageX;
+                    this.dragCurrentY = event.e.touches[0].pageY;
+                    const xChange = this.dragCurrentX - this.draglastX;
+                    const yChange = this.dragCurrentY - this.draglastY;
+                    
+                    if((Math.abs(this.dragCurrentX - this.draglastX) <= 50) && (Math.abs(this.dragCurrentY - this.draglastY) <= 50)) {
+                       
+                        if ((Math.abs(this.canvas.viewportTransform[4]) <= this.canvasAllowedXPan) && (Math.abs(this.canvas.viewportTransform[5]) <= this.canvasAllowedYPan)) {
+                          this.canvas.relativePan({x: xChange,y: yChange})
+                        } else {
+                          if (Math.abs(this.canvas.viewportTransform[4]) > this.canvasAllowedXPan) {
+                            if (this.canvas.viewportTransform[4] > 0) {
+                              this.canvas.viewportTransform[4] = this.canvasAllowedXPan
+                            } else {
+                              this.canvas.viewportTransform[4] = -this.canvasAllowedXPan
+                            }
+                          } else {
+                            if (this.canvas.viewportTransform[5] > 0) {
+                              this.canvas.viewportTransform[5] = this.canvasAllowedYPan
+                            } else {
+                              this.canvas.viewportTransform[5] = -this.canvasAllowedYPan
+                            }
+                          }
+                        }
+                    }
+                    this.draglastX = this.dragCurrentX;
+                    this.draglastY = this.dragCurrentY;
+                }
+                
+                if (typeof event.e.stopPropagation === "function") {
+                  event.e.stopPropagation();
+                  event.e.preventDefault();
+                  return false;
+                }
+              }
+            });
+
+          this.canvasLoaded = true
         });
 
-        if (this.table !== '') {
-          this.selectTable ()
-        }
+        this.$http.get(this.calendarTimeInitData.endpoint_reservation, {
+          headers: { 'X-WP-Nonce': this.calendarTimeInitData.nonce }
+        }).then(response => {
 
-        this.canvasLoaded = true
+          // get body data 
+          this.reservations = response.body
+          
+          this.reservations = this.reservations.filter(reservation => reservation.cafe === this.cafeName)
+          for (let reservation of this.reservations){
+            reservation.date = moment(reservation.date, this.dbDateFormatForMoment).format(this.momentDateFormat)
+            reservation.timeStart = moment(reservation.timeStart, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+            reservation.timeEnd = moment(reservation.timeEnd, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+          }
+          //this.renewDisabledTables()
+        }, response => {
+
+          // error callback 
+        });
+
       }, response => {
         // error callback 
       });
 
-      this.$http.get(this.calendarTimeInitData.endpoint_reservation).then(response => {
+      
+      
+    },
+
+    renewReservations() {
+      
+      this.$http.get(this.calendarTimeInitData.endpoint_reservation, {
+        headers: { 'X-WP-Nonce': this.calendarTimeInitData.nonce }
+      }).then(response => {
 
         // get body data 
         this.reservations = response.body
+        this.reservations = this.reservations.filter(reservation => reservation.cafe === this.cafeName)
         for (let reservation of this.reservations){
-          reservation.tremtr_reservation_date = moment(reservation.tremtr_reservation_date, this.dbDateFormatForMoment).format(this.momentDateFormat)
-          reservation.tremtr_reservation_time_begin = moment(reservation.tremtr_reservation_time_begin, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
-          reservation.tremtr_reservation_time_end = moment(reservation.tremtr_reservation_time_end, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+          reservation.date = moment(reservation.date, this.dbDateFormatForMoment).format(this.momentDateFormat)
+          reservation.timeStart = moment(reservation.timeStart, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+          reservation.timeEnd = moment(reservation.timeEnd, this.dbTimeFormatForMoment).format(this.momentTimeFormat)
+        }
+
+        this.renewDisabledTables()
+
+        if (this.date != ''){
+          this.renewSummaryTable()
         }
 
       }, response => {
+
 
         // error callback 
       });
@@ -1076,81 +1571,203 @@ export default {
 
       this.disabledTables = []
 
-      if (this.timeStart != '') {
+      this.tables.map( table => {
+        table.date = '',
+        table.persons = '',
+        table.timeStart = '',
+        table.timeEnd = '',
+        table.name =  '',
+        table.email =  '',
+        table.message =  '',
+        table.phone =  '',
+        table.state = 'free',
+        table.id = ''
+      })
 
-        let todaysReservations = this.reservations.filter(reservation => reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase());
+      if (this.timeStart !== '' && this.timeEnd != '') {
+        
+        let todaysReservations = ''
 
-        let selectedTimeStart = moment(this.timeStart, this.momentTimeFormat)
+        if (this.openHoursStart.format(this.momentDateFormat) === this.openHoursEnd.format(this.momentDateFormat)) {
+          todaysReservations = this.reservations.filter(reservation => 
+            ( 
+              reservation.date.toLowerCase() === this.date.toLowerCase() && 
+              moment(reservation.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+            )
+          )
+        } else {
+          todaysReservations = this.reservations.filter(reservation => {
+            
+            this.openHoursEnd.add(Number(this.calendarTimeInitData.reservation_duration), 'm') 
 
-        for (let todaysReservation of todaysReservations){
-          let timeBegin = moment(todaysReservation.tremtr_reservation_time_begin, this.momentTimeFormat)
-          let timeEnd = moment(todaysReservation.tremtr_reservation_time_end, this.momentTimeFormat)
-          if ((selectedTimeStart.diff(timeBegin) >= 0) && (selectedTimeStart.diff(timeEnd) <= 0)) {
-            this.disabledTables.push(todaysReservation.tremtr_reservation_table)        
-          }
+            let tmp = (
+                        reservation.date.toLowerCase() === moment(this.date, this.momentDateFormat).add(1, 'day').format(this.momentDateFormat).toLowerCase() &&
+                        moment(reservation.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment) <= this.openHoursEnd.format(this.dbTimeFormatForMoment)
+                      ) 
+                      || 
+                      ( 
+                        reservation.date.toLowerCase() === this.date.toLowerCase() &&
+                        moment(reservation.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+                      )
+
+            this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
+
+            return tmp
+          });
         }
 
-        if (this.timeEnd != '') {
-        
-          let selectedTimeEnd = moment(this.timeEnd, this.momentTimeFormat)
+        const momentDate = moment(this.dateForClient, this.momentDateFormat)
 
-          for (let todaysReservation of todaysReservations){
-            let timeBegin = moment(todaysReservation.tremtr_reservation_time_begin, this.momentTimeFormat)
-            let timeEnd = moment(todaysReservation.tremtr_reservation_time_end, this.momentTimeFormat)
-            if ((selectedTimeEnd.diff(timeBegin) >= 0) && (selectedTimeEnd.diff(timeEnd) <= 0) || ((selectedTimeStart.diff(timeBegin) <= 0) && (selectedTimeEnd.diff(timeEnd) >= 0)) ) {
-              this.disabledTables.push(todaysReservation.tremtr_reservation_table)        
-            }
+        let selectedTimeStart = moment(this.timeStart, this.momentTimeFormat).set({
+          date: momentDate.date(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+        let selectedTimeEnd = moment(this.timeEnd, this.momentTimeFormat).set({
+          date: momentDate.date(),
+          month: momentDate.month(),
+          year: momentDate.year()
+        })
+
+
+        if (moment(this.timeStart, this.momentTimeFormat).diff(moment(this.timeEnd, this.momentTimeFormat)) > 0) {
+          selectedTimeEnd.add(1, 'd')
+        }
+
+        for (let todaysReservation of todaysReservations){
+          let momentInitDateTimeBegin = moment(todaysReservation.date, this.momentDateFormat)
+          let timeBegin = moment(todaysReservation.timeStart, this.momentTimeFormat).set({
+            date: momentInitDateTimeBegin.date(),
+            month: momentInitDateTimeBegin.month(),
+            year: momentInitDateTimeBegin.year()
+          })
+          let timeEnd = moment(todaysReservation.timeEnd, this.momentTimeFormat).set({
+            date: momentInitDateTimeBegin.date(),
+            month: momentInitDateTimeBegin.month(),
+            year: momentInitDateTimeBegin.year()
+          })
+
+          if (moment(timeBegin.format(this.momentTimeFormat), this.momentTimeFormat).diff(moment(timeEnd.format(this.momentTimeFormat), this.momentTimeFormat)) > 0 ) {
+            timeEnd.add(1, 'd')
+          }
+
+          
+
+
+          if (
+              (
+                selectedTimeStart.diff(timeBegin) >= 0
+                && 
+                timeEnd.diff(selectedTimeEnd) >= 0
+              ) 
+              ||
+              (
+                timeBegin.diff(selectedTimeStart) >= 0
+                &&
+                selectedTimeEnd.diff(timeBegin) > 0
+              )
+              ||
+              (
+                timeEnd.diff(selectedTimeStart) > 0
+                &&
+                selectedTimeEnd.diff(timeEnd) >= 0
+              )
+            ) {
+            this.disabledTables.push(todaysReservation.table)
+
+            this.changeItemInTablesArray(todaysReservation)
+
+
           }
         }
       }
+      this.disableTable()
+    },
+
+    changeItemInTablesArray(todaysReservation) {
+      
+      this.tables.filter( table => {
+        if (table.tableNumber === Number(todaysReservation.table)) {
+          const { 
+            date, 
+            persons, 
+            timeStart, 
+            timeEnd, 
+            name,
+            email,
+            message,
+            phone,
+            id
+          } = todaysReservation
+
+          table.date = date,
+          table.persons = persons,
+          table.timeStart = timeStart,
+          table.timeEnd = timeEnd,
+          table.name =  name,
+          table.email =  email,
+          table.message =  message,
+          table.phone =  phone,
+          table.state = 'reserved',
+          table.id = id
+        } 
+      })
     },
 
     disableTable () {
       
-      for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
-        if (this.disabledTables.includes(this.canvas.item(i).name[0])) {
+      for(let i = 0; i < this.canvas.getObjects().length; i= i+2){
+
+        if (this.disabledTables.includes(this.canvas.item(i).name.toString())) {
           this.canvas.item(i).set({
             fill: this.fillBooked,
-            evented: false
+            evented: true
           });
 
-          if (this.canvas.item(i).name[0] === this.table) {
+          //add text with information about reservation
+          this.tables.filter( table => {
+            if (Number(this.canvas.item(i).name) === table.tableNumber) {
+
+              if (this.canvas.item(i+1).text.indexOf('  ') !== -1) {
+                this.canvas.item(i+1).set({
+                  text: this.canvas.item(i+1).text.substr(0, this.canvas.item(i+1).text.indexOf('  ')) + '  ' + table.persons + '👥' + '\n' + table.timeStart + '-' + '\n' + table.timeEnd
+                })
+              } else {
+                this.canvas.item(i+1).set({
+                  text: this.canvas.item(i+1).text + '  ' + table.persons + '👥' + '\n' + table.timeStart + '-' + '\n' + table.timeEnd
+                })
+              }
+            }
+          })
+          
+
+          if (this.canvas.item(i).name.toString() === this.table.toString()) {
             this.canvas.item(i).set({
               fill: this.fillBooked,
-              evented: false
+              evented: true,
+              active: false
             });
-            this.canvas.item(i+1).set({
-              opacity: 0
-            });
+
             this.table = ''
           }
         }
 
-        if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) {
-          if (this.canvas.item(i).fill === this.fillBooked) {
+        if (!(this.disabledTables.includes(this.canvas.item(i).name.toString()))) {
+          if (this.canvas.item(i).fill === this.fillBooked || this.canvas.item(i).fill === this.fillBookedHover) {
             this.canvas.item(i).set({
               fill: this.fillActive,
               evented: true
             });
           }
+          //remove text with information about reservation
+          if (this.canvas.item(i+1).text.indexOf(' ') !== -1) {
+            this.canvas.item(i+1).set({
+              text: this.canvas.item(i+1).text.substr(0, this.canvas.item(i+1).text.indexOf(' '))
+            });
+          }
         }
 
         
-      }
-      this.canvas.renderAll()
-    },
-
-    selectTable () {
-      
-      for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
-        if (this.canvas.item(i).name[0] === this.table) {
-          this.canvas.item(i).set({
-            fill: this.fillHover
-          });
-          this.canvas.item(i+1).set({
-            opacity: 1
-          });
-        }
       }
       this.canvas.renderAll()
     },
@@ -1159,9 +1776,9 @@ export default {
 
         if (this.canvas !== ''){
             if ((this.date !== '') && (this.timeEnd !== '') && (this.timeStart !== '')) {
-              for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
+              for(let i = 0; i < this.canvas.getObjects().length; i= i+2){
 
-                if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) { 
+                if (!(this.disabledTables.includes(this.canvas.item(i).name.toString()))) { 
 
                   this.canvas.item(i).set({
                     evented: true
@@ -1171,23 +1788,15 @@ export default {
               }
               this.canvas.renderAll()
             } else {
-              for(let i = 2; i < this.canvas.getObjects().length; i= i+5){
+              for(let i = 0; i < this.canvas.getObjects().length; i= i+2){
 
-                if (!(this.disabledTables.includes(this.canvas.item(i).name[0]))) {
-
-                  this.canvas.item(i).set({
-                    evented: false
-                  });
-                  this.canvas.item(i+1).set({
-                    opacity: 0
-                  });
-                }
-                if (this.canvas.item(i).name[0] === this.table) {
-                  this.canvas.item(i).set({
-                    fill: this.fillActive
-                  });
-                  this.table = ''
-                }
+                this.canvas.item(i).set({
+                  evented: false,
+                  active: false,
+                  fill: this.fillActive
+                });
+                
+                this.table = ''
               }
               this.canvas.renderAll()
             }

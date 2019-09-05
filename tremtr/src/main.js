@@ -5,9 +5,9 @@ import App from './App'
 import VueResource from 'vue-resource'
 import Toasted from 'vue-toasted'
 import VeeValidate from 'vee-validate'
-import {Checkbox, Radio} from 'vue-checkbox-radio';
+import {Checkbox, Radio} from 'vue-checkbox-radio'
 
-Vue.component('checkbox', Checkbox);
+Vue.component('checkbox', Checkbox)
 Vue.use(VeeValidate)
 Vue.use(Toasted)
 Vue.use(VueResource)

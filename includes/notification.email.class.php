@@ -208,6 +208,7 @@ class TREMtrNotificationEmail extends TREMtrNotification {
 		$template_tags = array(
 			'{user_name}'		=> $this->reservation->name,
 			'{table}'			=> $this->reservation->table,
+			'{cafe}'			=> $this->reservation->cafe,
 			'{persons}'			=> $this->reservation->persons,
 			'{date}'			=> $this->reservation->format_date( $this->reservation->reservation_date )
 		);

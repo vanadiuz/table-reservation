@@ -64,7 +64,7 @@ class TREMtrReservation {
 
 		$this->load_post_metadata();
 
-		do_action( 'tremtr_reservation_load_post_data', $this, $post );
+		do_action( 'tremtr_reservation_load_post_data', $this, $post ); // nothing going on here. This string is usless and can be deleted!
 	}
 
     public function check_nonce( $nonce = '' ) {
@@ -89,11 +89,11 @@ class TREMtrReservation {
     }
 
 	
-	public function get_table_reservations( $date = '', $table = '' ) {
+	public function get_table_reservations( $date = '', $table = '', $cafe = '' ) {
 
 	    $time_arr = array();
 
-        if( !empty( $date ) && !empty( $table ) ) {
+        if( !empty( $date ) && !empty( $table ) && !empty( $cafe ) ) {
             $args_arr = array(
                 'post_type' => 'trem-reservation',
                 'meta_query' => array(
@@ -104,6 +104,10 @@ class TREMtrReservation {
                     array(
                         'key' => 'tremtr_reservation_table',
                         'value' => $table,
+					),
+                    array(
+                        'key' => 'tremtr_reservation_cafe',
+                        'value' => $cafe,
                     )
                 )
 			);
@@ -115,7 +119,7 @@ class TREMtrReservation {
                 while( $query->have_posts() ) {
                     $query->the_post();
                     $time_arr[$i]['date'] = get_post_meta( get_the_ID(), 'tremtr_reservation_date', true );
-                    $time_arr[$i]['table'] = get_post_meta( get_the_ID(), 'tremtr_reservation_table', true );
+					$time_arr[$i]['table'] = get_post_meta( get_the_ID(), 'tremtr_reservation_table', true );
                     $time_arr[$i]['time_begin'] = get_post_meta( get_the_ID(), 'tremtr_reservation_time_begin', true );
                     $time_arr[$i]['time_end'] = get_post_meta( get_the_ID(), 'tremtr_reservation_time_end', true );
                     $i++;
@@ -135,6 +139,7 @@ class TREMtrReservation {
 	public function load_post_metadata() {
 
 		$this->table = get_post_meta( $this->ID, 'tremtr_reservation_table', true );
+		$this->cafe = get_post_meta( $this->ID, 'tremtr_reservation_cafe', true );
 		$this->persons = get_post_meta( $this->ID, 'tremtr_reservation_persons', true );
 		$this->reservation_date = get_post_meta( $this->ID, 'tremtr_reservation_date', true );
 		$this->reservation_time_begin = get_post_meta( $this->ID, 'tremtr_reservation_time_begin', true );

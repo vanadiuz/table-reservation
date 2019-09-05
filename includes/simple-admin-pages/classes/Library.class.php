@@ -121,9 +121,17 @@ class sapLibrary_2_1_0 {
 
 		switch( $type ) {
 
+			case 'number' :
+				require_once('AdminPageSetting.Number.class.php');
+				return $this->get_versioned_classname( 'sapAdminPageSettingNumber' );
+
 			case 'text' :
 				require_once('AdminPageSetting.Text.class.php');
 				return $this->get_versioned_classname( 'sapAdminPageSettingText' );
+
+			case 'hidden_text' :
+				require_once('AdminPageSetting.HiddenText.class.php');
+				return $this->get_versioned_classname( 'sapAdminPageSettingHiddenText' );
 
 			case 'textarea' :
 				require_once('AdminPageSetting.Textarea.class.php');

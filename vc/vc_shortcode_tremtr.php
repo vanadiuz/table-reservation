@@ -15,7 +15,7 @@ if(!class_exists('TREMTR_VC')){
 				"tremtr_id" => "0",
 			),$atts));
 
-			$output = do_shortcode('[table-reservation]');
+			$output = do_shortcode('[table-reservation cafe_id="'.esc_attr($tremtr_id).'"]');
 
 			return $output;
 		}
@@ -39,14 +39,14 @@ if(!class_exists('TREMTR_VC')){
 						'class' => 'pix-theme-icon',
 						'category' => esc_html__('Plugins', 'tremtr'),
 						'show_settings_on_create' => false,
-						'params' => array(/*
+						'params' => array(
 							array(
 								'type' => 'dropdown',
 								'heading' => esc_html__('Select Cafe', 'tremtr'),
 								'param_name' => 'tremtr_id',
 								'value' => $tremtr,
 								'description' => esc_html__('Select cafe to show form reservation', 'tremtr'),
-							),*/
+							),
 						)
 					)
 				);

@@ -7,6 +7,7 @@ function tremtr_meta_boxes() {
     add_meta_box( 'tremtr_tables', esc_html__('Tables', 'tremtr'), 'tremtr_properties_metabox_output', 'trem-cafes', 'side', 'high');
     add_meta_box( 'tremtr_shortcode', esc_html__( 'Shortcode', 'tremtr' ), 'tremtr_shortcode', 'trem-cafes', 'normal', 'low' );
     add_meta_box( 'tremtr_canvas_content', esc_html__( 'Canvas Content', 'tremtr' ), 'tremtr_canvas_content', 'trem-cafes', 'normal', 'low' );
+    add_meta_box( 'tremtr_fee_id', esc_html__( 'ID of the associated Product', 'tremtr' ), 'tremtr_fee_id', 'trem-cafes', 'normal', 'low' );
 
     function tremtr_default_hidden_meta_boxes( $hidden, $screen ) {
         // Grab the current post type
@@ -16,7 +17,7 @@ function tremtr_meta_boxes() {
             // Define which meta boxes we wish to hide
             $hidden = array(
                 'tremtr_canvas_content',
-                'mymetabox_revslider_0'
+                'tremtr_fee_id'
             );
             // Pass our new defaults onto WordPress
             return $hidden;
@@ -51,25 +52,23 @@ function tremtr_main_metabox_output($post){
 
 //Outputs the content of the description meta box
 function tremtr_properties_metabox_output($post){
-    
-    echo '<div class="control-panel-info">
-        <span class="status">'.__( 'Status', 'tremtr' ).'</span>  
-        <span class="number">'.__( '№', 'tremtr' ).'</span>
-        <span class="users">'.__( 'Seats', 'tremtr' ).'</span>
-        <span class="size">'.__( 'Width', 'tremtr' ).'</span>
-        <span class="size">'.__( 'Height', 'tremtr' ).'</span>
-        <span class="remove">'.__( 'Remove', 'tremtr' ).'</span>  
+    ?>
+    <div class="control-panel-info">
+        <span class="status">Status</span>  
+        <span class="number">№</span>
+        <span class="users">Seats</span>
+        <span class="remove">Remove</span>  
     </div>
-    <ul id="control-items"></ul>';
+    <ul id="control-items"></ul>
 
-
+    <?php
 }
 
 // The function that outputs the metabox html
 function tremtr_shortcode() {
     ?>
-    <span>
-    <?php _e('To output content of the plugin use [table-reservation] shortcode', 'tremtr'); ?>
+    <?php _e('To output content of the plugin use next shortcode: ', 'tremtr'); 
+    print_r(sprintf('[table-reservation cafe_id="%s"]', get_the_ID())); ?>
     </span>
     <?php
 }
@@ -131,6 +130,7 @@ function tremtr_reservation_meta_boxes() {
 }
 
 function tremtr_reservation_meta() {
+    $cafe = get_post_meta( get_the_ID(), 'tremtr_reservation_cafe', true ) != '' ? get_post_meta( get_the_ID(), 'tremtr_reservation_cafe', true ) : '';
     $date_reserv = get_post_meta( get_the_ID(), 'tremtr_reservation_date', true ) != '' ? get_post_meta( get_the_ID(), 'tremtr_reservation_date', true ) : '';
     $time_begin = get_post_meta( get_the_ID(), 'tremtr_reservation_time_begin', true ) != '' ? get_post_meta( get_the_ID(), 'tremtr_reservation_time_begin', true ) : '';
     $time_end = get_post_meta( get_the_ID(), 'tremtr_reservation_time_end', true ) != '' ? get_post_meta( get_the_ID(), 'tremtr_reservation_time_end', true ) : '';
@@ -142,6 +142,11 @@ function tremtr_reservation_meta() {
     $message = get_post_meta( get_the_ID(), 'tremtr_reservation_message', true ) != '' ? get_post_meta( get_the_ID(), 'tremtr_reservation_message', true ) : '';
     ?>
     <div class="tremtr-reservation">
+        <div class="tremtr-reservation-field">
+            <label for="tremtr_reservation_cafe"><?php _e('Cafe', 'tremtr'); ?>
+                <input type="text" class="tremtr-cafe" name="tremtr_reservation_cafe" id="tremtr_reservation_cafe" required value="<?php echo esc_attr($cafe); ?>"/>
+            </label>
+        </div>
         <div class="tremtr-reservation-field">
             <label for="tremtr_reservation_date"><?php _e('Date', 'tremtr'); ?>
                 <input type="text" class="tremtr-date" name="tremtr_reservation_date" id="tremtr_reservation_date" required value="<?php echo esc_attr($date_reserv); ?>"/>
@@ -193,50 +198,58 @@ function tremtr_reservation_meta() {
 
 function tremtr_reservation_save_meta( $post_id ) {
 
-    if (isset($_POST['tremtr_reservation_date'])) {
-        update_post_meta($post_id, 'tremtr_reservation_date', $_POST['tremtr_reservation_date']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_date');
+    if (get_post_type( $post_id ) == 'trem-reservation') {
 
-    if (isset($_POST['tremtr_reservation_time_begin'])) {
-        update_post_meta($post_id, 'tremtr_reservation_time_begin', $_POST['tremtr_reservation_time_begin']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_time_begin');
+        if (isset($_POST['tremtr_reservation_cafe'])) {
+            update_post_meta($post_id, 'tremtr_reservation_cafe', $_POST['tremtr_reservation_cafe']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_cafe');
 
-    if (isset($_POST['tremtr_reservation_time_end'])) {
-        update_post_meta($post_id, 'tremtr_reservation_time_end', $_POST['tremtr_reservation_time_end']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_time_end');
+        if (isset($_POST['tremtr_reservation_date'])) {
+            update_post_meta($post_id, 'tremtr_reservation_date', $_POST['tremtr_reservation_date']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_date');
 
-    if (isset($_POST['tremtr_reservation_table'])) {
-        update_post_meta($post_id, 'tremtr_reservation_table', $_POST['tremtr_reservation_table']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_table');
+        if (isset($_POST['tremtr_reservation_time_begin'])) {
+            update_post_meta($post_id, 'tremtr_reservation_time_begin', $_POST['tremtr_reservation_time_begin']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_time_begin');
 
-    if (isset($_POST['tremtr_reservation_persons'])) {
-        update_post_meta($post_id, 'tremtr_reservation_persons', $_POST['tremtr_reservation_persons']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_persons');
+        if (isset($_POST['tremtr_reservation_time_end'])) {
+            update_post_meta($post_id, 'tremtr_reservation_time_end', $_POST['tremtr_reservation_time_end']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_time_end');
 
-    if (isset($_POST['tremtr_reservation_name'])) {
-        update_post_meta($post_id, 'tremtr_reservation_name', $_POST['tremtr_reservation_name']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_name');
+        if (isset($_POST['tremtr_reservation_table'])) {
+            update_post_meta($post_id, 'tremtr_reservation_table', $_POST['tremtr_reservation_table']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_table');
 
-    if (isset($_POST['tremtr_reservation_email'])) {
-        update_post_meta($post_id, 'tremtr_reservation_email', $_POST['tremtr_reservation_email']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_email');
+        if (isset($_POST['tremtr_reservation_persons'])) {
+            update_post_meta($post_id, 'tremtr_reservation_persons', $_POST['tremtr_reservation_persons']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_persons');
 
-    if (isset($_POST['tremtr_reservation_phone'])) {
-        update_post_meta($post_id, 'tremtr_reservation_phone', $_POST['tremtr_reservation_phone']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_phone');
+        if (isset($_POST['tremtr_reservation_name'])) {
+            update_post_meta($post_id, 'tremtr_reservation_name', $_POST['tremtr_reservation_name']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_name');
 
-    if (isset($_POST['tremtr_reservation_message'])) {
-        update_post_meta($post_id, 'tremtr_reservation_message', $_POST['tremtr_reservation_message']);
-    } else
-        delete_post_meta($post_id, 'tremtr_reservation_message');
+        if (isset($_POST['tremtr_reservation_email'])) {
+            update_post_meta($post_id, 'tremtr_reservation_email', $_POST['tremtr_reservation_email']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_email');
+
+        if (isset($_POST['tremtr_reservation_phone'])) {
+            update_post_meta($post_id, 'tremtr_reservation_phone', $_POST['tremtr_reservation_phone']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_phone');
+
+        if (isset($_POST['tremtr_reservation_message'])) {
+            update_post_meta($post_id, 'tremtr_reservation_message', $_POST['tremtr_reservation_message']);
+        } else
+            delete_post_meta($post_id, 'tremtr_reservation_message');
+    }
 }
 add_action( 'save_post', 'tremtr_reservation_save_meta' );
 
@@ -245,10 +258,10 @@ add_filter('manage_edit-trem-cafes_columns', 'trem_cafes_edit_columns');
 function trem_cafes_edit_columns($columns){
     $columns = array(
         'cb' => '<input type="checkbox" />',
-        'title' => __( 'Title', 'tremtr' ),
-        'image' => __( 'Image', 'tremtr' ),
-        'id' => __( 'ID', 'tremtr' ),
-        'date' => __( 'Date', 'tremtr' )
+        'title' => 'Title',
+        'image' => 'Image',
+        'id' => 'ID',
+        'date' => 'Date'
     );
 
     return $columns;
@@ -272,13 +285,15 @@ add_filter('manage_trem-reservation_posts_columns', 'trem_reservation_edit_colum
 function trem_reservation_edit_columns($columns){
     $columns = array(
         'cb' => '<input type="checkbox" />',
-	'title' => __( 'Name', 'tremtr' ),
-        'reservation_date' => __( 'Reserved for', 'tremtr' ),
-        'table' => __( 'Table N', 'tremtr' ),
-        'persons' => __( 'Persons', 'tremtr' ),
-        'phone' => __( 'Phone', 'tremtr' ),
-        'email' => __( 'E-mail', 'tremtr' ),
-        'date' => __( 'Date', 'tremtr' )
+        'title' => 'Name',
+        'cafe' => 'Cafe',
+        'reservation_date' => 'Reserved for',
+        'table' => 'Table №',
+        'persons' => 'Persons',
+        'phone' => 'Phone',
+        'email' => 'E-mail',
+        'message' => 'Message',
+        'date' => 'Date'
     );
 
     return $columns;
@@ -293,6 +308,10 @@ function trem_reservation_custom_column($column_name, $post_ID){
                 $datetime .= ' - <span class="tremtr_reservation_time_end">'.get_post_meta( $post_ID, 'tremtr_reservation_time_end', true ).'</span>';
             }
             echo $datetime;
+            break;
+        
+        case 'cafe':
+            echo '<span class="tremtr_reservation_cafe">'.get_post_meta( $post_ID, 'tremtr_reservation_cafe', true ).'</span>';
             break;
 
         case 'table':
@@ -309,6 +328,10 @@ function trem_reservation_custom_column($column_name, $post_ID){
 
         case 'email':
             echo '<span class="tremtr_reservation_email">'.get_post_meta( $post_ID, 'tremtr_reservation_email', true ).'</span>';
+            break;
+        
+        case 'message':
+            echo '<span class="tremtr_reservation_message">'.get_post_meta( $post_ID, 'tremtr_reservation_message', true ).'</span>';
             break;
     }
 }
@@ -377,6 +400,18 @@ function trem_reservation_quick_edit_custom_box($column_name, $post_type){
                     </div>
             ';
             break;
+
+        case 'cafe':
+            echo '
+                    <div class="inline-edit-group">
+                        <label class="alignleft">                                    
+                            <span class="title">'.__( 'Cafe', 'tremtr' ).'</span>
+                            <span class="input-text-wrap"><input type="text" name="tremtr_reservation_cafe" value="'.get_post_meta( get_the_ID(), 'tremtr_reservation_cafe', true ).'"></span>
+                        </label>
+                    </div>
+            ';
+            break;
+
         case 'table':
             echo '
                     <div class="inline-edit-group">
@@ -418,62 +453,91 @@ function trem_reservation_quick_edit_custom_box($column_name, $post_type){
             </fieldset>
             ';
             break;
+
+        case 'message':
+            echo '
+                    <div class="inline-edit-group">
+                        <label class="alignleft">                                    
+                            <span class="title">'.__( 'Message', 'tremtr' ).'</span>
+                            <span class="input-text-wrap"><input type="text" name="tremtr_reservation_message" value="'.get_post_meta( get_the_ID(), 'tremtr_reservation_message', true ).'"></span>
+                        </label>
+                    </div>
+            </fieldset>
+            ';
+            break;
     }
 
 }
 
 add_action('save_post', 'tremtr_save_quick_edit_data');
 function tremtr_save_quick_edit_data($post_id) {
-    if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
-        return $post_id;
-    if ( isset($_POST['post_type']) && 'page' == $_POST['post_type'] ) {
-        if ( !current_user_can( 'edit_page', $post_id ) )
+    if (get_post_type( $post_id ) == 'trem-reservation') {
+
+        if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
             return $post_id;
-    } else {
-        if ( !current_user_can( 'edit_post', $post_id ) )
-        return $post_id;
-    }
+        
+        if ( isset($_POST['post_type']) && 'page' == $_POST['post_type'] ) {
+            if ( !current_user_can( 'edit_page', $post_id ) )
+                return $post_id;
+        } else {
+            if ( !current_user_can( 'edit_post', $post_id ) )
+                return $post_id;    
+        }
 
-    if ( isset($_POST['tremtr_reservation_date']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_date', $_POST['tremtr_reservation_date']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_date');
-    }
+        if ( isset($_POST['tremtr_reservation_cafe']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_cafe', $_POST['tremtr_reservation_cafe']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_cafe');
+        }
 
-    if ( isset($_POST['tremtr_reservation_time_begin']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_time_begin', $_POST['tremtr_reservation_time_begin']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_time_begin');
-    }
+        if ( isset($_POST['tremtr_reservation_date']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_date', $_POST['tremtr_reservation_date']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_date');
+        }
 
-    if ( isset($_POST['tremtr_reservation_time_end']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_time_end', $_POST['tremtr_reservation_time_end']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_time_end');
-    }
+        if ( isset($_POST['tremtr_reservation_time_begin']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_time_begin', $_POST['tremtr_reservation_time_begin']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_time_begin');
+        }
 
-    if ( isset($_POST['tremtr_reservation_table']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_table', $_POST['tremtr_reservation_table']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_table');
-    }
+        if ( isset($_POST['tremtr_reservation_time_end']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_time_end', $_POST['tremtr_reservation_time_end']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_time_end');
+        }
 
-    if ( isset($_POST['tremtr_reservation_persons']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_persons', $_POST['tremtr_reservation_persons']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_persons');
-    }
+        if ( isset($_POST['tremtr_reservation_table']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_table', $_POST['tremtr_reservation_table']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_table');
+        }
 
-    if ( isset($_POST['tremtr_reservation_phone']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_phone', $_POST['tremtr_reservation_phone']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_phone');
-    }
+        if ( isset($_POST['tremtr_reservation_persons']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_persons', $_POST['tremtr_reservation_persons']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_persons');
+        }
 
-    if ( isset($_POST['tremtr_reservation_email']) ) {
-        update_post_meta($post_id, 'tremtr_reservation_email', $_POST['tremtr_reservation_email']);
-    } else {
-        delete_post_meta($post_id, 'tremtr_reservation_email');
+        if ( isset($_POST['tremtr_reservation_phone']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_phone', $_POST['tremtr_reservation_phone']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_phone');
+        }
+        
+
+        if ( isset($_POST['tremtr_reservation_email']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_email', $_POST['tremtr_reservation_email']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_email');
+        }
+
+        if ( isset($_POST['tremtr_reservation_message']) ) {
+            update_post_meta($post_id, 'tremtr_reservation_message', $_POST['tremtr_reservation_message']);
+        } else {
+            delete_post_meta($post_id, 'tremtr_reservation_message');
+        }
     }
 
 }
@@ -501,22 +565,25 @@ function tremtr_quick_edit_js() {
                 jQuery('.inline-edit-date', fieldset).addClass('hidden');
                 jQuery('.inline-edit-group', fieldset).addClass('hidden');
                 jQuery('br', fieldset).hide();
-
-
+               
                 /// set values
                 var reserv_date = jQuery('.reservation_date .tremtr_reservation_date', '#'+post_id).text();
                 var time_begin = jQuery('.reservation_date .tremtr_reservation_time_begin', '#'+post_id).text();
                 var time_end = jQuery('.reservation_date .tremtr_reservation_time_end', '#'+post_id).text();
+                var cafe = jQuery('.cafe .tremtr_reservation_cafe', '#'+post_id).text();
                 var table = jQuery('.table .tremtr_reservation_table', '#'+post_id).text();
                 var persons = jQuery('.persons .tremtr_reservation_persons', '#'+post_id).text();
                 var phone = jQuery('.phone .tremtr_reservation_phone', '#'+post_id).text();
                 var email = jQuery('.email .tremtr_reservation_email', '#'+post_id).text();
+                var message = jQuery('.message .tremtr_reservation_message', '#'+post_id).text();
                 jQuery(':input[name="tremtr_reservation_date"]', '.inline-edit-row').val(reserv_date);
                 jQuery(':input[name="tremtr_reservation_time_begin"]', '.inline-edit-row').val(time_begin);
                 jQuery(':input[name="tremtr_reservation_time_end"]', '.inline-edit-row').val(time_end);
+                jQuery(':input[name="tremtr_reservation_cafe"]', '.inline-edit-row').val(cafe);
                 jQuery(':input[name="tremtr_reservation_table"]', '.inline-edit-row').val(table);
                 jQuery(':input[name="tremtr_reservation_phone"]', '.inline-edit-row').val(phone);
                 jQuery(':input[name="tremtr_reservation_email"]', '.inline-edit-row').val(email);
+                jQuery(':input[name="tremtr_reservation_message"]', '.inline-edit-row').val(message);
                 return false;
             });
 
@@ -575,6 +642,7 @@ function tremtr_rest_meta_register(){
         return get_post_meta( $object[ 'id' ], $field_name, true );
     }
 
+
     register_rest_field( 'trem-reservation',
         'tremtr_reservation_time_begin',
         array(
@@ -596,6 +664,30 @@ function tremtr_rest_meta_register(){
         )
     );
     function tremtr_rest_get_time_end( $object, $field_name, $request ) {
+        return get_post_meta( $object[ 'id' ], $field_name, true );
+    }
+
+    register_rest_field( 'trem-reservation',
+        'tremtr_reservation_cafe',
+        array(
+            'get_callback'    => 'tremtr_rest_get_cafe',
+            'update_callback' => null,
+            'schema'          => null,
+        )
+    );
+    function tremtr_rest_get_cafe( $object, $field_name, $request ) {
+        return get_post_meta( $object[ 'id' ], $field_name, true );
+    }
+
+    register_rest_field( 'trem-reservation',
+        'tremtr_reservation_message',
+        array(
+            'get_callback'    => 'tremtr_rest_get_message',
+            'update_callback' => null,
+            'schema'          => null,
+        )
+    );
+    function tremtr_rest_get_message( $object, $field_name, $request ) {
         return get_post_meta( $object[ 'id' ], $field_name, true );
     }
 

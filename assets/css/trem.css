@@ -11,13 +11,16 @@
 }
 
 .control-panel-info {
-  display: flex;
-  flex-flow: row;
-  justify-content: space-around;
+  display: grid;
+  grid-template-rows: 1fr;
+  grid-template-columns: 2em 1.5em 2.5em 2em;
+  justify-content: start;
+  grid-gap: 10px;
+  margin: auto;
 }
 
 .control-panel-info .status {
-  width: 1em;
+  width: 2em;
   visibility: hidden;
 }
 
@@ -34,7 +37,7 @@
 }
 
 .control-panel-info .remove {
-  width: 1em;
+  width: 2em;
   visibility: hidden;
 }
 
@@ -48,17 +51,21 @@
 }
 
 #control-items li {
-  display: flex;
-  flex-flow: row;
-  margin: 1em 0.5em;
+  display: grid;
+  grid-template-columns: 2em 1.5em 2.5em 2em;
+  justify-content: start;
+  margin: 5px auto;
+  grid-gap: 10px;
+  width: 100%;
 }
 
 #control-items li i {
   margin: auto;
 }
 
+
 #control-items li span {
-  margin: auto 0 auto 0px;
+  margin: auto auto auto 0px;
   width: 1.5em;
   justify-content: flex-start;
   display: flex;
@@ -67,14 +74,10 @@
 }
 
 #control-items li input {
-  margin: auto 0.1em auto auto;
-  width: 2.5em;
+  margin: auto auto auto auto;
+  width: 3.5em;
 }
 
-#control-items li input[name="width"],
-#control-items li input[name="height"] {
-  width: 4em;
-}
 
 #control-items li button {
   margin: 0;
@@ -125,25 +128,3 @@
   width: 400px;
   height: 100px;
 }
-
-
-/*PRO*/
- .mouse-cursor-gradient-tracking {
-   position: relative;
-   background: #7983ff;
-   border: none;
-   color: white;
-   cursor: pointer;
-   outline: none;
-   overflow: hidden;
- }
-
- .mouse-cursor-gradient-tracking span {
-   position: relative;
- }
-
- .mouse-cursor-gradient-tracking::before {
-   --size: 0;
-   content: ''; 
-   position: absolute; left: var(--x); top: var(--y); width: var(--size); height: var(--size); background: radial-gradient(circle closest-side, greenyellow, transparent); transform: translate(-50%, -50%); transition: width 0.2s ease, height 0.2s ease; } 
-   .mouse-cursor-gradient-tracking:hover::before { --size: 200px; }

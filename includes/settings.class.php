@@ -47,12 +47,12 @@ class tremtrSettings {
 		'sk'	=> 'sk',
 		'et'	=> 'et',
 		'si'	=> 'si',
-		'it'	=> 'it',
 		'fa'	=> 'fa',
 		'ru'	=> 'ru',
 		'fi'	=> 'fi',
 		'ro'	=> 'ro',
 		'fr'	=> 'fr',
+		'it'	=> 'it',
 		'pt'	=> 'pt',
 		'gr'	=> 'gr', // Old norwegian translation kept for backwards compatibility
 		'pl'	=> 'pl',
@@ -78,6 +78,7 @@ class tremtrSettings {
 
 		// Order schedule exceptions and remove past exceptions
 		add_filter( 'sanitize_option_tremtr-settings', array( $this, 'clean_schedule_exceptions' ), 100 );
+		
 
 	}
 
@@ -109,8 +110,10 @@ class tremtrSettings {
 			'subject-reservation-admin'			=> _x( 'New Reservation Request', 'Default email subject for admin notifications of new reservations', 'tremtr' ),
 			'template-reservation-admin'		=> _x( 'A new reservation request has been made at {site_name}:
 
+			
+
 {user_name}
-Table N{table} for {persons} Persons
+Table N{table} for {persons} Persons in {cafe}
 {date}
 
 {reservations_link}
@@ -130,7 +133,7 @@ Your reservation request has been <strong>confirmed</strong>. We look forward to
 
 <strong>Your reservation:</strong>
 {user_name}
-Table N{table} for {persons} Persons
+Table N{table} for {persons} Persons in {cafe}
 {date}
 
 &nbsp;
@@ -160,6 +163,8 @@ Table N{table} for {persons} Persons
 
 			// Email sent to a user with a custom update notice from the admin
 			'subject-admin-notice'			=> sprintf( _x( 'Update regarding your reservation at %s', 'Default email subject sent to users when the admin sends a custom notice email from the reservations panel.', 'tremtr' ), get_bloginfo( 'name' ) ),
+			
+			'amount_to_pay' => _x( '10$', 'tremtr' ),
 		);
 
 		$i8n = str_replace( '-', '_', get_bloginfo( 'language' ) );
@@ -191,12 +196,15 @@ Table N{table} for {persons} Persons
 		return apply_filters( 'tremtr-setting-' . $setting, null );
 	}
 
+	
+
 	/**
 	 * Load the admin settings page
 	 * @since 0.0.1
 	 * @sa 
 	 */
 	public function load_settings_panel() {
+
 
 		require_once( TREMTR_PLUGIN_DIR . '/includes/simple-admin-pages/simple-admin-pages.php' );
 		$sap = sap_initialize_library(
@@ -206,12 +214,12 @@ Table N{table} for {persons} Persons
 			)
 		);
 
-		
+
 		$sap->add_page(
 			'submenu',
 			array(
 				'id'            => 'tremtr-settings',
-				'title'         => sprintf( __('<a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 150px;"><img  src="%s/assets/images/tremlogoblack.png"></a>Settings', 'tremtr' ), TREMTR_PLUGIN_URL),
+				'title'         => sprintf( __('<a href="https://true-emotions.studio" style="display: flex;justify-content: center;margin: auto;width: 200px;"><img  src="%s/assets/images/tremlogoblack.png"></a>Settings', 'tremtr' ), TREMTR_PLUGIN_URL),
 				'menu_title'    => __( 'Settings', 'tremtr' ),
 				'parent_menu'	=> 'edit.php?post_type=trem-cafes',
 				'description'   => '',
@@ -219,7 +227,6 @@ Table N{table} for {persons} Persons
 				'default_tab'   => 'tremtr-general',
 			)
 		);
-
 
 		$sap->add_section(
 			'tremtr-settings',
@@ -325,163 +332,6 @@ Table N{table} for {persons} Persons
 			)
 		);
 
-
-		$sap->add_section(
-			'tremtr-settings',
-			array(
-				'id'            => 'tremtr-schedule',
-				'title'         => __( 'Reservation Schedule', 'tremtr' ),
-				'is_tab'		=> true,
-			)
-		);
-
-		// Translateable strings for scheduler components
-		$scheduler_strings = array(
-			'add_rule'			=> __( 'Add new scheduling rule', 'tremtr' ),
-			'weekly'			=> _x( 'Weekly', 'Format of a scheduling rule', 'tremtr' ),
-			'monthly'			=> _x( 'Monthly', 'Format of a scheduling rule', 'tremtr' ),
-			'date'				=> _x( 'Date', 'Format of a scheduling rule', 'tremtr' ),
-			'weekdays'			=> _x( 'Days of the week', 'Label for selecting days of the week in a scheduling rule', 'tremtr' ),
-			'month_weeks'		=> _x( 'Weeks of the month', 'Label for selecting weeks of the month in a scheduling rule', 'tremtr' ),
-			'date_label'		=> _x( 'Date', 'Label to select a date for a scheduling rule', 'tremtr' ),
-			'time_label'		=> _x( 'Time', 'Label to select a time slot for a scheduling rule', 'tremtr' ),
-			'allday'			=> _x( 'All day', 'Label to set a scheduling rule to last all day', 'tremtr' ),
-			'start'				=> _x( 'Start', 'Label for the starting time of a scheduling rule', 'tremtr' ),
-			'end'				=> _x( 'End', 'Label for the ending time of a scheduling rule', 'tremtr' ),
-			'set_time_prompt'	=> _x( 'All day long. Want to %sset a time slot%s?', 'Prompt displayed when a scheduling rule is set without any time restrictions', 'tremtr' ),
-			'toggle'			=> _x( 'Open and close this rule', 'Toggle a scheduling rule open and closed', 'tremtr' ),
-			'delete'			=> _x( 'Delete rule', 'Delete a scheduling rule', 'tremtr' ),
-			'delete_schedule'	=> __( 'Delete scheduling rule', 'tremtr' ),
-			'never'				=> _x( 'Never', 'Brief default description of a scheduling rule when no weekdays or weeks are included in the rule', 'tremtr' ),
-			'weekly_always'	=> _x( 'Every day', 'Brief default description of a scheduling rule when all the weekdays/weeks are included in the rule', 'tremtr' ),
-			'monthly_weekdays'	=> _x( '%s on the %s week of the month', 'Brief default description of a scheduling rule when some weekdays are included on only some weeks of the month. %s should be left alone and will be replaced by a comma-separated list of days and weeks in the following format: M, T, W on the first, second week of the month', 'tremtr' ),
-			'monthly_weeks'		=> _x( '%s week of the month', 'Brief default description of a scheduling rule when some weeks of the month are included but all or no weekdays are selected. %s should be left alone and will be replaced by a comma-separated list of weeks in the following format: First, second week of the month', 'tremtr' ),
-			'all_day'			=> _x( 'All day', 'Brief default description of a scheduling rule when no times are set', 'tremtr' ),
-			'before'			=> _x( 'Ends at', 'Brief default description of a scheduling rule when an end time is set but no start time. If the end time is 6pm, it will read: Ends at 6pm', 'tremtr' ),
-			'after'				=> _x( 'Starts at', 'Brief default description of a scheduling rule when a start time is set but no end time. If the start time is 6pm, it will read: Starts at 6pm', 'tremtr' ),
-			'separator'			=> _x( '&mdash;', 'Separator between times of a scheduling rule', 'tremtr' ),
-		);
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'scheduler',
-			array(
-				'id'			=> 'schedule-open',
-				'title'			=> __( 'Schedule', 'tremtr' ),
-				'description'	=> __( 'Define the weekly schedule during which you accept reservations.', 'tremtr' ),
-				'weekdays'		=> array(
-					'monday'		=> _x( 'Mo', 'Monday abbreviation', 'tremtr' ),
-					'tuesday'		=> _x( 'Tu', 'Tuesday abbreviation', 'tremtr' ),
-					'wednesday'		=> _x( 'We', 'Wednesday abbreviation', 'tremtr' ),
-					'thursday'		=> _x( 'Th', 'Thursday abbreviation', 'tremtr' ),
-					'friday'		=> _x( 'Fr', 'Friday abbreviation', 'tremtr' ),
-					'saturday'		=> _x( 'Sa', 'Saturday abbreviation', 'tremtr' ),
-					'sunday'		=> _x( 'Su', 'Sunday abbreviation', 'tremtr' )
-				),
-				'time_format'	=> $this->get_setting( 'time-format' ),
-				'date_format'	=> $this->get_setting( 'date-format' ),
-				'disable_weeks'	=> true,
-				'disable_date'	=> true,
-				'disable_all_day'=> true,
-				'strings' => $scheduler_strings,
-			)
-		);
-
-		$scheduler_strings['all_day'] = _x( 'Closed all day', 'Brief default description of a scheduling exception when no times are set', 'tremtr' );
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'scheduler',
-			array(
-				'id'				=> 'schedule-closed',
-				'title'				=> __( 'Exceptions', 'tremtr' ),
-				'description'		=> __( "Define special opening hours for holidays, events or other needs. Leave the time empty if you're closed all day.", 'tremtr' ),
-				'time_format'		=> $this->get_setting( 'time-format' ),
-				'date_format'		=> $this->get_setting( 'date-format' ),
-				'disable_weekdays'	=> true,
-				'disable_weeks'		=> true,
-				'strings' => $scheduler_strings,
-			)
-		);
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'select',
-			array(
-				'id'            => 'early-reservations',
-				'title'         => __( 'Early Reservations', 'tremtr' ),
-				'description'   => __( 'Select how early customers can make their reservation. (Administrators and Reservation Managers are not restricted by this setting.)', 'tremtr' ),
-				'blank_option'	=> false,
-				'options'       => array(
-					'1' 	=> __( 'From 1 day in advance', 'tremtr' ),
-					'7' 	=> __( 'From 1 week in advance', 'tremtr' ),
-					'14' 	=> __( 'From 2 weeks in advance', 'tremtr' ),
-					'30' 	=> __( 'From 30 days in advance', 'tremtr' )
-				)
-			)
-		);
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'select',
-			array(
-				'id'            => 'late-reservations',
-				'title'         => __( 'Late Reservations', 'tremtr' ),
-				'description'   => __( 'Select how late customers can make their reservation. (Administrators and Reservation Managers are not restricted by this setting.)', 'tremtr' ),
-				'blank_option'	=> false,
-				'options'       => array(
-					'0' 	   => __( 'Up to the last minute', 'tremtr' ),
-					'15'       => __( 'At least 15 minutes in advance', 'tremtr' ),
-					'30'       => __( 'At least 30 minutes in advance', 'tremtr' ),
-					'45'       => __( 'At least 45 minutes in advance', 'tremtr' ),
-					'60'       => __( 'At least 1 hour in advance', 'tremtr' ),
-					'240'      => __( 'At least 4 hours in advance', 'tremtr' ),
-				)
-			)
-		);
-
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'select',
-			array(
-				'id'			=> 'time-interval',
-				'title'			=> __( 'Time Interval', 'tremtr' ),
-				'description'	=> __( 'Select the number of minutes between each available time.', 'tremtr' ),
-				'blank_option'	=> false,
-				'options'       => array(
-					'30' 		=> __( 'Every 30 minutes', 'tremtr' ),
-					'15' 		=> __( 'Every 15 minutes', 'tremtr' ),
-					'60' 		=> __( 'Every hour', 'tremtr' ),
-					'90' 		=> __( 'Every hour and 30 minutes', 'tremtr' ),
-					'120' 		=> __( 'Every 2 hours', 'tremtr' ),
-				)
-			)
-		);
-
-		$sap->add_setting(
-			'tremtr-settings',
-			'tremtr-schedule',
-			'select',
-			array(
-				'id'			=> 'reservation-duration',
-				'title'			=> __( 'Average reservation duration', 'tremtr' ),
-				'description'	=> __( 'Select the duration of one reservation (i.e how long you clients will stay by you).', 'tremtr' ),
-				'blank_option'	=> false,
-				'options'       => array(
-					'30' 		=> __( '30 minutes', 'tremtr' ),
-					'60' 		=> __( '1 Hour', 'tremtr' ),
-					'90' 		=> __( '1 Hour and 30 minutes', 'tremtr' ),
-					'120' 		=> __( '2 Hour', 'tremtr' ),
-					'180' 		=> __( '3 Hour', 'tremtr' ),
-					'240' 		=> __( '4 Hour', 'tremtr' ),
-				)
-			)
-		);
 
 		$sap->add_section(
 			'tremtr-settings',
@@ -610,10 +460,336 @@ Table N{table} for {persons} Persons
 			)
 		);
 
+
+		$query = new WP_Query(array('nopaging' => true, 'post_type' => 'trem-cafes'));
+		if ( $query->have_posts() ) {
+			$i=0;
+			while( $query->have_posts() ) {
+				$query->the_post();
+
+				$this->tremtr_add_schedule_section(get_the_ID(), esc_html(get_the_title()), $sap);
+				
+				// add_submenu_page( 
+				// 	'edit.php?post_type=trem-reservation', 
+				// 	esc_html(get_the_title()), 
+				// 	esc_html(get_the_title()), 
+				// 	'manage_options', 
+				// 	'reservations_scheme' . esc_html(get_the_title()), 
+				// 	array($this, 'reservations_scheme_enqueue_scripts') 
+				// );
+			}
+		}
+		wp_reset_query();	
+
 		$sap = apply_filters( 'tremtr_settings_page', $sap );
 
 		$sap->add_admin_menus();
 
+	}
+
+	/**
+	 * Create Tag for each cafe
+	 *
+	 * @param [type] $cafes_id
+	 * @return void
+	 */
+	public function tremtr_add_schedule_section($cafes_id, $cafes_title, $sap) {
+		$sap->add_section(
+			'tremtr-settings',
+			array(
+				'id'            => $cafes_id,
+				'title'         => __( $cafes_title, 'tremtr' ),
+				'is_tab'		=> true,
+			)
+		);
+
+		// Translateable strings for scheduler components
+		$scheduler_strings = array(
+			'add_rule'			=> __( 'Add new scheduling rule', 'tremtr' ),
+			'weekly'			=> _x( 'Weekly', 'Format of a scheduling rule', 'tremtr' ),
+			'monthly'			=> _x( 'Monthly', 'Format of a scheduling rule', 'tremtr' ),
+			'date'				=> _x( 'Date', 'Format of a scheduling rule', 'tremtr' ),
+			'weekdays'			=> _x( 'Days of the week', 'Label for selecting days of the week in a scheduling rule', 'tremtr' ),
+			'month_weeks'		=> _x( 'Weeks of the month', 'Label for selecting weeks of the month in a scheduling rule', 'tremtr' ),
+			'date_label'		=> _x( 'Date', 'Label to select a date for a scheduling rule', 'tremtr' ),
+			'time_label'		=> _x( 'Time', 'Label to select a time slot for a scheduling rule', 'tremtr' ),
+			'allday'			=> _x( 'All day', 'Label to set a scheduling rule to last all day', 'tremtr' ),
+			'start'				=> _x( 'Start', 'Label for the starting time of a scheduling rule', 'tremtr' ),
+			'end'				=> _x( 'End', 'Label for the ending time of a scheduling rule', 'tremtr' ),
+			'set_time_prompt'	=> _x( 'All day long. Want to %sset a time slot%s?', 'Prompt displayed when a scheduling rule is set without any time restrictions', 'tremtr' ),
+			'toggle'			=> _x( 'Open and close this rule', 'Toggle a scheduling rule open and closed', 'tremtr' ),
+			'delete'			=> _x( 'Delete rule', 'Delete a scheduling rule', 'tremtr' ),
+			'delete_schedule'	=> __( 'Delete scheduling rule', 'tremtr' ),
+			'never'				=> _x( 'Never', 'Brief default description of a scheduling rule when no weekdays or weeks are included in the rule', 'tremtr' ),
+			'weekly_always'		=> _x( 'Every day', 'Brief default description of a scheduling rule when all the weekdays/weeks are included in the rule', 'tremtr' ),
+			'monthly_weekdays'	=> _x( '%s on the %s week of the month', 'Brief default description of a scheduling rule when some weekdays are included on only some weeks of the month. %s should be left alone and will be replaced by a comma-separated list of days and weeks in the following format: M, T, W on the first, second week of the month', 'tremtr' ),
+			'monthly_weeks'		=> _x( '%s week of the month', 'Brief default description of a scheduling rule when some weeks of the month are included but all or no weekdays are selected. %s should be left alone and will be replaced by a comma-separated list of weeks in the following format: First, second week of the month', 'tremtr' ),
+			'all_day'			=> _x( 'All day', 'Brief default description of a scheduling rule when no times are set', 'tremtr' ),
+			'before'			=> _x( 'Ends at', 'Brief default description of a scheduling rule when an end time is set but no start time. If the end time is 6pm, it will read: Ends at 6pm', 'tremtr' ),
+			'after'				=> _x( 'Starts at', 'Brief default description of a scheduling rule when a start time is set but no end time. If the start time is 6pm, it will read: Starts at 6pm', 'tremtr' ),
+			'separator'			=> _x( '&mdash;', 'Separator between times of a scheduling rule', 'tremtr' ),
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			$cafes_id,
+			'scheduler',
+			array(
+				'id'			=> 'schedule-open' . $cafes_id,
+				'title'			=> __( 'Schedule', 'tremtr' ),
+				'description'	=> __( 'Define the weekly schedule during which you accept reservations.', 'tremtr' ),
+				'weekdays'		=> array(
+					'monday'		=> _x( 'Mo', 'Monday abbreviation', 'tremtr' ),
+					'tuesday'		=> _x( 'Tu', 'Tuesday abbreviation', 'tremtr' ),
+					'wednesday'		=> _x( 'We', 'Wednesday abbreviation', 'tremtr' ),
+					'thursday'		=> _x( 'Th', 'Thursday abbreviation', 'tremtr' ),
+					'friday'		=> _x( 'Fr', 'Friday abbreviation', 'tremtr' ),
+					'saturday'		=> _x( 'Sa', 'Saturday abbreviation', 'tremtr' ),
+					'sunday'		=> _x( 'Su', 'Sunday abbreviation', 'tremtr' )
+				),
+				'time_format'	=> $this->get_setting( 'time-format' ),
+				'date_format'	=> $this->get_setting( 'date-format' ),
+				'disable_weeks'	=> true,
+				'disable_date'	=> true,
+				'disable_all_day'=> true,
+				'strings' => $scheduler_strings,
+			)
+		);
+
+		$scheduler_strings['all_day'] = _x( 'Closed all day', 'Brief default description of a scheduling exception when no times are set', 'tremtr' );
+		$sap->add_setting(
+			'tremtr-settings',
+			$cafes_id,
+			'scheduler',
+			array(
+				'id'				=> 'schedule-closed' . $cafes_id,
+				'title'				=> __( 'Exceptions', 'tremtr' ),
+				'description'		=> __( "Define special opening hours for holidays, events or other needs. Leave the time empty if you're closed all day.", 'tremtr' ),
+				'time_format'		=> $this->get_setting( 'time-format' ),
+				'date_format'		=> $this->get_setting( 'date-format' ),
+				'disable_weekdays'	=> true,
+				'disable_weeks'		=> true,
+				'strings' => $scheduler_strings,
+			)
+		);
+
+		$sap->add_section(
+			'tremtr-settings',
+			array(
+				'id'            => 'booking_settings' . $cafes_id,
+				'title'         => __( 'Booking Settings', 'tremtr' ),
+				'tab'			=> $cafes_id,
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'            => 'early-reservations' . $cafes_id,
+				'title'         => __( 'Early Reservations', 'tremtr' ),
+				'description'   => __( 'Select how early customers can make their reservation. (Administrators and Reservation Managers are not restricted by this setting.)', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'1' 	=> __( 'From 1 day in advance', 'tremtr' ),
+					'7' 	=> __( 'From 1 week in advance', 'tremtr' ),
+					'14' 	=> __( 'From 2 weeks in advance', 'tremtr' ),
+					'30' 	=> __( 'From 30 days in advance', 'tremtr' )
+					
+				)
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'            => 'late-reservations' . $cafes_id,
+				'title'         => __( 'Late Reservations', 'tremtr' ),
+				'description'   => __( 'Select how late customers can make their reservation. (Administrators and Reservation Managers are not restricted by this setting.)', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'0' 	   => __( 'Up to the last minute', 'tremtr' ),
+					'15'       => __( 'At least 15 minutes in advance', 'tremtr' ),
+					'30'       => __( 'At least 30 minutes in advance', 'tremtr' ),
+					'45'       => __( 'At least 45 minutes in advance', 'tremtr' ),
+					'60'       => __( 'At least 1 hour in advance', 'tremtr' ),
+					'240'      => __( 'At least 4 hours in advance', 'tremtr' ),
+				)
+			)
+		);
+
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'			=> 'time-interval' . $cafes_id,
+				'title'			=> __( 'Time Interval', 'tremtr' ),
+				'description'	=> __( 'Select the number of minutes between each available time.', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'30' 		=> __( 'Every 30 minutes', 'tremtr' ),
+					'15' 		=> __( 'Every 15 minutes', 'tremtr' ),
+					'60' 		=> __( 'Every 60 minutes', 'tremtr' ),
+				)
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'			=> 'reservation-duration' . $cafes_id,
+				'title'			=> __( 'Average reservation duration', 'tremtr' ),
+				'description'	=> __( 'Select the duration of one reservation (i.e how long you clients will stay by you).', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'30' 		=> __( '30 minutes', 'tremtr' ),
+					'60' 		=> __( '1 Hour', 'tremtr' ),
+					'90' 		=> __( '1 Hour and 30 minutes', 'tremtr' ),
+					'120' 		=> __( '2 Hour', 'tremtr' ),
+					'180' 		=> __( '3 Hour', 'tremtr' ),
+					'240' 		=> __( '4 Hour', 'tremtr' ),
+				)
+			)
+		);
+		
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'toggle',
+			array(
+				'id'			=> 'reservation-duration-select' . $cafes_id,
+				'title'			=> __( 'Custom reservation duration', 'tremtr' ),
+				'description'	=> __( '⚠️ Allow users to select a reservation duration', 'tremtr' ),
+				'blank_option'	=> false
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'			=> 'reservation-duration-min' . $cafes_id,
+				'title'			=> __( 'Minimum reservation time', 'tremtr' ),
+				'description'	=> __( 'For custom reservation duration for clients and on cafe manage page.', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'15' 		=> __( '15 minutes', 'tremtr' ),
+					'30' 		=> __( '30 minutes', 'tremtr' ),
+					'60' 		=> __( '1 Hour', 'tremtr' ),
+					'90' 		=> __( '1 Hour and 30 minutes', 'tremtr' ),
+					'120' 		=> __( '2 Hour', 'tremtr' ),
+					'150' 		=> __( '2 Hour and 30 minutes', 'tremtr' ),
+					'180' 		=> __( '3 Hour', 'tremtr' ),
+				)
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'			=> 'reservation-duration-max' . $cafes_id,
+				'title'			=> __( 'Maximum reservation time', 'tremtr' ),
+				'description'	=> __( 'For custom reservation duration for clients and on cafe manage page. Must not be less than "Minimum reservation time"', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'30' 		=> __( '30 minutes', 'tremtr' ),
+					'60' 		=> __( '1 Hour', 'tremtr' ),
+					'90' 		=> __( '1 Hour and 30 minutes', 'tremtr' ),
+					'120' 		=> __( '2 Hour', 'tremtr' ),
+					'150' 		=> __( '2 Hour and 30 minutes', 'tremtr' ),
+					'180' 		=> __( '3 Hour', 'tremtr' ),
+					'210' 		=> __( '3 Hour and 30 minutes', 'tremtr' ),
+					'240' 		=> __( '4 Hour', 'tremtr' ),
+					'300' 		=> __( '5 Hour', 'tremtr' ),
+					'360' 		=> __( '6 Hour', 'tremtr' ),
+					'420' 		=> __( '7 Hour', 'tremtr' ),
+					'480' 		=> __( '8 Hour', 'tremtr' ),
+					'540' 		=> __( '9 Hour', 'tremtr' ),
+					'600' 		=> __( '10 Hour', 'tremtr' ),
+					'840' 		=> __( '14 Hour', 'tremtr' ),
+				)
+			)
+		);
+
+		$sap->add_setting(
+			'tremtr-settings',
+			'booking_settings' . $cafes_id,
+			'select',
+			array(
+				'id'			=> 'slider-time-interval' . $cafes_id,
+				'title'			=> __( 'Slider Time Interval', 'tremtr' ),
+				'description'	=> __( 'Select the number of minutes between each available time for custom duration of reservation.', 'tremtr' ),
+				'blank_option'	=> false,
+				'options'       => array(
+					'30' 		=> __( 'Every 30 minutes', 'tremtr' ),
+					'5' 		=> __( 'Every 5 minutes', 'tremtr' ),
+					'10' 		=> __( 'Every 10 minutes', 'tremtr' ),
+					'15' 		=> __( 'Every 15 minutes', 'tremtr' ),
+					'20' 		=> __( 'Every 20 minutes', 'tremtr' ),
+					'60' 		=> __( 'Every 60 minutes', 'tremtr' ),
+				)
+			)
+		);
+
+		// $sap->add_section(
+		// 	'tremtr-settings',
+		// 	array(
+		// 		'id'            => 'paid_reservations' . $cafes_id,
+		// 		'title'         => __( 'Paid reservations', 'tremtr' ),
+		// 		'description'	=> __( '⚠️ For the payments to work correctly, WooCommerce Plugin has to be installed!', 'tremtr' ),
+		// 		'tab'			=> $cafes_id,
+		// 	)
+		// );
+
+
+		// $sap->add_setting(
+		// 	'tremtr-settings',
+		// 	'paid_reservations' . $cafes_id,
+		// 	'toggle',
+		// 	array(
+		// 		'id'			=> 'paid-reservations-select' . $cafes_id,
+		// 		'title'			=> __( 'Activate reservation fee', 'tremtr' ),
+		// 		'description'	=> __( '💵 For a successful reservation, a payment is required.', 'tremtr' ),
+		// 		'blank_option'	=> false
+		// 	)
+		// );
+
+
+		// $sap->add_setting(
+		// 	'tremtr-settings',
+		// 	'paid_reservations' . $cafes_id,
+		// 	'number',
+		// 	array(
+		// 		'id'			=> 'amount_to_pay'. $cafes_id,
+		// 		'title'			=> __( 'Amount of fee', 'tremtr' ),
+		// 		'description'	=> __( 'The currency in which payment is made is set in the WooCommerce settings.', 'tremtr' ),
+		// 		'placeholder'	=> $this->defaults['amount_to_pay'],
+		// 	)
+		// );
+
+		// $sap->add_setting(
+		// 	'tremtr-settings',
+		// 	'paid_reservations' . $cafes_id,
+		// 	'toggle',
+		// 	array(
+		// 		'id'			=> 'paypal'. $cafes_id,
+		// 		'title'			=> __( 'PayPal', 'tremtr' ),
+		// 		'description'	=> __( 'To accept payments via PayPal corresponding gateway in WooCommerce has to be configured.', 'tremtr' ),
+		// 		'blank_option'	=> false
+		// 	)
+		// );
+
+		
 	}
 
 
@@ -782,6 +958,7 @@ Table N{table} for {persons} Persons
 		$descriptions = apply_filters( 'tremtr_notification_template_tag_descriptions', array(
 				'{user_email}'		=> __( 'Email of the user who made the reservation', 'tremtr' ),
 				'{user_name}'		=> __( '* Name of the user who made the reservation', 'tremtr' ),
+				'{cafe}'			=> __( '* Cafe', 'tremtr' ),
 				'{table}'			=> __( '* Table number', 'tremtr' ),
 				'{persons}'			=> __( '* Persons', 'tremtr' ),
 				'{date}'			=> __( '* Date and time of the reservation', 'tremtr' ),
