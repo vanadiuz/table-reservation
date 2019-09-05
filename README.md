@@ -48,6 +48,8 @@ A few of the things you can do with Table Reservation:
 * Add and edit bookings from the admin panel
 * Check correctness of user-input data *(date, party, time, name, email, phone, message)
 * Mobile UX
+* Create and manage many Venues simultaneously
+* Custom setting for durations of each visit
 * Customisable colors, date/time format, titles etc.
 * WPBakery(Visual Composer) compatible
 
@@ -93,7 +95,7 @@ Feel free to [file an issue](https://github.com/vanadiuz/table-reservation/issue
  [Slightly outdated video](https://data.true-emotions.studio/plugins/trem-table-reservation/table-reservation.mp4)
  
 **Shortcode?**  \
- [table-reservation]. 
+ [table-reservation cafe_id="2722"]. 
  
  
 **How to customize appearance of this plugin?**  
@@ -112,7 +114,7 @@ Everything in this plugin can be translated using the standard translation proce
 🔸 Files with translation (for example "tremtr-ru_RU") must be placed in the …\wp-content\languages\plugins\. 
 
 **Can I set up many venues/cafes/locations?**  \
-In [Pro-Version]( https://true-emotions.studio/products/plugins/table-reservation-pro/ )!
+Yes!
 
 **GDRP?**  \
 All user data is automatically deleted in 24 hours after the reservation time. In other words, the plugin doesn't store information about users after the moment when the reservation is not relevant. Data is collected solely for table reservation purposes. No additional processing of information and compilation of statistics is carried out.
