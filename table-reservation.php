@@ -22,7 +22,7 @@ if (!class_exists('TREMTableReservation')) :
 
         var $vc_dir;
 
-        private  $is_user_logged_in;
+        //private  $is_user_logged_in;
 
 
         public function __construct() {
