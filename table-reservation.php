@@ -1,7 +1,7 @@
 <?php
 /***********************************
  *
- * Plugin Name:  ☕️Table Reservation
+ * Plugin Name:  Table Reservation
  * Plugin URI:   https://true-emotions.studio/table-reservation-pro
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
  * Version:      4.0.0
