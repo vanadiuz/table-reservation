@@ -198,7 +198,7 @@ function tremtr_reservation_meta() {
 
 function tremtr_reservation_save_meta( $post_id ) {
 
-//     if (get_post_type( $post_id ) == 'trem-reservation') {
+    if (get_post_type( $post_id ) == 'trem-reservation') {
 
         if (isset($_POST['tremtr_reservation_cafe'])) {
             update_post_meta($post_id, 'tremtr_reservation_cafe', $_POST['tremtr_reservation_cafe']);
@@ -249,7 +249,7 @@ function tremtr_reservation_save_meta( $post_id ) {
             update_post_meta($post_id, 'tremtr_reservation_message', $_POST['tremtr_reservation_message']);
         } else
             delete_post_meta($post_id, 'tremtr_reservation_message');
-//     }
+    }
 }
 add_action( 'save_post', 'tremtr_reservation_save_meta' );
 
@@ -471,7 +471,7 @@ function trem_reservation_quick_edit_custom_box($column_name, $post_type){
 
 add_action('save_post', 'tremtr_save_quick_edit_data');
 function tremtr_save_quick_edit_data($post_id) {
-//     if (get_post_type( $post_id ) == 'trem-reservation') {
+    if (get_post_type( $post_id ) == 'trem-reservation') {
 
         if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
             return $post_id;
@@ -538,7 +538,7 @@ function tremtr_save_quick_edit_data($post_id) {
         } else {
             delete_post_meta($post_id, 'tremtr_reservation_message');
         }
-//     }
+    }
 
 }
 
