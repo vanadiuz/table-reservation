@@ -1417,7 +1417,7 @@ export default {
           todaysReservations = this.reservations.filter(reservation => 
             ( 
               reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-              reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
+              reservation.tremtr_reservation_time_end >= this.openHoursStart.format(this.momentTimeFormat)
             )
           )
         } else {
@@ -1432,7 +1432,7 @@ export default {
                       || 
                       ( 
                         reservation.tremtr_reservation_date.toLowerCase() === this.date.toLowerCase() && 
-                        reservation.tremtr_reservation_time_begin >= this.openHoursStart.format(this.momentTimeFormat)
+                        reservation.tremtr_reservation_time_end <= this.openHoursStart.format(this.momentTimeFormat)
                       )
 
             this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
