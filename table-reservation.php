@@ -4,7 +4,7 @@
  * Plugin Name:  Table Reservation
  * Plugin URI:   https://true-emotions.studio/table-reservation-pro
  * Description:  Pick a place ⚡️ No collisions. Rich settings. Mobile UX.
- * Version:      4.0.1
+ * Version:      4.0.0
  * Author:       True Emotions Studio
  * Author URI:   https://true-emotions.studio
  * License:      GPLv2 or later
