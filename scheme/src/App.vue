@@ -682,7 +682,7 @@ export default {
         todaysReservations = this.reservations.filter(reservation => 
           ( 
             reservation.date.toLowerCase() === this.date.toLowerCase() && 
-            moment(reservation.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+            moment(reservation.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
           )
         )
       } else {
@@ -697,7 +697,7 @@ export default {
                     || 
                     ( 
                       reservation.date.toLowerCase() === this.date.toLowerCase() &&
-                      moment(reservation.timeStart, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  >= this.openHoursStart.format(this.dbTimeFormatForMoment)
+                      moment(reservation.timeEnd, this.momentTimeFormat).format(this.dbTimeFormatForMoment)  <= this.openHoursStart.format(this.dbTimeFormatForMoment)
                     )
 
           this.openHoursEnd.add(Number(-this.calendarTimeInitData.reservation_duration), 'm') 
