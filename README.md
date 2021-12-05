@@ -1,4 +1,4 @@
-<h1 align="center"> Table Reservation - Wordpress Plugin </h1> <br>
+<h1 align="center"> Table Reservation - My Wordpress Plugin </h1> <br>
 <p align="center">
   <a href="https://true-emotions.studio/">
     <img alt="Table Reservation" title="Table Reservation" src="https://true-emotions.studio/wp-content/uploads/2018/01/icon-256x256.jpg" width="250">
