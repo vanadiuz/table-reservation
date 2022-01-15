@@ -54,7 +54,7 @@
     "rimraf": "^2.6.3",
     "sass-loader": "^6.0.7",
     "semver": "^5.7.0",
-    "shelljs": "^0.7.6",
+    "shelljs": "^0.8.5",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.7.3",
