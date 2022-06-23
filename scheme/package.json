@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "fs": "0.0.1-security",
-    "jsdom": "^11.6.2",
+    "jsdom": "^16.5.0",
     "keen-ui": "^1.0.1",
     "moment": "^2.21.0",
     "v-tooltip": "^2.0.0-rc.31",
