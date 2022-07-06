@@ -13,7 +13,7 @@
     "fs": "0.0.1-security",
     "jsdom": "^11.6.2",
     "keen-ui": "^1.0.1",
-    "moment": "^2.21.0",
+    "moment": "^2.29.4",
     "v-tooltip": "^2.0.0-rc.31",
     "vee-validate": "^2.0.5",
     "vue": "^2.5.16",
