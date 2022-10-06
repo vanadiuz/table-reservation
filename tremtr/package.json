@@ -16,7 +16,7 @@
     "jsdom": "^11.6.2",
     "moment": "^2.21.0",
     "pretty-checkbox-vue": "^1.1.8",
-    "snyk": "^1.69.11",
+    "snyk": "^1.996.0",
     "uglify-js": "^3.6.0",
     "v-tooltip": "^2.0.0-rc.31",
     "vee-validate": "^2.0.5",
